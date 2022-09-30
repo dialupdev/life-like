@@ -1,0 +1,11 @@
+{
+  "name": "conways-game-of-life",
+  "version": "0.1.0",
+  "description": "Conway's Game of Life",
+  "private": true,
+  "author": "Steve Davis <steve@celery.club>",
+  "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  }
+}
