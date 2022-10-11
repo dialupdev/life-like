@@ -57,7 +57,7 @@ export default class RenderSystem implements System {
     this._ctx.fillText(`${x},${y}`, pixelX + 2, pixelY + 2);
   }
 
-  public update(): void {
+  public tick(): void {
     this._clearBoard();
     this._drawGridLines();
 

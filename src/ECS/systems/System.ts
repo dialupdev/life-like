@@ -1,3 +1,3 @@
 export interface System {
-  update(): void;
+  tick(): void;
 }

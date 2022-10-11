@@ -21,8 +21,8 @@ export default class World {
   }
 
   public tick(): void {
-    for (var i = 0; i < this._systems.length; i++) {
-      this._systems[i].update();
+    for (const system of this._systems) {
+      system.tick();
     }
   }
 }
