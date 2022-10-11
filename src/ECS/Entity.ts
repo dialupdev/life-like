@@ -14,6 +14,10 @@ export default class Entity {
     return this;
   }
 
+  public removeComponent(key: ComponentKey): void {
+    this._components.delete(key);
+  }
+
   public hasComponent(key: ComponentKey): boolean {
     return this._components.has(key);
   }

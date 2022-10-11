@@ -1,5 +1,6 @@
 import World from "./ECS/World";
 import { ComponentKey } from "./ECS/Components";
+import LifecycleSystem from "./ECS/systems/LifecycleSystem";
 import RenderSystem from "./ECS/systems/RenderSystem";
 
 // Device pixel ratio
@@ -42,6 +43,7 @@ for (let i = 0; i < GRID_WIDTH; i++) {
   }
 }
 
+world.registerSystem(new LifecycleSystem(world));
 world.registerSystem(
   new RenderSystem(world, ctx, {
     CELL_SIZE_PIXELS,

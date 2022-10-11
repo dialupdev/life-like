@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Entity from "./Entity";
+import { ComponentKey } from "./Components";
 import type { System } from "./Systems/System";
+import { isNeighbor } from "./utils/NeighborUtils";
 
 export default class World {
   private _entities: Entity[] = [];
@@ -18,6 +20,16 @@ export default class World {
 
   public getAllEntities(): Entity[] {
     return this._entities;
+  }
+
+  public getLivingEntities(): Entity[] {
+    return this._entities.filter(entity => entity.hasComponent(ComponentKey.Alive));
+  }
+
+  public getNeighborEntities(entity: Entity): Entity[] {
+    return this._entities.filter(otherEntity => {
+      return isNeighbor(entity, otherEntity);
+    });
   }
 
   public tick(): void {
