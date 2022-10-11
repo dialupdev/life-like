@@ -15,6 +15,9 @@
     "prettier:fix": "prettier --write .",
     "lint": "npm run tsc && npm run prettier"
   },
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
   "devDependencies": {
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.7.1",
