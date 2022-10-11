@@ -21,7 +21,8 @@ export default class RenderSystem implements System {
     this._constants = constants;
 
     this._ctx.strokeStyle = "#ddd";
-    this._ctx.fillStyle = "rgb(200, 130, 190)";
+    this._ctx.font = "12px monospace";
+    this._ctx.textBaseline = "hanging";
   }
 
   private _clearBoard(): void {
@@ -49,7 +50,11 @@ export default class RenderSystem implements System {
   private _drawCell(x: number, y: number): void {
     const pixelX = x * this._constants.CELL_SIZE_PIXELS;
     const pixelY = y * this._constants.CELL_SIZE_PIXELS;
+
+    this._ctx.fillStyle = "rgb(200, 130, 190)";
     this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
+    this._ctx.fillStyle = "white";
+    this._ctx.fillText(`${x},${y}`, pixelX + 2, pixelY + 2);
   }
 
   public update(): void {
