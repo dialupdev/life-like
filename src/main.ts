@@ -21,7 +21,15 @@ const ctx = canvas.getContext("2d");
 
 const world = new World();
 
-world.createEntity().addComponent(ComponentKey.Position, { x: 0, y: 0 }).addComponent(ComponentKey.Alive, {});
+// Randomized grid
+for (let i = 0; i < GRID_WIDTH; i++) {
+  for (let j = 0; j < GRID_HEIGHT; j++) {
+    const entity = world.createEntity().addComponent(ComponentKey.Position, { x: i, y: j });
+    if (Math.random() < 0.5) {
+      entity.addComponent(ComponentKey.Alive, {});
+    }
+  }
+}
 
 world.registerSystem(
   new RenderSystem(world, ctx, {
