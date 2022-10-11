@@ -30,7 +30,7 @@ export default class RenderSystem implements System {
 
   private _drawGridLines(): void {
     // Horizontal grid lines
-    for (let i = 1; i < this._constants.GRID_WIDTH; i++) {
+    for (let i = 1; i < this._constants.GRID_HEIGHT; i++) {
       this._ctx.beginPath();
       this._ctx.moveTo(0, i * this._constants.CELL_SIZE_PIXELS);
       this._ctx.lineTo(this._constants.GRID_WIDTH_PIXELS, i * this._constants.CELL_SIZE_PIXELS);
@@ -38,7 +38,7 @@ export default class RenderSystem implements System {
     }
 
     // Vertical grid lines
-    for (let i = 1; i < this._constants.GRID_HEIGHT; i++) {
+    for (let i = 1; i < this._constants.GRID_WIDTH; i++) {
       this._ctx.beginPath();
       this._ctx.moveTo(i * this._constants.CELL_SIZE_PIXELS, 0);
       this._ctx.lineTo(i * this._constants.CELL_SIZE_PIXELS, this._constants.GRID_HEIGHT_PIXELS);
