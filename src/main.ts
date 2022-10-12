@@ -6,11 +6,11 @@ import RenderSystem from "./ECS/systems/RenderSystem";
 // Device pixel ratio
 const PIXEL_RATIO = devicePixelRatio;
 // Size of each cell
-const CELL_SIZE_PIXELS = 20 * PIXEL_RATIO;
+const CELL_SIZE_PIXELS = 10 * PIXEL_RATIO;
 // Number of cells horizontally
-const GRID_WIDTH = 30;
+const GRID_WIDTH = 60;
 // Number of cells vertically
-const GRID_HEIGHT = 30;
+const GRID_HEIGHT = 60;
 // Grid width in pixels
 const GRID_WIDTH_PIXELS = GRID_WIDTH * CELL_SIZE_PIXELS;
 // Grid height in pixels
