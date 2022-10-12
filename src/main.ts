@@ -54,4 +54,4 @@ world.registerSystem(
   })
 );
 
-world.tick();
+setInterval(world.tick.bind(world), 10);
