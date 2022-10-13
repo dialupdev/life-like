@@ -53,20 +53,32 @@ export default class RenderSystem implements System {
     this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
   }
 
-  private _printInfo(): void {
+  private _printInfo(minX: number, maxX: number, minY: number, maxY: number): void {
     this._ctx.fillStyle = "black";
     this._ctx.fillText(`Ticks: ${this._world.ticks}`, 0, 0);
     this._ctx.fillText(`Cells: ${this._world.cells.size}`, 0, 22);
+    this._ctx.fillText(`Horizontal bounds: ${minX}, ${maxX}`, 0, 44);
+    this._ctx.fillText(`Vertical bounds: ${minY}, ${maxY}`, 0, 66);
   }
 
   public tick(): void {
     this._clearBoard();
     this._drawGridLines();
 
+    let minX = 0;
+    let maxX = 0;
+    let minY = 0;
+    let maxY = 0;
+
     for (const cell of this._world.cells.values()) {
       this._drawCell(cell.x, cell.y);
+
+      minX = Math.min(minX, cell.x);
+      maxX = Math.max(maxX, cell.x);
+      minY = Math.min(minY, cell.y);
+      maxY = Math.max(maxY, cell.y);
     }
 
-    this._printInfo();
+    this._printInfo(minX, maxX, minY, maxY);
   }
 }
