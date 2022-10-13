@@ -16,6 +16,7 @@
     "lint": "npm run tsc && npm run prettier"
   },
   "dependencies": {
+    "lit": "^2.4.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
