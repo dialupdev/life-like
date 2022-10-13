@@ -1,5 +1,4 @@
 import World from "../World";
-import { ComponentKey } from "../Components";
 import type { System } from "./System";
 
 interface SizeConstants {
@@ -21,8 +20,7 @@ export default class RenderSystem implements System {
     this._constants = constants;
 
     this._ctx.strokeStyle = "#ddd";
-    this._ctx.font = "12px monospace";
-    this._ctx.textBaseline = "hanging";
+    this._ctx.fillStyle = "rgb(100, 130, 190)";
   }
 
   private _clearBoard(): void {
@@ -51,23 +49,15 @@ export default class RenderSystem implements System {
     const pixelX = x * this._constants.CELL_SIZE_PIXELS;
     const pixelY = y * this._constants.CELL_SIZE_PIXELS;
 
-    this._ctx.fillStyle = "rgb(200, 130, 190)";
     this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
-    this._ctx.fillStyle = "white";
-    this._ctx.fillText(`${x},${y}`, pixelX + 2, pixelY + 2);
   }
 
   public tick(): void {
     this._clearBoard();
     this._drawGridLines();
 
-    const entities = this._world.getAllEntities();
-
-    for (const entity of entities) {
-      if (entity.hasComponent(ComponentKey.Alive)) {
-        const { x, y } = entity.getComponent(ComponentKey.Position);
-        this._drawCell(x, y);
-      }
+    for (const cell of this._world.cells.values()) {
+      this._drawCell(cell.x, cell.y);
     }
   }
 }

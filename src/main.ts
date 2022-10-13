@@ -1,7 +1,6 @@
-import World from "./ECS/World";
-import { ComponentKey } from "./ECS/Components";
-import LifecycleSystem from "./ECS/systems/LifecycleSystem";
-import RenderSystem from "./ECS/systems/RenderSystem";
+import World from "./game/World";
+import LifecycleSystem from "./game/systems/LifecycleSystem";
+import RenderSystem from "./game/systems/RenderSystem";
 
 // Device pixel ratio
 const PIXEL_RATIO = devicePixelRatio;
@@ -34,11 +33,10 @@ const ctx = canvas.getContext("2d");
 const world = new World();
 
 // Randomized grid
-for (let i = 0; i < GRID_WIDTH; i++) {
-  for (let j = 0; j < GRID_HEIGHT; j++) {
-    const entity = world.createEntity().addComponent(ComponentKey.Position, { x: i, y: j });
+for (let x = 0; x < GRID_WIDTH; x++) {
+  for (let y = 0; y < GRID_HEIGHT; y++) {
     if (Math.random() < 0.5) {
-      entity.addComponent(ComponentKey.Alive, {});
+      world.createCell(x, y);
     }
   }
 }
