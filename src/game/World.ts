@@ -1,8 +1,9 @@
 import Cell from "./Cell";
 import type { System } from "./systems/System";
+import RenderSystem from "./systems/RenderSystem";
 
 export default class World {
-  private _systems = new Set<System>();
+  private _systems: System[] = [];
 
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
@@ -52,7 +53,15 @@ export default class World {
   }
 
   public registerSystem(system: any): void {
-    this._systems.add(system);
+    this._systems.push(system);
+  }
+
+  public renderBeforeFirstTick(): void {
+    if (this.ticks > 0) {
+      return;
+    }
+
+    this._systems.find(system => system instanceof RenderSystem)?.tick();
   }
 
   public tick(): void {

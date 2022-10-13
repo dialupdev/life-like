@@ -52,4 +52,4 @@ world.registerSystem(
   })
 );
 
-setInterval(world.tick.bind(world), 10);
+world.renderBeforeFirstTick();
