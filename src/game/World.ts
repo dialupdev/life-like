@@ -3,7 +3,7 @@ import type { System } from "./systems/System";
 import RenderSystem from "./systems/RenderSystem";
 
 export default class World {
-  private _playing: boolean = false;
+  private _isPlaying: boolean = false;
 
   private _systems: System[] = [];
 
@@ -75,10 +75,10 @@ export default class World {
   }
 
   public play(): void {
-    this._playing = true;
+    this._isPlaying = true;
 
     const autoTick = () => {
-      if (this._playing) {
+      if (this._isPlaying) {
         this.tick();
         requestAnimationFrame(autoTick);
       }
@@ -88,6 +88,6 @@ export default class World {
   }
 
   public pause(): void {
-    this._playing = false;
+    this._isPlaying = false;
   }
 }

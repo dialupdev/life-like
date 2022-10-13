@@ -1,5 +1,6 @@
 import { LitElement, TemplateResult, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
+import World from "../game/World";
 
 export class TickEvent extends Event {
   constructor() {
@@ -19,8 +20,8 @@ export class PauseEvent extends Event {
   }
 }
 
-@customElement("x-world-controls")
-class WorldControls extends LitElement {
+@customElement("x-controls")
+class Controls extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -30,15 +31,23 @@ class WorldControls extends LitElement {
     }
   `;
 
+  @property({ type: World })
+  public world;
+
+  @state()
+  private _isPlaying = false;
+
   private _handleTick(): void {
     this.dispatchEvent(new TickEvent());
   }
 
   private _handlePlay(): void {
+    this._isPlaying = true;
     this.dispatchEvent(new PlayEvent());
   }
 
   private _handlePause(): void {
+    this._isPlaying = false;
     this.dispatchEvent(new PauseEvent());
   }
 
@@ -46,8 +55,9 @@ class WorldControls extends LitElement {
     return html`
       <div class="buttons">
         <button @click="${this._handleTick}">Tick</button>
-        <button @click="${this._handlePlay}">Play</button>
-        <button @click="${this._handlePause}">Pause</button>
+        <button @click="${this._isPlaying ? this._handlePause : this._handlePlay}">
+          ${this._isPlaying ? "Pause" : "Play"}
+        </button>
       </div>
     `;
   }
@@ -55,6 +65,6 @@ class WorldControls extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "x-world-controls": WorldControls;
+    "x-controls": Controls;
   }
 }

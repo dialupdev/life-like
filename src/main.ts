@@ -1,7 +1,7 @@
 import World from "./game/World";
 import LifecycleSystem from "./game/systems/LifecycleSystem";
 import RenderSystem from "./game/systems/RenderSystem";
-import "./components/x-world-controls";
+import "./components/x-controls";
 
 // Device pixel ratio
 const PIXEL_RATIO = devicePixelRatio;
@@ -54,10 +54,11 @@ world.registerSystem(
 
 world.renderBeforeFirstTick();
 
-const worldControls = document.createElement("x-world-controls");
-worldControls.addEventListener("tick", world.tick.bind(world));
-worldControls.addEventListener("play", world.play.bind(world));
-worldControls.addEventListener("pause", world.pause.bind(world));
+const controls = document.createElement("x-controls");
+controls.world = world;
+controls.addEventListener("tick", world.tick.bind(world));
+controls.addEventListener("play", world.play.bind(world));
+controls.addEventListener("pause", world.pause.bind(world));
 
-document.body.appendChild(worldControls);
+document.body.appendChild(controls);
 document.body.appendChild(canvas);
