@@ -3,6 +3,8 @@ import type { System } from "./systems/System";
 import RenderSystem from "./systems/RenderSystem";
 
 export default class World {
+  private _playing: boolean = false;
+
   private _systems: System[] = [];
 
   // If JS had a way to hash entities for comparison within a Set,
@@ -70,5 +72,22 @@ export default class World {
     for (const system of this._systems) {
       system.tick();
     }
+  }
+
+  public play(): void {
+    this._playing = true;
+
+    const autoTick = () => {
+      if (this._playing) {
+        this.tick();
+        requestAnimationFrame(autoTick);
+      }
+    };
+
+    requestAnimationFrame(autoTick);
+  }
+
+  public pause(): void {
+    this._playing = false;
   }
 }

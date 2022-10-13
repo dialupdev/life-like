@@ -55,9 +55,9 @@ world.registerSystem(
 world.renderBeforeFirstTick();
 
 const worldControls = document.createElement("x-world-controls");
-worldControls.addEventListener("tick", () => {
-  world.tick();
-});
+worldControls.addEventListener("tick", world.tick.bind(world));
+worldControls.addEventListener("play", world.play.bind(world));
+worldControls.addEventListener("pause", world.pause.bind(world));
 
 document.body.appendChild(worldControls);
 document.body.appendChild(canvas);
