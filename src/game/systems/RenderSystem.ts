@@ -19,7 +19,7 @@ export default class RenderSystem implements System {
     this._ctx = ctx;
     this._constants = constants;
 
-    this._ctx.strokeStyle = "#ddd";
+    this._ctx.strokeStyle = "#eee";
     this._ctx.textBaseline = "top";
     this._ctx.font = "22px monospace";
   }
@@ -49,7 +49,7 @@ export default class RenderSystem implements System {
   private _drawCell(x: number, y: number): void {
     const pixelX = x * this._constants.CELL_SIZE_PIXELS;
     const pixelY = y * this._constants.CELL_SIZE_PIXELS;
-    this._ctx.fillStyle = "rgb(100, 130, 190)";
+    this._ctx.fillStyle = "rgb(200, 230, 190)";
     this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
   }
 

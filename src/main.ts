@@ -21,7 +21,7 @@ canvas.height = GRID_HEIGHT_PIXELS;
 canvas.setAttribute(
   "style",
   `
-    border: 1px solid #ddd;
+    border: 1px solid #eee;
     height: ${GRID_HEIGHT_PIXELS / PIXEL_RATIO}px;
     image-rendering: pixelated;
     width: ${GRID_WIDTH_PIXELS / PIXEL_RATIO}px;
