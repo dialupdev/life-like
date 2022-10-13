@@ -15,7 +15,7 @@ export default class LifecycleSystem implements System {
 
     // Mark cells to kill
     for (const [cellHash, cell] of this._world.cells) {
-      const neighborCount = this._world.cellNeighborCounts.get(cellHash);
+      const neighborCount = this._world.neighborCounts.get(cellHash);
 
       if (!neighborCount || neighborCount < 2 || neighborCount > 3) {
         cellsToKill.add(cell);
@@ -23,7 +23,7 @@ export default class LifecycleSystem implements System {
     }
 
     // Mark cells to spawn
-    for (const [cellHash, count] of this._world.cellNeighborCounts) {
+    for (const [cellHash, count] of this._world.neighborCounts) {
       if (count === 3 && !this._world.cells.has(cellHash)) {
         const cell = Cell.fromHash(cellHash);
         cellsToSpawn.add(cell);
