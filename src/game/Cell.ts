@@ -1,5 +1,3 @@
-export type CellHash = string;
-
 export default class Cell {
   public x: number;
   public y: number;
@@ -9,12 +7,12 @@ export default class Cell {
     this.y = y;
   }
 
-  public static fromHash(hash: CellHash): Cell {
+  public static fromHash(hash: string): Cell {
     const splitHash = hash.split(",");
     return new Cell(parseInt(splitHash[0], 10), parseInt(splitHash[1], 10));
   }
 
-  public hash(): CellHash {
+  public hash(): string {
     return `${this.x},${this.y}`;
   }
 

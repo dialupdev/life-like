@@ -1,4 +1,4 @@
-import Cell, { CellHash } from "./Cell";
+import Cell from "./Cell";
 import type { System } from "./systems/System";
 
 export default class World {
@@ -6,10 +6,10 @@ export default class World {
 
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
-  public cells = new Map<CellHash, Cell>();
+  public cells = new Map<string, Cell>();
   // Same here - if we could, we would use Cell as the Map key,
   // which would remove the need for Cell.fromHash().
-  public cellNeighborCounts = new Map<CellHash, number>();
+  public cellNeighborCounts = new Map<string, number>();
 
   private _incrementNeighborCount(cell: Cell): void {
     const neighborCount = this.cellNeighborCounts.get(cell.hash());
