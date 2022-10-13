@@ -20,7 +20,8 @@ export default class RenderSystem implements System {
     this._constants = constants;
 
     this._ctx.strokeStyle = "#ddd";
-    this._ctx.fillStyle = "rgb(100, 130, 190)";
+    this._ctx.textBaseline = "top";
+    this._ctx.font = "22px monospace";
   }
 
   private _clearBoard(): void {
@@ -48,8 +49,14 @@ export default class RenderSystem implements System {
   private _drawCell(x: number, y: number): void {
     const pixelX = x * this._constants.CELL_SIZE_PIXELS;
     const pixelY = y * this._constants.CELL_SIZE_PIXELS;
-
+    this._ctx.fillStyle = "rgb(100, 130, 190)";
     this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
+  }
+
+  private _printInfo(): void {
+    this._ctx.fillStyle = "black";
+    this._ctx.fillText(`Ticks: ${this._world.ticks}`, 0, 0);
+    this._ctx.fillText(`Cells: ${this._world.cells.size}`, 0, 22);
   }
 
   public tick(): void {
@@ -59,5 +66,7 @@ export default class RenderSystem implements System {
     for (const cell of this._world.cells.values()) {
       this._drawCell(cell.x, cell.y);
     }
+
+    this._printInfo();
   }
 }

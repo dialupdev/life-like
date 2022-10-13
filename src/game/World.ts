@@ -11,6 +11,8 @@ export default class World {
   // which would remove the need for Cell.fromHash().
   public cellNeighborCounts = new Map<string, number>();
 
+  public ticks = 0;
+
   private _incrementNeighborCount(cell: Cell): void {
     const neighborCount = this.cellNeighborCounts.get(cell.hash());
     this.cellNeighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
@@ -54,6 +56,8 @@ export default class World {
   }
 
   public tick(): void {
+    this.ticks++;
+
     for (const system of this._systems) {
       system.tick();
     }
