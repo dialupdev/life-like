@@ -2,24 +2,6 @@ import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import World from "../game/World";
 
-export class TickEvent extends Event {
-  constructor() {
-    super("tick");
-  }
-}
-
-export class PlayEvent extends Event {
-  constructor() {
-    super("play");
-  }
-}
-
-export class PauseEvent extends Event {
-  constructor() {
-    super("pause");
-  }
-}
-
 @customElement("x-controls")
 class Controls extends LitElement {
   static styles = css`
@@ -31,24 +13,24 @@ class Controls extends LitElement {
     }
   `;
 
-  @property({ type: World })
-  public world;
+  @property()
+  public world: World;
 
   @state()
   private _isPlaying = false;
 
   private _handleTick(): void {
-    this.dispatchEvent(new TickEvent());
+    this.world.tick();
   }
 
   private _handlePlay(): void {
     this._isPlaying = true;
-    this.dispatchEvent(new PlayEvent());
+    this.world.play();
   }
 
   private _handlePause(): void {
     this._isPlaying = false;
-    this.dispatchEvent(new PauseEvent());
+    this.world.pause();
   }
 
   protected render(): TemplateResult {

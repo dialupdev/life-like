@@ -56,9 +56,6 @@ world.renderBeforeFirstTick();
 
 const controls = document.createElement("x-controls");
 controls.world = world;
-controls.addEventListener("tick", world.tick.bind(world));
-controls.addEventListener("play", world.play.bind(world));
-controls.addEventListener("pause", world.pause.bind(world));
 
 document.body.appendChild(controls);
 document.body.appendChild(canvas);
