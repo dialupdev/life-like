@@ -1,9 +1,10 @@
-import { LitElement, TemplateResult, html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { MobxLitElement } from "@adobe/lit-mobx";
+import { TemplateResult, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import World from "../game/World";
 
 @customElement("x-controls")
-class Controls extends LitElement {
+class Controls extends MobxLitElement {
   static styles = css`
     :host {
       display: block;
@@ -16,20 +17,15 @@ class Controls extends LitElement {
   @property()
   public world: World;
 
-  @state()
-  private _isPlaying = false;
-
   private _handleTick(): void {
     this.world.tick();
   }
 
   private _handlePlay(): void {
-    this._isPlaying = true;
     this.world.play();
   }
 
   private _handlePause(): void {
-    this._isPlaying = false;
     this.world.pause();
   }
 
@@ -37,8 +33,8 @@ class Controls extends LitElement {
     return html`
       <div class="buttons">
         <button @click="${this._handleTick}">Tick</button>
-        <button @click="${this._isPlaying ? this._handlePause : this._handlePlay}">
-          ${this._isPlaying ? "Pause" : "Play"}
+        <button @click="${this.world.isPlaying ? this._handlePause : this._handlePlay}">
+          ${this.world.isPlaying ? "Pause" : "Play"}
         </button>
       </div>
     `;

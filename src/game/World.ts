@@ -1,10 +1,9 @@
+import { observable, makeObservable, action } from "mobx";
 import Cell from "./Cell";
 import type { System } from "./systems/System";
 import RenderSystem from "./systems/RenderSystem";
 
 export default class World {
-  private _isPlaying: boolean = false;
-
   private _systems: System[] = [];
 
   // If JS had a way to hash entities for comparison within a Set,
@@ -15,6 +14,20 @@ export default class World {
   public neighborCounts = new Map<string, number>();
 
   public ticks = 0;
+
+  @observable
+  public isPlaying: boolean = false;
+
+  constructor() {
+    makeObservable(this);
+  }
+
+  private _autoTick() {
+    if (this.isPlaying) {
+      this.tick();
+      requestAnimationFrame(this._autoTick.bind(this));
+    }
+  }
 
   private _incrementNeighborCount(cell: Cell): void {
     const neighborCount = this.neighborCounts.get(cell.hash());
@@ -74,20 +87,14 @@ export default class World {
     }
   }
 
+  @action
   public play(): void {
-    this._isPlaying = true;
-
-    const autoTick = () => {
-      if (this._isPlaying) {
-        this.tick();
-        requestAnimationFrame(autoTick);
-      }
-    };
-
-    requestAnimationFrame(autoTick);
+    this.isPlaying = true;
+    requestAnimationFrame(this._autoTick.bind(this));
   }
 
+  @action
   public pause(): void {
-    this._isPlaying = false;
+    this.isPlaying = false;
   }
 }
