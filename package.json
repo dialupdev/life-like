@@ -1,7 +1,7 @@
 {
-  "name": "conways-game-of-life",
+  "name": "life-like",
   "version": "0.1.0",
-  "description": "Conway's Game of Life",
+  "description": "Life-like",
   "private": true,
   "author": "Steve Davis <steve@celery.club>",
   "license": "MIT",

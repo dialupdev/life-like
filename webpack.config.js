@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Conway's Game of Life",
+      title: "Life-like",
     }),
   ],
   devServer: {
