@@ -1,6 +1,4 @@
 import World from "./game/World";
-import LifecycleSystem from "./game/systems/LifecycleSystem";
-import RenderSystem from "./game/systems/RenderSystem";
 import "./components/x-controls";
 
 // Device pixel ratio
@@ -30,7 +28,13 @@ canvas.setAttribute(
 );
 const ctx = canvas.getContext("2d");
 
-const world = new World();
+const world = new World(ctx, {
+  CELL_SIZE_PIXELS,
+  GRID_WIDTH,
+  GRID_HEIGHT,
+  GRID_WIDTH_PIXELS,
+  GRID_HEIGHT_PIXELS,
+});
 
 // Randomized grid
 for (let x = 0; x < GRID_WIDTH; x++) {
@@ -40,17 +44,6 @@ for (let x = 0; x < GRID_WIDTH; x++) {
     }
   }
 }
-
-world.registerSystem(new LifecycleSystem(world));
-world.registerSystem(
-  new RenderSystem(world, ctx, {
-    CELL_SIZE_PIXELS,
-    GRID_WIDTH,
-    GRID_HEIGHT,
-    GRID_WIDTH_PIXELS,
-    GRID_HEIGHT_PIXELS,
-  })
-);
 
 world.renderBeforeFirstTick();
 

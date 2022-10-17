@@ -1,10 +1,11 @@
 import { observable, makeObservable, action } from "mobx";
 import Cell from "./Cell";
-import type { System } from "./systems/System";
-import RenderSystem from "./systems/RenderSystem";
+import LifecycleSystem from "./systems/LifecycleSystem";
+import RenderSystem, { RenderConstants } from "./systems/RenderSystem";
 
 export default class World {
-  private _systems: System[] = [];
+  private _lifecycleSystem: LifecycleSystem;
+  private _renderSystem: RenderSystem;
 
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
@@ -18,7 +19,10 @@ export default class World {
   @observable
   public isPlaying: boolean = false;
 
-  constructor() {
+  constructor(ctx: CanvasRenderingContext2D, constants: RenderConstants) {
+    this._lifecycleSystem = new LifecycleSystem(this);
+    this._renderSystem = new RenderSystem(this, ctx, constants);
+
     makeObservable(this);
   }
 
@@ -67,24 +71,19 @@ export default class World {
     return cell;
   }
 
-  public registerSystem(system: any): void {
-    this._systems.push(system);
-  }
-
   public renderBeforeFirstTick(): void {
     if (this.ticks > 0) {
       return;
     }
 
-    this._systems.find(system => system instanceof RenderSystem)?.tick();
+    this._renderSystem.tick();
   }
 
   public tick(): void {
     this.ticks++;
 
-    for (const system of this._systems) {
-      system.tick();
-    }
+    this._lifecycleSystem.tick();
+    this._renderSystem.tick();
   }
 
   @action

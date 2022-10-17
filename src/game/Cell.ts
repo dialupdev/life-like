@@ -17,7 +17,7 @@ export default class Cell {
   }
 
   public generateNeighbors(): Set<Cell> {
-    return new Set<Cell>([
+    return new Set([
       new Cell(this.x - 1, this.y - 1),
       new Cell(this.x - 1, this.y),
       new Cell(this.x - 1, this.y + 1),

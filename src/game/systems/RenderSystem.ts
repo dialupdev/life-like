@@ -1,7 +1,7 @@
 import World from "../World";
 import type { System } from "./System";
 
-interface SizeConstants {
+export interface RenderConstants {
   CELL_SIZE_PIXELS: number;
   GRID_WIDTH: number;
   GRID_HEIGHT: number;
@@ -12,9 +12,9 @@ interface SizeConstants {
 export default class RenderSystem implements System {
   private _world: World;
   private _ctx: CanvasRenderingContext2D;
-  private _constants: SizeConstants;
+  private _constants: RenderConstants;
 
-  constructor(world: World, ctx: CanvasRenderingContext2D, constants: SizeConstants) {
+  constructor(world: World, ctx: CanvasRenderingContext2D, constants: RenderConstants) {
     this._world = world;
     this._ctx = ctx;
     this._constants = constants;
