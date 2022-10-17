@@ -2,8 +2,10 @@ import { observable, makeObservable, action } from "mobx";
 import Cell from "./Cell";
 import LifecycleSystem from "./systems/LifecycleSystem";
 import RenderSystem, { RenderConstants } from "./systems/RenderSystem";
+import { downloadImageFromBase64 } from "../utils/DownloadUtils";
 
 export default class World {
+  private _canvas: HTMLCanvasElement;
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;
 
@@ -19,9 +21,10 @@ export default class World {
   @observable
   public isPlaying: boolean = false;
 
-  constructor(ctx: CanvasRenderingContext2D, constants: RenderConstants) {
+  constructor(canvas: HTMLCanvasElement, constants: RenderConstants) {
+    this._canvas = canvas;
     this._lifecycleSystem = new LifecycleSystem(this);
-    this._renderSystem = new RenderSystem(this, ctx, constants);
+    this._renderSystem = new RenderSystem(this, canvas.getContext("2d"), constants);
 
     makeObservable(this);
   }
@@ -95,5 +98,10 @@ export default class World {
   @action
   public pause(): void {
     this.isPlaying = false;
+  }
+
+  public downloadImage(): void {
+    const base64Data = this._canvas.toDataURL("image/png");
+    downloadImageFromBase64(base64Data, `life-like-${this.ticks}.png`);
   }
 }

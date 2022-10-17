@@ -26,9 +26,8 @@ canvas.setAttribute(
     width: ${GRID_WIDTH_PIXELS / PIXEL_RATIO}px;
   `
 );
-const ctx = canvas.getContext("2d");
 
-const world = new World(ctx, {
+const world = new World(canvas, {
   CELL_SIZE_PIXELS,
   GRID_WIDTH,
   GRID_HEIGHT,
