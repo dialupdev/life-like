@@ -32,7 +32,7 @@ class Controls extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <div class="buttons">
-        <button @click="${this._handleTick}">Tick</button>
+        <button @click="${this._handleTick}" ?disabled=${this.world.isPlaying}>Tick</button>
         <button @click="${this.world.isPlaying ? this._handlePause : this._handlePlay}">
           ${this.world.isPlaying ? "Pause" : "Play"}
         </button>
