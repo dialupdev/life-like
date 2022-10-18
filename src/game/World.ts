@@ -2,6 +2,7 @@ import { observable, makeObservable, action } from "mobx";
 import Cell from "./Cell";
 import LifecycleSystem from "./systems/LifecycleSystem";
 import RenderSystem, { RenderConstants } from "./systems/RenderSystem";
+import { Rule } from "./Rules";
 import { downloadImageFromBase64 } from "../utils/DownloadUtils";
 
 export default class World {
@@ -21,9 +22,9 @@ export default class World {
   @observable
   public isPlaying: boolean = false;
 
-  constructor(canvas: HTMLCanvasElement, constants: RenderConstants) {
+  constructor(rule: Rule, canvas: HTMLCanvasElement, constants: RenderConstants) {
     this._canvas = canvas;
-    this._lifecycleSystem = new LifecycleSystem(this);
+    this._lifecycleSystem = new LifecycleSystem(this, rule);
     this._renderSystem = new RenderSystem(this, canvas.getContext("2d"), constants);
 
     makeObservable(this);

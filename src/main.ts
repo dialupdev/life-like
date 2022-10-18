@@ -1,4 +1,5 @@
 import World from "./game/World";
+import { Rule } from "./game/Rules";
 import "./components/x-controls";
 
 // Device pixel ratio
@@ -27,7 +28,7 @@ canvas.setAttribute(
   `
 );
 
-const world = new World(canvas, {
+const world = new World(Rule.life, canvas, {
   CELL_SIZE_PIXELS,
   GRID_WIDTH,
   GRID_HEIGHT,
