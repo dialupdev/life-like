@@ -29,6 +29,10 @@ class Controls extends MobxLitElement {
     this.world.pause();
   }
 
+  private _handleReset(): void {
+    this.world.reset();
+  }
+
   private _handleDownloadImage(): void {
     this.world.downloadImage();
   }
@@ -42,6 +46,7 @@ class Controls extends MobxLitElement {
         </button>
       </div>
       <div class="buttons">
+        <button @click="${this._handleReset}" ?disabled=${this.world.isPlaying}>Reset</button>
         <button @click="${this._handleDownloadImage}" ?disabled=${this.world.isPlaying}>Download image</button>
       </div>
     `;

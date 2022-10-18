@@ -9,15 +9,16 @@ export default class World {
   private _canvas: HTMLCanvasElement;
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;
+  private _constants: RenderConstants;
 
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
-  public cells = new Map<string, Cell>();
+  public cells: Map<string, Cell>;
   // Same here - if we could, we would use Cell as the Map key,
   // which would remove the need for Cell.fromHash().
-  public neighborCounts = new Map<string, number>();
+  public neighborCounts: Map<string, number>;
 
-  public ticks = 0;
+  public ticks: number;
 
   @observable
   public isPlaying: boolean = false;
@@ -26,8 +27,18 @@ export default class World {
     this._canvas = canvas;
     this._lifecycleSystem = new LifecycleSystem(this, rule);
     this._renderSystem = new RenderSystem(this, canvas.getContext("2d"), constants);
+    this._constants = constants;
+
+    this.reset();
 
     makeObservable(this);
+  }
+
+  private _createCell(x: number, y: number): Cell {
+    const cell = new Cell(x, y);
+    this.spawn(cell);
+
+    return cell;
   }
 
   private _autoTick() {
@@ -68,21 +79,6 @@ export default class World {
     this.cells.delete(cell.hash());
   }
 
-  public createCell(x: number, y: number): Cell {
-    const cell = new Cell(x, y);
-    this.spawn(cell);
-
-    return cell;
-  }
-
-  public renderBeforeFirstTick(): void {
-    if (this.ticks > 0) {
-      return;
-    }
-
-    this._renderSystem.tick();
-  }
-
   public tick(): void {
     this.ticks++;
 
@@ -99,6 +95,23 @@ export default class World {
   @action
   public pause(): void {
     this.isPlaying = false;
+  }
+
+  public reset(): void {
+    this.ticks = 0;
+    this.cells = new Map<string, Cell>();
+    this.neighborCounts = new Map<string, number>();
+
+    // Randomized grid
+    for (let x = 0; x < this._constants.GRID_WIDTH; x++) {
+      for (let y = 0; y < this._constants.GRID_HEIGHT; y++) {
+        if (Math.random() < 0.5) {
+          this._createCell(x, y);
+        }
+      }
+    }
+
+    this._renderSystem.tick();
   }
 
   public downloadImage(): void {

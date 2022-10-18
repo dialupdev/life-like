@@ -36,17 +36,6 @@ const world = new World(Rule.life, canvas, {
   GRID_HEIGHT_PIXELS,
 });
 
-// Randomized grid
-for (let x = 0; x < GRID_WIDTH; x++) {
-  for (let y = 0; y < GRID_HEIGHT; y++) {
-    if (Math.random() < 0.5) {
-      world.createCell(x, y);
-    }
-  }
-}
-
-world.renderBeforeFirstTick();
-
 const controls = document.createElement("x-controls");
 controls.world = world;
 
