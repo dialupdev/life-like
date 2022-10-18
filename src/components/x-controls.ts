@@ -2,6 +2,7 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import World from "../game/World";
+import { Rule } from "../game/Rules";
 
 @customElement("x-controls")
 class Controls extends MobxLitElement {
@@ -29,6 +30,11 @@ class Controls extends MobxLitElement {
     this.world.pause();
   }
 
+  private _handleRuleChange(event: Event): void {
+    const rule = (event.target as HTMLSelectElement).value as Rule;
+    this.world.setRule(rule);
+  }
+
   private _handleReset(): void {
     this.world.reset();
   }
@@ -40,13 +46,23 @@ class Controls extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <div class="buttons">
+        <label>
+          Rule
+          <select @change=${this._handleRuleChange}>
+            ${Object.entries(Rule).map(([ruleName, rule]) => {
+              return html`<option value=${rule} ?selected=${this.world.rule === rule}>${ruleName}</option>`;
+            })}
+          </select>
+        </label>
+        <button @click="${this._handleReset}" ?disabled=${this.world.isPlaying}>Reset</button>
+      </div>
+      <div class="buttons">
         <button @click="${this._handleTick}" ?disabled=${this.world.isPlaying}>Tick</button>
         <button @click="${this.world.isPlaying ? this._handlePause : this._handlePlay}">
           ${this.world.isPlaying ? "Pause" : "Play"}
         </button>
       </div>
       <div class="buttons">
-        <button @click="${this._handleReset}" ?disabled=${this.world.isPlaying}>Reset</button>
         <button @click="${this._handleDownloadImage}" ?disabled=${this.world.isPlaying}>Download image</button>
       </div>
     `;

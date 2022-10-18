@@ -3,6 +3,7 @@ import Cell from "./Cell";
 import LifecycleSystem from "./systems/LifecycleSystem";
 import RenderSystem, { RenderConstants } from "./systems/RenderSystem";
 import { Rule } from "./Rules";
+import { parseRule } from "../utils/RuleUtils";
 import { downloadImageFromBase64 } from "../utils/DownloadUtils";
 
 export default class World {
@@ -10,6 +11,9 @@ export default class World {
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;
   private _constants: RenderConstants;
+
+  public birthRule: Set<number>;
+  public survivalRule: Set<number>;
 
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
@@ -21,14 +25,18 @@ export default class World {
   public ticks: number;
 
   @observable
+  public rule: Rule;
+
+  @observable
   public isPlaying: boolean = false;
 
-  constructor(rule: Rule, canvas: HTMLCanvasElement, constants: RenderConstants) {
+  constructor(canvas: HTMLCanvasElement, constants: RenderConstants) {
     this._canvas = canvas;
-    this._lifecycleSystem = new LifecycleSystem(this, rule);
+    this._lifecycleSystem = new LifecycleSystem(this);
     this._renderSystem = new RenderSystem(this, canvas.getContext("2d"), constants);
     this._constants = constants;
 
+    this.setRule(Rule.life);
     this.reset();
 
     makeObservable(this);
@@ -95,6 +103,13 @@ export default class World {
   @action
   public pause(): void {
     this.isPlaying = false;
+  }
+
+  @action
+  public setRule(rule: Rule): void {
+    this.rule = rule;
+
+    [this.birthRule, this.survivalRule] = parseRule(rule);
   }
 
   public reset(): void {

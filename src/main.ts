@@ -28,7 +28,7 @@ canvas.setAttribute(
   `
 );
 
-const world = new World(Rule.life, canvas, {
+const world = new World(canvas, {
   CELL_SIZE_PIXELS,
   GRID_WIDTH,
   GRID_HEIGHT,

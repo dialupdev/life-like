@@ -1,4 +1,5 @@
 // https://en.wikipedia.org/wiki/Life-like_cellular_automaton
+// http://www.mirekw.com/ca/rullex_life.html
 export enum Rule {
   coral = "B3/S45678",
   dayAndNight = "B3678/S34678",
