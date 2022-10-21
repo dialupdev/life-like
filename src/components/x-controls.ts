@@ -35,6 +35,11 @@ class Controls extends MobxLitElement {
     this.world.setRule(rule);
   }
 
+  private _handleShowGridLineChange(event: Event): void {
+    const showGridLines = (event.target as HTMLInputElement).checked;
+    this.world.setShowGridLines(showGridLines);
+  }
+
   private _handleReset(): void {
     this.world.reset();
   }
@@ -53,6 +58,10 @@ class Controls extends MobxLitElement {
               return html`<option value=${rule} ?selected=${this.world.rule === rule}>${ruleName}</option>`;
             })}
           </select>
+        </label>
+        <label>
+          <input type="checkbox" ?checked=${this.world.showGridLines} @change=${this._handleShowGridLineChange} />
+          Show grid lines
         </label>
         <button @click="${this._handleReset}" ?disabled=${this.world.isPlaying}>Reset</button>
       </div>

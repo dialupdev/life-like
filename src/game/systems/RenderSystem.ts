@@ -63,7 +63,10 @@ export default class RenderSystem implements System {
 
   public tick(): void {
     this._clearBoard();
-    this._drawGridLines();
+
+    if (this._world.showGridLines) {
+      this._drawGridLines();
+    }
 
     let minX = 0;
     let maxX = 0;

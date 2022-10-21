@@ -28,6 +28,9 @@ export default class World {
   public rule: Rule;
 
   @observable
+  public showGridLines: boolean = true;
+
+  @observable
   public isPlaying: boolean = false;
 
   constructor(canvas: HTMLCanvasElement, constants: RenderConstants) {
@@ -110,6 +113,13 @@ export default class World {
     this.rule = rule;
 
     [this.birthRule, this.survivalRule] = parseRule(rule);
+  }
+
+  @action
+  public setShowGridLines(showGridLines: boolean): void {
+    this.showGridLines = showGridLines;
+
+    this._renderSystem.tick();
   }
 
   public reset(): void {

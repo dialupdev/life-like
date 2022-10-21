@@ -1,5 +1,4 @@
 import World from "./game/World";
-import { Rule } from "./game/Rules";
 import "./components/x-controls";
 
 // Device pixel ratio
