@@ -45,49 +45,11 @@ export default class World {
     makeObservable(this);
   }
 
-  private _createCell(x: number, y: number): Cell {
-    const cell = new Cell(x, y);
-    this.spawn(cell);
-
-    return cell;
-  }
-
   private _autoTick() {
     if (this.isPlaying) {
       this.tick();
       requestAnimationFrame(this._autoTick.bind(this));
     }
-  }
-
-  private _incrementNeighborCount(cell: Cell): void {
-    const neighborCount = this.neighborCounts.get(cell.hash());
-    this.neighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
-  }
-
-  private _decrementNeighborCount(cell: Cell): void {
-    const neighborCountMinusOne = this.neighborCounts.get(cell.hash()) - 1;
-
-    if (neighborCountMinusOne === 0) {
-      this.neighborCounts.delete(cell.hash());
-    } else {
-      this.neighborCounts.set(cell.hash(), neighborCountMinusOne);
-    }
-  }
-
-  public spawn(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._incrementNeighborCount(neighbor);
-    }
-
-    this.cells.set(cell.hash(), cell);
-  }
-
-  public kill(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._decrementNeighborCount(neighbor);
-    }
-
-    this.cells.delete(cell.hash());
   }
 
   public tick(): void {
@@ -131,7 +93,7 @@ export default class World {
     for (let x = 0; x < this._constants.GRID_WIDTH; x++) {
       for (let y = 0; y < this._constants.GRID_HEIGHT; y++) {
         if (Math.random() < 0.5) {
-          this._createCell(x, y);
+          this._lifecycleSystem.spawn(new Cell(x, y));
         }
       }
     }
