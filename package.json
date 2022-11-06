@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.0.0",
-    "lit": "^2.4.0",
+    "lit": "^2.4.1",
     "mobx": "^6.6.2"
   },
   "devDependencies": {
