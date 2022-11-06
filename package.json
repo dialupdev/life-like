@@ -6,7 +6,7 @@
   "author": "Steve Davis <steve@celery.club>",
   "license": "MIT",
   "engines": {
-    "node": "16.x"
+    "node": "^18"
   },
   "scripts": {
     "watch": "webpack serve --mode=development",
