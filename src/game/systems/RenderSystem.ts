@@ -1,67 +1,83 @@
-import World from "../World";
+import WorldStore from "../stores/WorldStore";
+import ConfigStore from "../stores/ConfigStore";
+import DimensionsStore from "../stores/DimensionsStore";
 import type { System } from "./System";
 
-export interface RenderConstants {
-  CELL_SIZE_PIXELS: number;
-  GRID_WIDTH: number;
-  GRID_HEIGHT: number;
-  GRID_WIDTH_PIXELS: number;
-  GRID_HEIGHT_PIXELS: number;
-}
-
 export default class RenderSystem implements System {
-  private _world: World;
-  private _ctx: CanvasRenderingContext2D;
-  private _constants: RenderConstants;
+  private _worldStore: WorldStore;
+  private _configStore: ConfigStore;
+  private _dimensionsStore: DimensionsStore;
+  private _context: CanvasRenderingContext2D;
 
-  constructor(world: World, ctx: CanvasRenderingContext2D, constants: RenderConstants) {
-    this._world = world;
-    this._ctx = ctx;
-    this._constants = constants;
+  constructor(
+    worldStore: WorldStore,
+    configStore: ConfigStore,
+    dimensionsStore: DimensionsStore,
+    context: CanvasRenderingContext2D
+  ) {
+    this._worldStore = worldStore;
+    this._configStore = configStore;
+    this._dimensionsStore = dimensionsStore;
+    this._context = context;
 
-    this._ctx.strokeStyle = "#eee";
-    this._ctx.textBaseline = "top";
-    this._ctx.font = "22px monospace";
+    this._context.strokeStyle = "#eee";
+    this._context.textBaseline = "top";
+    this._context.font = "22px monospace";
   }
 
   private _clearBoard(): void {
-    this._ctx.clearRect(0, 0, this._constants.GRID_WIDTH_PIXELS, this._constants.GRID_HEIGHT_PIXELS);
+    this._context.clearRect(
+      0,
+      0,
+      this._dimensionsStore.gridWidth * this._dimensionsStore.cellSize,
+      this._dimensionsStore.gridHeight * this._dimensionsStore.cellSize
+    );
   }
 
   private _drawGridLines(): void {
     // Horizontal grid lines
-    for (let i = 1; i < this._constants.GRID_HEIGHT; i++) {
-      this._ctx.beginPath();
-      this._ctx.moveTo(0, i * this._constants.CELL_SIZE_PIXELS);
-      this._ctx.lineTo(this._constants.GRID_WIDTH_PIXELS, i * this._constants.CELL_SIZE_PIXELS);
-      this._ctx.stroke();
+    for (let i = 1; i < this._dimensionsStore.gridHeight; i++) {
+      this._context.beginPath();
+      this._context.moveTo(0, i * this._dimensionsStore.cellSize);
+      this._context.lineTo(
+        this._dimensionsStore.gridWidth * this._dimensionsStore.cellSize,
+        i * this._dimensionsStore.cellSize
+      );
+      this._context.stroke();
     }
 
     // Vertical grid lines
-    for (let i = 1; i < this._constants.GRID_WIDTH; i++) {
-      this._ctx.beginPath();
-      this._ctx.moveTo(i * this._constants.CELL_SIZE_PIXELS, 0);
-      this._ctx.lineTo(i * this._constants.CELL_SIZE_PIXELS, this._constants.GRID_HEIGHT_PIXELS);
-      this._ctx.stroke();
+    for (let i = 1; i < this._dimensionsStore.gridWidth; i++) {
+      this._context.beginPath();
+      this._context.moveTo(i * this._dimensionsStore.cellSize, 0);
+      this._context.lineTo(
+        i * this._dimensionsStore.cellSize,
+        this._dimensionsStore.gridHeight * this._dimensionsStore.cellSize
+      );
+      this._context.stroke();
     }
   }
 
   private _drawCell(x: number, y: number): void {
-    const pixelX = x * this._constants.CELL_SIZE_PIXELS;
-    const pixelY = y * this._constants.CELL_SIZE_PIXELS;
-    this._ctx.fillStyle = "rgb(120, 130, 210)";
-    this._ctx.fillRect(pixelX, pixelY, this._constants.CELL_SIZE_PIXELS, this._constants.CELL_SIZE_PIXELS);
+    this._context.fillStyle = "rgb(10, 90, 70)";
+    this._context.fillRect(
+      this._dimensionsStore.cellSize * x,
+      this._dimensionsStore.cellSize * y,
+      this._dimensionsStore.cellSize,
+      this._dimensionsStore.cellSize
+    );
   }
 
-  private _printInfo(minX: number, maxX: number, minY: number, maxY: number): void {
-    this._ctx.fillStyle = "black";
-    this._ctx.fillText(`Ticks: ${this._world.ticks}`, 0, 0);
-    this._ctx.fillText(`Cells: ${this._world.cells.size}`, 0, 22);
-    this._ctx.fillText(`Horizontal bounds: ${minX}, ${maxX}`, 0, 44);
-    this._ctx.fillText(`Vertical bounds: ${minY}, ${maxY}`, 0, 66);
+  private _printInfo(ticks: number, minX: number, maxX: number, minY: number, maxY: number): void {
+    this._context.fillStyle = "black";
+    this._context.fillText(`Rule: ${this._configStore.rule}`, 0, 0);
+    this._context.fillText(`Ticks: ${ticks}`, 0, 22);
+    this._context.fillText(`Cells: ${this._worldStore.cells.size}`, 0, 44);
+    this._context.fillText(`Horizontal bounds: ${minX}, ${maxX}`, 0, 66);
+    this._context.fillText(`Vertical bounds: ${minY}, ${maxY}`, 0, 88);
   }
 
-  public tick(): void {
+  public tick(ticks: number): void {
     this._clearBoard();
     this._drawGridLines();
 
@@ -70,7 +86,7 @@ export default class RenderSystem implements System {
     let minY = 0;
     let maxY = 0;
 
-    for (const cell of this._world.cells.values()) {
+    for (const cell of this._worldStore.cells.values()) {
       this._drawCell(cell.x, cell.y);
 
       minX = Math.min(minX, cell.x);
@@ -79,6 +95,6 @@ export default class RenderSystem implements System {
       maxY = Math.max(maxY, cell.y);
     }
 
-    this._printInfo(minX, maxX, minY, maxY);
+    this._printInfo(ticks, minX, maxX, minY, maxY);
   }
 }
