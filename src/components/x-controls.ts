@@ -44,10 +44,6 @@ class Controls extends MobxLitElement {
     this.world.reset();
   }
 
-  private _handleDownloadImage(): void {
-    this.world.downloadImage();
-  }
-
   protected render(): TemplateResult {
     return html`
       <div class="buttons">
@@ -70,9 +66,6 @@ class Controls extends MobxLitElement {
         <button @click="${this.world.isPlaying ? this._handlePause : this._handlePlay}">
           ${this.world.isPlaying ? "Pause" : "Play"}
         </button>
-      </div>
-      <div class="buttons">
-        <button @click="${this._handleDownloadImage}" ?disabled=${this.world.isPlaying}>Download image</button>
       </div>
     `;
   }

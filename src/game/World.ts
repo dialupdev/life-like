@@ -4,7 +4,6 @@ import LifecycleSystem from "./systems/LifecycleSystem";
 import RenderSystem, { RenderConstants } from "./systems/RenderSystem";
 import { Rule } from "./Rules";
 import { parseRule } from "../utils/RuleUtils";
-import { downloadImageFromBase64 } from "../utils/DownloadUtils";
 
 export default class World {
   private _canvas: HTMLCanvasElement;
@@ -99,10 +98,5 @@ export default class World {
     }
 
     this._renderSystem.tick();
-  }
-
-  public downloadImage(): void {
-    const base64Data = this._canvas.toDataURL("image/png");
-    downloadImageFromBase64(base64Data, `life-like-${this.ticks}.png`);
   }
 }
