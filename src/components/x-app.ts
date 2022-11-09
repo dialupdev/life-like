@@ -53,7 +53,7 @@ class App extends LitElement {
     for (let x = 0; x < this._dimensionsStore.gridWidth; x++) {
       for (let y = 0; y < this._dimensionsStore.gridHeight; y++) {
         if (Math.random() < 0.5) {
-          this._lifecycleSystem.spawn(new Cell(x, y));
+          this._worldStore.spawn(new Cell(x, y));
         }
       }
     }
