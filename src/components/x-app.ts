@@ -13,6 +13,7 @@ class App extends LitElement {
   static styles = css`
     :host {
       display: block;
+      height: 100vh;
     }
     canvas {
       border: 1px solid #eee;

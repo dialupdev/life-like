@@ -16,7 +16,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Life-like",
+      template: "./src/index.html",
     }),
   ],
   devServer: {
