@@ -16,7 +16,8 @@ export default class RenderSystem implements System {
   }
 
   private _clear(): void {
-    this._context.clearRect(0, 0, this._context.canvas.width, this._context.canvas.height);
+    this._context.fillStyle = "#fff";
+    this._context.fillRect(0, 0, this._context.canvas.width, this._context.canvas.height);
   }
 
   private _drawCell(x: number, y: number): void {

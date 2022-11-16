@@ -102,7 +102,7 @@ class App extends LitElement {
 
   firstUpdated() {
     this._lifecycleSystem = new LifecycleSystem(this._worldStore, this._configStore);
-    this._renderSystem = new RenderSystem(this._worldStore, this._canvas.getContext("2d"));
+    this._renderSystem = new RenderSystem(this._worldStore, this._canvas.getContext("2d", { alpha: false }));
 
     this._dimensionsController = new DimensionsController(this._renderSystem, this._canvas);
     this._dimensionsController.listen();
