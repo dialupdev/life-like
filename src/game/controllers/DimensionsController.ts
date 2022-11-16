@@ -1,7 +1,6 @@
 import throttle from "lodash.throttle";
+import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
 import RenderSystem from "../systems/RenderSystem";
-
-export const SIDEBAR_WIDTH = 280;
 
 export default class DimensionsController {
   private _renderSystem: RenderSystem;
@@ -14,15 +13,24 @@ export default class DimensionsController {
     this._calculateCanvasSize = this._calculateCanvasSize.bind(this);
   }
 
+  private _setCanvasSize(width: number, height: number): void {
+    // Increase the pixel density of the canvas to match the device
+    this._canvas.width = Math.round(PIXEL_RATIO * width);
+    this._canvas.height = Math.round(PIXEL_RATIO * height);
+
+    this._canvas.style.width = `${width}px`;
+    this._canvas.style.height = `${height}px`;
+  }
+
   private _calculateCanvasSizeAndDefaultOffset(): void {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
 
-    this._canvas.width = width;
-    this._canvas.height = height;
+    this._setCanvasSize(width, height);
 
-    const x = Math.round(this._canvas.width / 2);
-    const y = Math.round(this._canvas.height / 2);
+    const cellSize = this._renderSystem.getCellSize();
+    const x = Math.round((width - cellSize) / 2);
+    const y = Math.round((height - cellSize) / 2);
 
     this._renderSystem.translateOffset(x, y);
   }
@@ -31,9 +39,7 @@ export default class DimensionsController {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
 
-    this._canvas.width = width;
-    this._canvas.height = height;
-
+    this._setCanvasSize(width, height);
     this._renderSystem.tick();
   }
 

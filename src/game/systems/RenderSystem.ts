@@ -1,5 +1,6 @@
-import WorldStore from "../stores/WorldStore";
+import { PIXEL_RATIO } from "../../Constants";
 import type { System } from "./System";
+import WorldStore from "../stores/WorldStore";
 
 export default class RenderSystem implements System {
   private _worldStore: WorldStore;
@@ -21,16 +22,20 @@ export default class RenderSystem implements System {
   private _drawCell(x: number, y: number): void {
     this._context.fillStyle = "rgb(10, 90, 70)";
     this._context.fillRect(
-      this._cellSize * x + this._offsetX,
-      this._cellSize * y + this._offsetY,
-      this._cellSize,
-      this._cellSize
+      PIXEL_RATIO * this._cellSize * x + this._offsetX,
+      PIXEL_RATIO * this._cellSize * y + this._offsetY,
+      PIXEL_RATIO * this._cellSize,
+      PIXEL_RATIO * this._cellSize
     );
   }
 
+  public getCellSize(): number {
+    return this._cellSize;
+  }
+
   public translateOffset(deltaX: number, deltaY: number): void {
-    this._offsetX += deltaX;
-    this._offsetY += deltaY;
+    this._offsetX += PIXEL_RATIO * deltaX;
+    this._offsetY += PIXEL_RATIO * deltaY;
   }
 
   public tick(): void {

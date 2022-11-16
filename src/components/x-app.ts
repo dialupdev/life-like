@@ -1,10 +1,11 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
+import { SIDEBAR_WIDTH } from "../Constants";
 import ConfigStore from "../game/stores/ConfigStore";
 import WorldStore from "../game/stores/WorldStore";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
-import DimensionsController, { SIDEBAR_WIDTH } from "../game/controllers/DimensionsController";
+import DimensionsController from "../game/controllers/DimensionsController";
 import Cell from "../game/Cell";
 import "./x-controls";
 
@@ -62,8 +63,9 @@ class App extends LitElement {
     this._worldStore.reset();
 
     // Randomized grid
-    for (let x = -20; x < 40; x++) {
-      for (let y = -20; y < 40; y++) {
+    for (let x = -20; x <= 20; x++) {
+      for (let y = -20; y <= 20; y++) {
+        // this._worldStore.spawn(new Cell(x, y));
         if (Math.random() < 0.5) {
           this._worldStore.spawn(new Cell(x, y));
         }
