@@ -59,13 +59,13 @@ class App extends LitElement {
       }
     }
 
-    this._renderSystem.tick(this._ticks);
+    this._renderSystem.tick();
   }
 
   private _tick(): void {
     this._ticks++;
     this._lifecycleSystem.tick();
-    this._renderSystem.tick(this._ticks);
+    this._renderSystem.tick();
   }
 
   private _tickRecursive = () => {
@@ -89,12 +89,7 @@ class App extends LitElement {
     this._canvas.style.height = `${this._dimensionsStore.gridDisplayHeight / devicePixelRatio}px`;
 
     this._lifecycleSystem = new LifecycleSystem(this._worldStore, this._configStore);
-    this._renderSystem = new RenderSystem(
-      this._worldStore,
-      this._configStore,
-      this._dimensionsStore,
-      this._canvas.getContext("2d")
-    );
+    this._renderSystem = new RenderSystem(this._worldStore, this._dimensionsStore, this._canvas.getContext("2d"));
 
     this._reset();
   }

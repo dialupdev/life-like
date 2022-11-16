@@ -1,22 +1,14 @@
 import WorldStore from "../stores/WorldStore";
-import ConfigStore from "../stores/ConfigStore";
 import DimensionsStore from "../stores/DimensionsStore";
 import type { System } from "./System";
 
 export default class RenderSystem implements System {
   private _worldStore: WorldStore;
-  private _configStore: ConfigStore;
   private _dimensionsStore: DimensionsStore;
   private _context: CanvasRenderingContext2D;
 
-  constructor(
-    worldStore: WorldStore,
-    configStore: ConfigStore,
-    dimensionsStore: DimensionsStore,
-    context: CanvasRenderingContext2D
-  ) {
+  constructor(worldStore: WorldStore, dimensionsStore: DimensionsStore, context: CanvasRenderingContext2D) {
     this._worldStore = worldStore;
-    this._configStore = configStore;
     this._dimensionsStore = dimensionsStore;
     this._context = context;
 
@@ -43,32 +35,11 @@ export default class RenderSystem implements System {
     );
   }
 
-  private _printInfo(ticks: number, minX: number, maxX: number, minY: number, maxY: number): void {
-    this._context.fillStyle = "black";
-    this._context.fillText(`Rule: ${this._configStore.rule}`, 0, 0);
-    this._context.fillText(`Ticks: ${ticks}`, 0, 22);
-    this._context.fillText(`Cells: ${this._worldStore.cells.size}`, 0, 44);
-    this._context.fillText(`Horizontal bounds: ${minX}, ${maxX}`, 0, 66);
-    this._context.fillText(`Vertical bounds: ${minY}, ${maxY}`, 0, 88);
-  }
-
-  public tick(ticks: number): void {
+  public tick(): void {
     this._clearBoard();
-
-    let minX = 0;
-    let maxX = 0;
-    let minY = 0;
-    let maxY = 0;
 
     for (const cell of this._worldStore.cells.values()) {
       this._drawCell(cell.x, cell.y);
-
-      minX = Math.min(minX, cell.x);
-      maxX = Math.max(maxX, cell.x);
-      minY = Math.min(minY, cell.y);
-      maxY = Math.max(maxY, cell.y);
     }
-
-    this._printInfo(ticks, minX, maxX, minY, maxY);
   }
 }
