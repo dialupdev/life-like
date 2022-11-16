@@ -33,6 +33,11 @@ export default class RenderSystem implements System {
     return this._cellSize;
   }
 
+  public setOffset(x: number, y: number): void {
+    this._offsetX = PIXEL_RATIO * x;
+    this._offsetY = PIXEL_RATIO * y;
+  }
+
   public translateOffset(deltaX: number, deltaY: number): void {
     this._offsetX += PIXEL_RATIO * deltaX;
     this._offsetY += PIXEL_RATIO * deltaY;

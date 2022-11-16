@@ -26,7 +26,10 @@ export default class DimensionsController {
     this._stopDrag = this._stopDrag.bind(this);
   }
 
-  private _setCanvasSize(width: number, height: number): void {
+  private _setCanvasSize(): void {
+    const width = window.innerWidth - SIDEBAR_WIDTH;
+    const height = window.innerHeight;
+
     // Increase the pixel density of the canvas to match the device
     this._canvas.width = Math.round(PIXEL_RATIO * width);
     this._canvas.height = Math.round(PIXEL_RATIO * height);
@@ -36,23 +39,12 @@ export default class DimensionsController {
   }
 
   private _calculateCanvasSizeAndDefaultOffset(): void {
-    const width = window.innerWidth - SIDEBAR_WIDTH;
-    const height = window.innerHeight;
-
-    this._setCanvasSize(width, height);
-
-    const cellSize = this._renderSystem.getCellSize();
-    const x = Math.round((width - cellSize) / 2);
-    const y = Math.round((height - cellSize) / 2);
-
-    this._renderSystem.translateOffset(x, y);
+    this._setCanvasSize();
+    this.recenterOffset();
   }
 
   private _calculateCanvasSize(): void {
-    const width = window.innerWidth - SIDEBAR_WIDTH;
-    const height = window.innerHeight;
-
-    this._setCanvasSize(width, height);
+    this._setCanvasSize();
     this._renderSystem.tick();
   }
 
@@ -99,9 +91,21 @@ export default class DimensionsController {
     this._renderSystem.tick();
   }
 
-  private _stopDrag(e: MouseEvent): void {
+  private _stopDrag(): void {
     document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._drag);
+  }
+
+  public recenterOffset(): void {
+    const width = window.innerWidth - SIDEBAR_WIDTH;
+    const height = window.innerHeight;
+
+    const cellSize = this._renderSystem.getCellSize();
+    const x = Math.round((width - cellSize) / 2);
+    const y = Math.round((height - cellSize) / 2);
+
+    this._renderSystem.setOffset(x, y);
+    this._renderSystem.tick();
   }
 
   public listen(): void {

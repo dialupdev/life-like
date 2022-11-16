@@ -21,3 +21,9 @@ export class ResetEvent extends Event {
     super("reset");
   }
 }
+
+export class RecenterEvent extends Event {
+  constructor() {
+    super("recenter");
+  }
+}

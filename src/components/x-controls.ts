@@ -1,7 +1,7 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import ConfigStore from "../game/stores/ConfigStore";
-import { TickEvent, PlayEvent, PauseEvent, ResetEvent } from "./events";
+import { TickEvent, PlayEvent, PauseEvent, ResetEvent, RecenterEvent } from "./events";
 import { Rule } from "../game/Rules";
 
 @customElement("x-controls")
@@ -41,6 +41,10 @@ class Controls extends LitElement {
     this.dispatchEvent(new ResetEvent());
   }
 
+  private _recenter(): void {
+    this.dispatchEvent(new RecenterEvent());
+  }
+
   private _changeRule(event: Event): void {
     const rule = (event.target as HTMLSelectElement).value as Rule;
     this.configStore.rule = rule;
@@ -62,6 +66,9 @@ class Controls extends LitElement {
       <div class="buttons">
         <button @click="${this._tick}" ?disabled=${this.playing}>Tick</button>
         <button @click="${this.playing ? this._pause : this._play}">${this.playing ? "Pause" : "Play"}</button>
+      </div>
+      <div class="buttons">
+        <button @click="${this._recenter}">Recenter</button>
       </div>
     `;
   }

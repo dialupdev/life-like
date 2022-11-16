@@ -65,14 +65,13 @@ class App extends LitElement {
     // Randomized grid
     for (let x = -20; x <= 20; x++) {
       for (let y = -20; y <= 20; y++) {
-        // this._worldStore.spawn(new Cell(x, y));
         if (Math.random() < 0.5) {
           this._worldStore.spawn(new Cell(x, y));
         }
       }
     }
 
-    this._renderSystem.tick();
+    this._dimensionsController.recenterOffset();
   }
 
   private _tick(): void {
@@ -97,6 +96,10 @@ class App extends LitElement {
     this._playing = false;
   }
 
+  private _recenter(): void {
+    this._dimensionsController.recenterOffset();
+  }
+
   firstUpdated() {
     this._lifecycleSystem = new LifecycleSystem(this._worldStore, this._configStore);
     this._renderSystem = new RenderSystem(this._worldStore, this._canvas.getContext("2d"));
@@ -116,6 +119,7 @@ class App extends LitElement {
         @play=${this._play}
         @pause=${this._pause}
         @reset=${this._reset}
+        @recenter=${this._recenter}
       ></x-controls>
       <canvas></canvas>
     </div>`;
