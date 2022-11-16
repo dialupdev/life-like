@@ -8,7 +8,11 @@ import { Rule } from "../game/Rules";
 class Controls extends LitElement {
   static styles = css`
     :host {
+      background: #f4f5f7;
+      border-right: 2px solid #ddd;
+      box-sizing: border-box;
       display: block;
+      padding: 20px;
     }
     .buttons {
       margin: 10px 0;

@@ -16,9 +16,11 @@
     "lint": "npm run tsc && npm run prettier"
   },
   "dependencies": {
-    "lit": "^2.4.1"
+    "lit": "^2.4.1",
+    "lodash.throttle": "^4.1.1"
   },
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.7",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.7.1",
     "ts-loader": "^9.4.1",

@@ -2,9 +2,9 @@ import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
 import ConfigStore from "../game/stores/ConfigStore";
 import WorldStore from "../game/stores/WorldStore";
-import DimensionsStore from "../game/stores/DimensionsStore";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
+import DimensionsController, { SIDEBAR_WIDTH } from "../game/controllers/DimensionsController";
 import Cell from "../game/Cell";
 import "./x-controls";
 
@@ -15,9 +15,19 @@ class App extends LitElement {
       display: block;
       height: 100vh;
     }
+    x-controls,
     canvas {
-      border: 1px solid #eee;
+      position: absolute;
+      top: 0;
+    }
+    x-controls {
+      height: 100vh;
+      left: 0;
+      width: ${SIDEBAR_WIDTH}px;
+    }
+    canvas {
       image-rendering: pixelated;
+      left: ${SIDEBAR_WIDTH}px;
     }
   `;
 
@@ -26,11 +36,13 @@ class App extends LitElement {
   // Stores
   private _configStore: ConfigStore;
   private _worldStore: WorldStore;
-  private _dimensionsStore: DimensionsStore;
 
   // Systems
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;
+
+  // Controllers
+  private _dimensionsController: DimensionsController;
 
   @state()
   private _playing = false;
@@ -43,7 +55,6 @@ class App extends LitElement {
 
     this._configStore = new ConfigStore();
     this._worldStore = new WorldStore();
-    this._dimensionsStore = new DimensionsStore();
   }
 
   private _reset(): void {
@@ -51,8 +62,8 @@ class App extends LitElement {
     this._worldStore.reset();
 
     // Randomized grid
-    for (let x = 0; x < this._dimensionsStore.gridWidth; x++) {
-      for (let y = 0; y < this._dimensionsStore.gridHeight; y++) {
+    for (let x = -20; x < 40; x++) {
+      for (let y = -20; y < 40; y++) {
         if (Math.random() < 0.5) {
           this._worldStore.spawn(new Cell(x, y));
         }
@@ -68,7 +79,7 @@ class App extends LitElement {
     this._renderSystem.tick();
   }
 
-  private _tickRecursive = () => {
+  private _tickRecursive = (): void => {
     if (this._playing) {
       this._tick();
       requestAnimationFrame(this._tickRecursive);
@@ -84,12 +95,12 @@ class App extends LitElement {
     this._playing = false;
   }
 
-  public firstUpdated() {
-    this._canvas.style.width = `${this._dimensionsStore.gridDisplayWidth / devicePixelRatio}px`;
-    this._canvas.style.height = `${this._dimensionsStore.gridDisplayHeight / devicePixelRatio}px`;
-
+  firstUpdated() {
     this._lifecycleSystem = new LifecycleSystem(this._worldStore, this._configStore);
-    this._renderSystem = new RenderSystem(this._worldStore, this._dimensionsStore, this._canvas.getContext("2d"));
+    this._renderSystem = new RenderSystem(this._worldStore, this._canvas.getContext("2d"));
+
+    this._dimensionsController = new DimensionsController(this._renderSystem, this._canvas);
+    this._dimensionsController.listen();
 
     this._reset();
   }
@@ -104,10 +115,7 @@ class App extends LitElement {
         @pause=${this._pause}
         @reset=${this._reset}
       ></x-controls>
-      <canvas
-        width=${this._dimensionsStore.gridDisplayWidth}
-        height=${this._dimensionsStore.gridDisplayHeight}
-      ></canvas>
+      <canvas></canvas>
     </div>`;
   }
 }
