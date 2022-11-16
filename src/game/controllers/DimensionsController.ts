@@ -2,15 +2,28 @@ import throttle from "lodash.throttle";
 import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
 import RenderSystem from "../systems/RenderSystem";
 
+export enum ArrowKeys {
+  ArrowUp = "ArrowUp",
+  ArrowRight = "ArrowRight",
+  ArrowDown = "ArrowDown",
+  ArrowLeft = "ArrowLeft",
+}
+
 export default class DimensionsController {
   private _renderSystem: RenderSystem;
   private _canvas: HTMLCanvasElement;
+  private _lastMouseX: number;
+  private _lastMouseY: number;
 
   constructor(renderSystem: RenderSystem, canvas: HTMLCanvasElement) {
     this._renderSystem = renderSystem;
     this._canvas = canvas;
 
     this._calculateCanvasSize = this._calculateCanvasSize.bind(this);
+    this._keyDown = this._keyDown.bind(this);
+    this._startDrag = this._startDrag.bind(this);
+    this._drag = this._drag.bind(this);
+    this._stopDrag = this._stopDrag.bind(this);
   }
 
   private _setCanvasSize(width: number, height: number): void {
@@ -43,11 +56,66 @@ export default class DimensionsController {
     this._renderSystem.tick();
   }
 
+  private _keyDown(e: KeyboardEvent): void {
+    const panIncrement = this._renderSystem.getCellSize() * 4;
+    let x = 0;
+    let y = 0;
+
+    switch (e.key) {
+      case ArrowKeys.ArrowUp:
+        y -= panIncrement;
+        break;
+      case ArrowKeys.ArrowRight:
+        x += panIncrement;
+        break;
+      case ArrowKeys.ArrowDown:
+        y += panIncrement;
+        break;
+      case ArrowKeys.ArrowLeft:
+        x -= panIncrement;
+        break;
+    }
+
+    this._renderSystem.translateOffset(x, y);
+    this._renderSystem.tick();
+  }
+
+  private _startDrag(e: MouseEvent): void {
+    this._lastMouseX = e.clientX;
+    this._lastMouseY = e.clientY;
+
+    document.body.style.setProperty("cursor", "grabbing");
+    window.addEventListener("mousemove", this._drag);
+  }
+
+  private _drag(e: MouseEvent): void {
+    const deltaX = e.clientX - this._lastMouseX;
+    const deltaY = e.clientY - this._lastMouseY;
+
+    this._lastMouseX = e.clientX;
+    this._lastMouseY = e.clientY;
+
+    this._renderSystem.translateOffset(deltaX, deltaY);
+    this._renderSystem.tick();
+  }
+
+  private _stopDrag(e: MouseEvent): void {
+    document.body.style.removeProperty("cursor");
+    window.removeEventListener("mousemove", this._drag);
+  }
+
   public listen(): void {
     // Initial setup
     this._calculateCanvasSizeAndDefaultOffset();
 
     // Resize events
     window.addEventListener("resize", throttle(this._calculateCanvasSize, 500));
+
+    // Keyboard events
+    window.addEventListener("keydown", this._keyDown);
+
+    // Mouse events
+    this._canvas.addEventListener("mousedown", this._startDrag);
+    window.addEventListener("mouseup", this._stopDrag);
   }
 }
