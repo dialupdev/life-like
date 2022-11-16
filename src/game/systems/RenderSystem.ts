@@ -20,7 +20,6 @@ export default class RenderSystem implements System {
     this._dimensionsStore = dimensionsStore;
     this._context = context;
 
-    this._context.strokeStyle = "#eee";
     this._context.textBaseline = "top";
     this._context.font = "22px monospace";
   }
@@ -32,30 +31,6 @@ export default class RenderSystem implements System {
       this._dimensionsStore.gridWidth * this._dimensionsStore.cellSize,
       this._dimensionsStore.gridHeight * this._dimensionsStore.cellSize
     );
-  }
-
-  private _drawGridLines(): void {
-    // Horizontal grid lines
-    for (let i = 1; i < this._dimensionsStore.gridHeight; i++) {
-      this._context.beginPath();
-      this._context.moveTo(0, i * this._dimensionsStore.cellSize);
-      this._context.lineTo(
-        this._dimensionsStore.gridWidth * this._dimensionsStore.cellSize,
-        i * this._dimensionsStore.cellSize
-      );
-      this._context.stroke();
-    }
-
-    // Vertical grid lines
-    for (let i = 1; i < this._dimensionsStore.gridWidth; i++) {
-      this._context.beginPath();
-      this._context.moveTo(i * this._dimensionsStore.cellSize, 0);
-      this._context.lineTo(
-        i * this._dimensionsStore.cellSize,
-        this._dimensionsStore.gridHeight * this._dimensionsStore.cellSize
-      );
-      this._context.stroke();
-    }
   }
 
   private _drawCell(x: number, y: number): void {
@@ -79,7 +54,6 @@ export default class RenderSystem implements System {
 
   public tick(ticks: number): void {
     this._clearBoard();
-    this._drawGridLines();
 
     let minX = 0;
     let maxX = 0;
