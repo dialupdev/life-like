@@ -6,9 +6,9 @@ export default class RenderSystem implements System {
   private _worldStore: WorldStore;
   private _context: CanvasRenderingContext2D;
 
-  private _offsetX = 0;
-  private _offsetY = 0;
-  private _cellSize = 5;
+  private _offsetX: number;
+  private _offsetY: number;
+  private _cellSize: number;
 
   constructor(worldStore: WorldStore, context: CanvasRenderingContext2D) {
     this._worldStore = worldStore;
@@ -42,6 +42,10 @@ export default class RenderSystem implements System {
   public translateOffset(deltaX: number, deltaY: number): void {
     this._offsetX += PIXEL_RATIO * deltaX;
     this._offsetY += PIXEL_RATIO * deltaY;
+  }
+
+  public resetCellSize(): void {
+    this._cellSize = 5;
   }
 
   public translateCellSize(delta: number): void {
