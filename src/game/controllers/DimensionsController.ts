@@ -24,13 +24,14 @@ export default class DimensionsController {
     this._startDrag = this._startDrag.bind(this);
     this._drag = this._drag.bind(this);
     this._stopDrag = this._stopDrag.bind(this);
+    this._zoom = this._zoom.bind(this);
   }
 
   private _setCanvasSize(): void {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
 
-    // Increase the pixel density of the canvas to match the device
+    // Increase pixel density of canvas to match device
     this._canvas.width = Math.round(PIXEL_RATIO * width);
     this._canvas.height = Math.round(PIXEL_RATIO * height);
 
@@ -96,6 +97,12 @@ export default class DimensionsController {
     window.removeEventListener("mousemove", this._drag);
   }
 
+  private _zoom(e: WheelEvent): void {
+    e.preventDefault();
+    this._renderSystem.translateCellSize(-e.deltaY);
+    this._renderSystem.tick();
+  }
+
   public recenterOffset(): void {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
@@ -121,5 +128,6 @@ export default class DimensionsController {
     // Mouse events
     this._canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
+    this._canvas.addEventListener("wheel", throttle(this._zoom, 100));
   }
 }
