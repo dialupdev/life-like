@@ -16,9 +16,7 @@
     "lint": "npm run tsc && npm run prettier"
   },
   "dependencies": {
-    "@adobe/lit-mobx": "^2.0.0",
-    "lit": "^2.4.1",
-    "mobx": "^6.6.2"
+    "lit": "^2.4.1"
   },
   "devDependencies": {
     "html-webpack-plugin": "^5.5.0",

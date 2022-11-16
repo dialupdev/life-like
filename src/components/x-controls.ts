@@ -1,12 +1,11 @@
-import { MobxLitElement } from "@adobe/lit-mobx";
-import { TemplateResult, html, css } from "lit";
+import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import ConfigStore from "../game/stores/ConfigStore";
 import { TickEvent, PlayEvent, PauseEvent, ResetEvent } from "./events";
 import { Rule } from "../game/Rules";
 
 @customElement("x-controls")
-class Controls extends MobxLitElement {
+class Controls extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -20,7 +19,7 @@ class Controls extends MobxLitElement {
   public configStore: ConfigStore;
 
   @property()
-  public playing: boolean;
+  public playing = false;
 
   private _tick(): void {
     this.dispatchEvent(new TickEvent());
@@ -40,7 +39,7 @@ class Controls extends MobxLitElement {
 
   private _changeRule(event: Event): void {
     const rule = (event.target as HTMLSelectElement).value as Rule;
-    this.configStore.setRule(rule);
+    this.configStore.rule = rule;
   }
 
   protected render(): TemplateResult {

@@ -1,4 +1,3 @@
-import { makeObservable, computed, action } from "mobx";
 import { Rule } from "../Rules";
 import { parseRule } from "../../utils/RuleUtils";
 
@@ -8,17 +7,14 @@ export default class ConfigStore {
   public survivalRule: Set<number>;
 
   constructor() {
-    this.setRule(Rule.life);
-    makeObservable(this);
+    this.rule = Rule.life;
   }
 
-  @computed
   public get rule(): Rule {
     return this._rule;
   }
 
-  @action
-  public setRule(rule: Rule) {
+  public set rule(rule: Rule) {
     this._rule = rule;
     [this.birthRule, this.survivalRule] = parseRule(rule);
   }
