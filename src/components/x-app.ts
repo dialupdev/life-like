@@ -32,7 +32,7 @@ class App extends LitElement {
     }
   `;
 
-  private _ticks: number;
+  private _ticks = 0;
 
   // Stores
   private _configStore: ConfigStore;
@@ -59,6 +59,7 @@ class App extends LitElement {
   }
 
   private _reset(): void {
+    this._playing = false;
     this._ticks = 0;
     this._worldStore.reset();
 

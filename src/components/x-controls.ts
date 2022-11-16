@@ -61,7 +61,7 @@ class Controls extends LitElement {
             })}
           </select>
         </label>
-        <button @click="${this._reset}" ?disabled=${this.playing}>Reset</button>
+        <button @click="${this._reset}">Reset</button>
       </div>
       <div class="buttons">
         <button @click="${this._tick}" ?disabled=${this.playing}>Tick</button>
