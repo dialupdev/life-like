@@ -1,4 +1,4 @@
-import { PIXEL_RATIO, MIN_CELL_SIZE, MAX_CELL_SIZE } from "../../Constants";
+import { PIXEL_RATIO } from "../../Constants";
 import type { System } from "./System";
 import WorldStore from "../stores/WorldStore";
 
@@ -49,8 +49,7 @@ export default class RenderSystem implements System {
   }
 
   public translateCellSize(delta: number): void {
-    const newCellSize = this._cellSize + delta;
-    this._cellSize = Math.min(Math.max(newCellSize, MIN_CELL_SIZE), MAX_CELL_SIZE);
+    this._cellSize = Math.max(this._cellSize + delta, 1);
   }
 
   public tick(): void {
