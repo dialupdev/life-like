@@ -44,12 +44,20 @@ export default class RenderSystem implements System {
     this._offsetY += PIXEL_RATIO * deltaY;
   }
 
-  public resetCellSize(): void {
+  public resetZoom(): void {
     this._cellSize = 5;
   }
 
-  public translateCellSize(delta: number): void {
-    this._cellSize = Math.max(this._cellSize + delta, 1);
+  public zoomAt(delta: number, x: number, y: number): void {
+    if (delta < 0) {
+      this._offsetX -= Math.round((this._offsetX - PIXEL_RATIO * x) / 2);
+      this._offsetY -= Math.round((this._offsetY - PIXEL_RATIO * y) / 2);
+      this._cellSize /= 2;
+    } else {
+      this._offsetX += Math.round(this._offsetX - PIXEL_RATIO * x);
+      this._offsetY += Math.round(this._offsetY - PIXEL_RATIO * y);
+      this._cellSize *= 2;
+    }
   }
 
   public tick(): void {

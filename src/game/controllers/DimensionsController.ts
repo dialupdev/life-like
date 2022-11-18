@@ -99,7 +99,7 @@ export default class DimensionsController {
 
   private _zoom(e: WheelEvent): void {
     e.preventDefault();
-    this._renderSystem.translateCellSize(-e.deltaY);
+    this._renderSystem.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
     this._renderSystem.tick();
   }
 
@@ -111,7 +111,7 @@ export default class DimensionsController {
     const x = Math.round((width - cellSize) / 2);
     const y = Math.round((height - cellSize) / 2);
 
-    this._renderSystem.resetCellSize();
+    this._renderSystem.resetZoom();
     this._renderSystem.setOffset(x, y);
     this._renderSystem.tick();
   }
