@@ -1,15 +1,15 @@
 import Cell from "../Cell";
-import WorldStore from "../stores/WorldStore";
-import ConfigStore from "../stores/ConfigStore";
+import WorldModel from "../models/WorldModel";
+import ConfigModel from "../models/ConfigModel";
 import type { System } from "./System";
 
 export default class LifecycleSystem implements System {
-  private _worldStore: WorldStore;
-  private _configStore: ConfigStore;
+  private _worldModel: WorldModel;
+  private _configModel: ConfigModel;
 
-  constructor(worldStore: WorldStore, configStore: ConfigStore) {
-    this._worldStore = worldStore;
-    this._configStore = configStore;
+  constructor(worldModel: WorldModel, configModel: ConfigModel) {
+    this._worldModel = worldModel;
+    this._configModel = configModel;
   }
 
   public tick(): void {
@@ -17,17 +17,17 @@ export default class LifecycleSystem implements System {
     const cellsToSpawn = new Set<Cell>();
 
     // Mark cells to kill
-    for (const [cellHash, cell] of this._worldStore.cells) {
-      const neighborCount = this._worldStore.neighborCounts.get(cellHash);
+    for (const [cellHash, cell] of this._worldModel.cells) {
+      const neighborCount = this._worldModel.neighborCounts.get(cellHash);
 
-      if (!neighborCount || !this._configStore.survivalRule.has(neighborCount)) {
+      if (!neighborCount || !this._configModel.survivalRule.has(neighborCount)) {
         cellsToKill.add(cell);
       }
     }
 
     // Mark cells to spawn
-    for (const [cellHash, count] of this._worldStore.neighborCounts) {
-      if (this._configStore.birthRule.has(count) && !this._worldStore.cells.has(cellHash)) {
+    for (const [cellHash, count] of this._worldModel.neighborCounts) {
+      if (this._configModel.birthRule.has(count) && !this._worldModel.cells.has(cellHash)) {
         const cell = Cell.fromHash(cellHash);
         cellsToSpawn.add(cell);
       }
@@ -35,12 +35,12 @@ export default class LifecycleSystem implements System {
 
     // Kill cells
     for (const cell of cellsToKill) {
-      this._worldStore.kill(cell);
+      this._worldModel.kill(cell);
     }
 
     // Spawn cells
     for (const cell of cellsToSpawn) {
-      this._worldStore.spawn(cell);
+      this._worldModel.spawn(cell);
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Rule } from "../Rules";
 import { parseRule } from "../../utils/RuleUtils";
 
-export default class ConfigStore {
+export default class ConfigModel {
   private _rule: Rule;
   public birthRule: Set<number>;
   public survivalRule: Set<number>;

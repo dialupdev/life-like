@@ -1,17 +1,17 @@
 import { PIXEL_RATIO } from "../../Constants";
+import WorldModel from "../models/WorldModel";
 import type { System } from "./System";
-import WorldStore from "../stores/WorldStore";
 
 export default class RenderSystem implements System {
-  private _worldStore: WorldStore;
+  private _worldModel: WorldModel;
   private _context: CanvasRenderingContext2D;
 
   private _offsetX: number;
   private _offsetY: number;
   private _cellSize: number;
 
-  constructor(worldStore: WorldStore, context: CanvasRenderingContext2D) {
-    this._worldStore = worldStore;
+  constructor(worldModel: WorldModel, context: CanvasRenderingContext2D) {
+    this._worldModel = worldModel;
     this._context = context;
   }
 
@@ -63,7 +63,7 @@ export default class RenderSystem implements System {
   public tick(): void {
     this._clear();
 
-    for (const cell of this._worldStore.cells.values()) {
+    for (const cell of this._worldModel.cells.values()) {
       this._drawCell(cell.x, cell.y);
     }
   }

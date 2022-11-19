@@ -1,8 +1,8 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import ConfigStore from "../game/stores/ConfigStore";
-import WorldStore from "../game/stores/WorldStore";
+import ConfigModel from "../game/models/ConfigModel";
+import WorldModel from "../game/models/WorldModel";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
 import DimensionsController from "../game/controllers/DimensionsController";
@@ -34,9 +34,9 @@ class App extends LitElement {
 
   private _ticks = 0;
 
-  // Stores
-  private _configStore: ConfigStore;
-  private _worldStore: WorldStore;
+  // Models
+  private _configModel: ConfigModel;
+  private _worldModel: WorldModel;
 
   // Systems
   private _lifecycleSystem: LifecycleSystem;
@@ -54,20 +54,20 @@ class App extends LitElement {
   constructor() {
     super();
 
-    this._configStore = new ConfigStore();
-    this._worldStore = new WorldStore();
+    this._configModel = new ConfigModel();
+    this._worldModel = new WorldModel();
   }
 
   private _reset(): void {
     this._playing = false;
     this._ticks = 0;
-    this._worldStore.reset();
+    this._worldModel.reset();
 
     // Randomized grid
     for (let x = -20; x <= 20; x++) {
       for (let y = -20; y <= 20; y++) {
         if (Math.random() < 0.5) {
-          this._worldStore.spawn(new Cell(x, y));
+          this._worldModel.spawn(new Cell(x, y));
         }
       }
     }
@@ -102,8 +102,8 @@ class App extends LitElement {
   }
 
   firstUpdated() {
-    this._lifecycleSystem = new LifecycleSystem(this._worldStore, this._configStore);
-    this._renderSystem = new RenderSystem(this._worldStore, this._canvas.getContext("2d", { alpha: false }));
+    this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
+    this._renderSystem = new RenderSystem(this._worldModel, this._canvas.getContext("2d", { alpha: false }));
 
     this._dimensionsController = new DimensionsController(this._renderSystem, this._canvas);
     this._dimensionsController.listen();
@@ -114,7 +114,7 @@ class App extends LitElement {
   protected render(): TemplateResult {
     return html`<div>
       <x-controls
-        .configStore=${this._configStore}
+        .configModel=${this._configModel}
         .playing=${this._playing}
         @tick=${this._tick}
         @play=${this._play}

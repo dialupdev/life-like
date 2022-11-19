@@ -1,6 +1,6 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import ConfigStore from "../game/stores/ConfigStore";
+import ConfigModel from "../game/models/ConfigModel";
 import { Rule } from "../game/Rules";
 
 @customElement("x-controls")
@@ -19,7 +19,7 @@ class Controls extends LitElement {
   `;
 
   @property()
-  public configStore: ConfigStore;
+  public configModel: ConfigModel;
 
   @property()
   public playing = false;
@@ -46,7 +46,7 @@ class Controls extends LitElement {
 
   private _changeRule(event: Event): void {
     const rule = (event.target as HTMLSelectElement).value as Rule;
-    this.configStore.rule = rule;
+    this.configModel.rule = rule;
   }
 
   protected render(): TemplateResult {
@@ -56,7 +56,7 @@ class Controls extends LitElement {
           Rule
           <select @change=${this._changeRule}>
             ${Object.entries(Rule).map(([ruleName, rule]) => {
-              return html`<option value=${rule} ?selected=${this.configStore.rule === rule}>${ruleName}</option>`;
+              return html`<option value=${rule} ?selected=${this.configModel.rule === rule}>${ruleName}</option>`;
             })}
           </select>
         </label>
