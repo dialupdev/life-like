@@ -10,9 +10,12 @@ export default class RenderSystem implements System {
   private _offsetY: number;
   private _cellSize: number;
 
-  constructor(worldModel: WorldModel, context: CanvasRenderingContext2D) {
+  constructor(worldModel: WorldModel, canvasPromise: Promise<HTMLCanvasElement>) {
     this._worldModel = worldModel;
-    this._context = context;
+
+    canvasPromise.then(canvas => {
+      this._context = canvas.getContext("2d", { alpha: false });
+    });
   }
 
   private _clear(): void {

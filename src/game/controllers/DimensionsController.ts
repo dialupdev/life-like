@@ -15,9 +15,12 @@ export default class DimensionsController {
   private _lastMouseX: number;
   private _lastMouseY: number;
 
-  constructor(renderSystem: RenderSystem, canvas: HTMLCanvasElement) {
+  constructor(renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
     this._renderSystem = renderSystem;
-    this._canvas = canvas;
+
+    canvasPromise.then(canvas => {
+      this._canvas = canvas;
+    });
 
     this._calculateCanvasSize = this._calculateCanvasSize.bind(this);
     this._keyDown = this._keyDown.bind(this);

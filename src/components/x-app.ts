@@ -1,5 +1,5 @@
 import { LitElement, TemplateResult, html, css } from "lit";
-import { customElement, state, query } from "lit/decorators.js";
+import { customElement, state, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import ConfigModel from "../game/models/ConfigModel";
 import WorldModel from "../game/models/WorldModel";
@@ -48,14 +48,24 @@ class App extends LitElement {
   @state()
   private _playing = false;
 
-  @query("canvas")
-  private _canvas: HTMLCanvasElement;
+  @queryAsync("canvas")
+  private _canvasPromise: Promise<HTMLCanvasElement>;
 
   constructor() {
     super();
 
     this._configModel = new ConfigModel();
     this._worldModel = new WorldModel();
+
+    this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
+    this._renderSystem = new RenderSystem(this._worldModel, this._canvasPromise);
+
+    this._dimensionsController = new DimensionsController(this._renderSystem, this._canvasPromise);
+
+    this._canvasPromise.then(() => {
+      this._dimensionsController.listen();
+      this._reset();
+    });
   }
 
   private _reset(): void {
@@ -99,16 +109,6 @@ class App extends LitElement {
 
   private _recenter(): void {
     this._dimensionsController.recenterOffset();
-  }
-
-  firstUpdated() {
-    this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
-    this._renderSystem = new RenderSystem(this._worldModel, this._canvas.getContext("2d", { alpha: false }));
-
-    this._dimensionsController = new DimensionsController(this._renderSystem, this._canvas);
-    this._dimensionsController.listen();
-
-    this._reset();
   }
 
   protected render(): TemplateResult {
