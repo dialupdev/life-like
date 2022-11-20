@@ -3,7 +3,7 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../game/Rules";
 import ConfigController from "../game/controllers/ConfigController";
-import DimensionsController from "../game/controllers/DimensionsController";
+import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
 
 @customElement("x-controls")
@@ -25,7 +25,7 @@ class Controls extends MobxLitElement {
   public configController: ConfigController;
 
   @property()
-  public dimensionsController: DimensionsController;
+  public positionController: PositionController;
 
   @property()
   public playbackController: PlaybackController;
@@ -36,7 +36,7 @@ class Controls extends MobxLitElement {
   }
 
   private _recenter(): void {
-    this.dimensionsController.recenterOffset();
+    this.positionController.recenterOffset();
   }
 
   private _tick(): void {

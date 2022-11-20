@@ -7,7 +7,7 @@ import PlaybackModel from "../game/models/PlaybackModel";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
 import ConfigController from "../game/controllers/ConfigController";
-import DimensionsController from "../game/controllers/DimensionsController";
+import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
 import "./x-controls";
 
@@ -45,7 +45,7 @@ class App extends LitElement {
 
   // Controllers
   private _configController: ConfigController;
-  private _dimensionsController: DimensionsController;
+  private _positionController: PositionController;
   private _playbackController: PlaybackController;
 
   @queryAsync("canvas")
@@ -62,7 +62,7 @@ class App extends LitElement {
     this._renderSystem = new RenderSystem(this._worldModel, this._canvasPromise);
 
     this._configController = new ConfigController(this._configModel);
-    this._dimensionsController = new DimensionsController(this._renderSystem, this._canvasPromise);
+    this._positionController = new PositionController(this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
   }
 
@@ -70,14 +70,14 @@ class App extends LitElement {
     this._playbackController.pause();
     this._worldModel.reset();
     this._worldModel.randomize();
-    this._dimensionsController.recenterOffset();
+    this._positionController.recenterOffset();
   }
 
   protected render(): TemplateResult {
     return html`<div>
       <x-controls
         .configController=${this._configController}
-        .dimensionsController=${this._dimensionsController}
+        .positionController=${this._positionController}
         .playbackController=${this._playbackController}
         @reset=${this._reset}
       ></x-controls>

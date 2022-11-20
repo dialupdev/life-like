@@ -9,7 +9,7 @@ export enum ArrowKeys {
   ArrowLeft = "ArrowLeft",
 }
 
-export default class DimensionsController {
+export default class PositionController {
   private _renderSystem: RenderSystem;
   private _canvas: HTMLCanvasElement;
   private _lastMouseX: number;
@@ -107,7 +107,6 @@ export default class DimensionsController {
     e.preventDefault();
     this._renderSystem.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
     this._renderSystem.tick();
-    // ^ make this lazy
   }
 
   private _listen(): void {
