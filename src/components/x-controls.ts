@@ -1,10 +1,13 @@
-import { LitElement, TemplateResult, html, css } from "lit";
+import { MobxLitElement } from "@adobe/lit-mobx";
+import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import ConfigModel from "../game/models/ConfigModel";
 import { Rule } from "../game/Rules";
+import ConfigController from "../game/controllers/ConfigController";
+import DimensionsController from "../game/controllers/DimensionsController";
+import PlaybackController from "../game/controllers/PlaybackController";
 
 @customElement("x-controls")
-class Controls extends LitElement {
+class Controls extends MobxLitElement {
   static styles = css`
     :host {
       background: #f4f5f7;
@@ -19,55 +22,63 @@ class Controls extends LitElement {
   `;
 
   @property()
-  public configModel: ConfigModel;
+  public configController: ConfigController;
 
   @property()
-  public playing = false;
+  public dimensionsController: DimensionsController;
 
-  private _tick(): void {
-    this.dispatchEvent(new Event("tick"));
-  }
+  @property()
+  public playbackController: PlaybackController;
 
-  private _play(): void {
-    this.dispatchEvent(new Event("play"));
-  }
-
-  private _pause(): void {
-    this.dispatchEvent(new Event("pause"));
+  private _changeRule(e: Event): void {
+    const rule = (e.target as HTMLSelectElement).value as Rule;
+    this.configController.setRule(rule);
   }
 
   private _recenter(): void {
-    this.dispatchEvent(new Event("recenter"));
+    this.dimensionsController.recenterOffset();
+  }
+
+  private _tick(): void {
+    this.playbackController.tick();
+  }
+
+  private _play(): void {
+    this.playbackController.play();
+  }
+
+  private _pause(): void {
+    this.playbackController.pause();
   }
 
   private _reset(): void {
     this.dispatchEvent(new Event("reset"));
   }
 
-  private _changeRule(event: Event): void {
-    const rule = (event.target as HTMLSelectElement).value as Rule;
-    this.configModel.rule = rule;
-  }
-
   protected render(): TemplateResult {
+    const configModel = this.configController.model;
+    const playbackModel = this.playbackController.model;
+
     return html`
       <div class="buttons">
         <label>
           Rule
           <select @change=${this._changeRule}>
             ${Object.entries(Rule).map(([ruleName, rule]) => {
-              return html`<option value=${rule} ?selected=${this.configModel.rule === rule}>${ruleName}</option>`;
+              return html`<option value=${rule} ?selected=${configModel.rule === rule}>${ruleName}</option>`;
             })}
           </select>
         </label>
-        <button @click="${this._reset}">Reset</button>
       </div>
       <div class="buttons">
-        <button @click="${this._tick}" ?disabled=${this.playing}>Tick</button>
-        <button @click="${this.playing ? this._pause : this._play}">${this.playing ? "Pause" : "Play"}</button>
+        <button @click="${this._tick}" ?disabled=${playbackModel.playing}>Tick</button>
+        <button @click="${playbackModel.playing ? this._pause : this._play}">
+          ${playbackModel.playing ? "Pause" : "Play"}
+        </button>
       </div>
       <div class="buttons">
         <button @click="${this._recenter}">Recenter</button>
+        <button @click="${this._reset}">Reset</button>
       </div>
     `;
   }

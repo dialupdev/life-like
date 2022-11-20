@@ -1,12 +1,15 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, state, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import ConfigModel from "../game/models/ConfigModel";
+import Cell from "../game/Cell";
 import WorldModel from "../game/models/WorldModel";
+import ConfigModel from "../game/models/ConfigModel";
+import PlaybackModel from "../game/models/PlaybackModel";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
+import ConfigController from "../game/controllers/ConfigController";
 import DimensionsController from "../game/controllers/DimensionsController";
-import Cell from "../game/Cell";
+import PlaybackController from "../game/controllers/PlaybackController";
 import "./x-controls";
 
 @customElement("x-app")
@@ -32,21 +35,19 @@ class App extends LitElement {
     }
   `;
 
-  private _ticks = 0;
-
   // Models
-  private _configModel: ConfigModel;
   private _worldModel: WorldModel;
+  private _configModel: ConfigModel;
+  private _playbackModel: PlaybackModel;
 
   // Systems
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;
 
   // Controllers
+  private _configController: ConfigController;
   private _dimensionsController: DimensionsController;
-
-  @state()
-  private _playing = false;
+  private _playbackController: PlaybackController;
 
   @queryAsync("canvas")
   private _canvasPromise: Promise<HTMLCanvasElement>;
@@ -54,23 +55,24 @@ class App extends LitElement {
   constructor() {
     super();
 
-    this._configModel = new ConfigModel();
     this._worldModel = new WorldModel();
+    this._configModel = new ConfigModel();
+    this._playbackModel = new PlaybackModel();
 
     this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
     this._renderSystem = new RenderSystem(this._worldModel, this._canvasPromise);
 
+    this._configController = new ConfigController(this._configModel);
     this._dimensionsController = new DimensionsController(this._renderSystem, this._canvasPromise);
+    this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
 
     this._canvasPromise.then(() => {
-      this._dimensionsController.listen();
       this._reset();
     });
   }
 
   private _reset(): void {
-    this._playing = false;
-    this._ticks = 0;
+    this._playbackController.pause();
     this._worldModel.reset();
 
     // Randomized grid
@@ -85,42 +87,13 @@ class App extends LitElement {
     this._dimensionsController.recenterOffset();
   }
 
-  private _tick(): void {
-    this._ticks++;
-    this._lifecycleSystem.tick();
-    this._renderSystem.tick();
-  }
-
-  private _tickRecursive = (): void => {
-    if (this._playing) {
-      this._tick();
-      requestAnimationFrame(this._tickRecursive);
-    }
-  };
-
-  private _play(): void {
-    this._playing = true;
-    this._tickRecursive();
-  }
-
-  private _pause(): void {
-    this._playing = false;
-  }
-
-  private _recenter(): void {
-    this._dimensionsController.recenterOffset();
-  }
-
   protected render(): TemplateResult {
     return html`<div>
       <x-controls
-        .configModel=${this._configModel}
-        .playing=${this._playing}
-        @tick=${this._tick}
-        @play=${this._play}
-        @pause=${this._pause}
+        .configController=${this._configController}
+        .dimensionsController=${this._dimensionsController}
+        .playbackController=${this._playbackController}
         @reset=${this._reset}
-        @recenter=${this._recenter}
       ></x-controls>
       <canvas></canvas>
     </div>`;

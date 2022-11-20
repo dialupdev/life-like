@@ -20,6 +20,9 @@ export default class DimensionsController {
 
     canvasPromise.then(canvas => {
       this._canvas = canvas;
+
+      this._calculateCanvasSizeAndDefaultOffset();
+      this._listen();
     });
 
     this._calculateCanvasSize = this._calculateCanvasSize.bind(this);
@@ -104,6 +107,20 @@ export default class DimensionsController {
     e.preventDefault();
     this._renderSystem.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
     this._renderSystem.tick();
+    // ^ make this lazy
+  }
+
+  private _listen(): void {
+    // Resize events
+    window.addEventListener("resize", throttle(this._calculateCanvasSize, 500));
+
+    // Keyboard events
+    window.addEventListener("keydown", this._keyDown);
+
+    // Mouse events
+    this._canvas.addEventListener("mousedown", this._startDrag);
+    window.addEventListener("mouseup", this._stopDrag);
+    this._canvas.addEventListener("wheel", throttle(this._zoom, 100));
   }
 
   public recenterOffset(): void {
@@ -117,21 +134,5 @@ export default class DimensionsController {
     this._renderSystem.resetZoom();
     this._renderSystem.setOffset(x, y);
     this._renderSystem.tick();
-  }
-
-  public listen(): void {
-    // Initial setup
-    this._calculateCanvasSizeAndDefaultOffset();
-
-    // Resize events
-    window.addEventListener("resize", throttle(this._calculateCanvasSize, 500));
-
-    // Keyboard events
-    window.addEventListener("keydown", this._keyDown);
-
-    // Mouse events
-    this._canvas.addEventListener("mousedown", this._startDrag);
-    window.addEventListener("mouseup", this._stopDrag);
-    this._canvas.addEventListener("wheel", throttle(this._zoom, 100));
   }
 }

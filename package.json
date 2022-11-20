@@ -16,8 +16,10 @@
     "lint": "npm run tsc && npm run prettier"
   },
   "dependencies": {
+    "@adobe/lit-mobx": "^2.0.0",
     "lit": "^2.4.1",
-    "lodash.throttle": "^4.1.1"
+    "lodash.throttle": "^4.1.1",
+    "mobx": "^6.7.0"
   },
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.7",
