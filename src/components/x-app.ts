@@ -1,7 +1,6 @@
 import { LitElement, TemplateResult, html, css } from "lit";
-import { customElement, state, queryAsync } from "lit/decorators.js";
+import { customElement, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import Cell from "../game/Cell";
 import WorldModel from "../game/models/WorldModel";
 import ConfigModel from "../game/models/ConfigModel";
 import PlaybackModel from "../game/models/PlaybackModel";
@@ -74,16 +73,7 @@ class App extends LitElement {
   private _reset(): void {
     this._playbackController.pause();
     this._worldModel.reset();
-
-    // Randomized grid
-    for (let x = -20; x <= 20; x++) {
-      for (let y = -20; y <= 20; y++) {
-        if (Math.random() < 0.5) {
-          this._worldModel.spawn(new Cell(x, y));
-        }
-      }
-    }
-
+    this._worldModel.randomize();
     this._dimensionsController.recenterOffset();
   }
 
