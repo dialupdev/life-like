@@ -45,8 +45,8 @@ export default class WorldModel {
   }
 
   public randomize(): void {
-    for (let x = -20; x <= 20; x++) {
-      for (let y = -20; y <= 20; y++) {
+    for (let x = -40; x <= 40; x++) {
+      for (let y = -40; y <= 40; y++) {
         if (Math.random() < 0.5) {
           this.spawn(new Cell(x, y));
         }
