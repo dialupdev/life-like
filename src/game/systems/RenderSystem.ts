@@ -5,10 +5,9 @@ import type { System } from "./System";
 export default class RenderSystem implements System {
   private _worldModel: WorldModel;
   private _context: CanvasRenderingContext2D;
-
-  private _offsetX: number;
-  private _offsetY: number;
-  private _cellSize: number;
+  private _offsetX = 0;
+  private _offsetY = 0;
+  private _cellSize = 5;
 
   constructor(worldModel: WorldModel, canvasPromise: Promise<HTMLCanvasElement>) {
     this._worldModel = worldModel;

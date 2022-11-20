@@ -3,10 +3,14 @@ import Cell from "../Cell";
 export default class WorldModel {
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
-  public cells: Map<string, Cell>;
+  public cells = new Map<string, Cell>();
   // Same here - if we could, we would use Cell as the Map key,
   // which would remove the need for Cell.fromHash().
-  public neighborCounts: Map<string, number>;
+  public neighborCounts = new Map<string, number>();
+
+  constructor() {
+    this.randomize();
+  }
 
   private _incrementNeighborCount(cell: Cell): void {
     const neighborCount = this.neighborCounts.get(cell.hash());

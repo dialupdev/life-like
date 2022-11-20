@@ -64,10 +64,6 @@ class App extends LitElement {
     this._configController = new ConfigController(this._configModel);
     this._dimensionsController = new DimensionsController(this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
-
-    this._canvasPromise.then(() => {
-      this._reset();
-    });
   }
 
   private _reset(): void {
