@@ -59,7 +59,7 @@ class App extends LitElement {
     this._playbackModel = new PlaybackModel();
 
     this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
-    this._renderSystem = new RenderSystem(this._worldModel, this._canvasPromise);
+    this._renderSystem = new RenderSystem(this._worldModel, this._playbackModel, this._canvasPromise);
 
     this._configController = new ConfigController(this._configModel);
     this._positionController = new PositionController(this._renderSystem, this._canvasPromise);

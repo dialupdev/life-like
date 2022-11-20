@@ -52,7 +52,7 @@ export default class PositionController {
 
   private _calculateCanvasSize(): void {
     this._setCanvasSize();
-    this._renderSystem.tick();
+    this._renderSystem.tickLazy();
   }
 
   private _keyDown(e: KeyboardEvent): void {
@@ -76,7 +76,7 @@ export default class PositionController {
     }
 
     this._renderSystem.translateOffset(x, y);
-    this._renderSystem.tick();
+    this._renderSystem.tickLazy();
   }
 
   private _startDrag(e: MouseEvent): void {
@@ -95,7 +95,7 @@ export default class PositionController {
     this._lastMouseY = e.clientY;
 
     this._renderSystem.translateOffset(deltaX, deltaY);
-    this._renderSystem.tick();
+    this._renderSystem.tickLazy();
   }
 
   private _stopDrag(): void {
@@ -106,7 +106,7 @@ export default class PositionController {
   private _zoom(e: WheelEvent): void {
     e.preventDefault();
     this._renderSystem.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
-    this._renderSystem.tick();
+    this._renderSystem.tickLazy();
   }
 
   private _listen(): void {
@@ -132,6 +132,6 @@ export default class PositionController {
 
     this._renderSystem.resetZoom();
     this._renderSystem.setOffset(x, y);
-    this._renderSystem.tick();
+    this._renderSystem.tickLazy();
   }
 }

@@ -1,16 +1,19 @@
 import { PIXEL_RATIO } from "../../Constants";
 import WorldModel from "../models/WorldModel";
+import PlaybackModel from "../models/PlaybackModel";
 import type { System } from "./System";
 
 export default class RenderSystem implements System {
   private _worldModel: WorldModel;
+  private _playbackModel: PlaybackModel;
   private _context: CanvasRenderingContext2D;
   private _offsetX = 0;
   private _offsetY = 0;
   private _cellSize = 5;
 
-  constructor(worldModel: WorldModel, canvasPromise: Promise<HTMLCanvasElement>) {
+  constructor(worldModel: WorldModel, playbackModel: PlaybackModel, canvasPromise: Promise<HTMLCanvasElement>) {
     this._worldModel = worldModel;
+    this._playbackModel = playbackModel;
 
     canvasPromise.then(canvas => {
       this._context = canvas.getContext("2d", { alpha: false });
@@ -67,6 +70,12 @@ export default class RenderSystem implements System {
 
     for (const cell of this._worldModel.cells.values()) {
       this._drawCell(cell.x, cell.y);
+    }
+  }
+
+  public tickLazy(): void {
+    if (!this._playbackModel.playing) {
+      this.tick();
     }
   }
 }
