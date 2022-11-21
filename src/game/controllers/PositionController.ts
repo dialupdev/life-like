@@ -1,5 +1,6 @@
 import throttle from "lodash.throttle";
 import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
+import PositionModel from "../models/PositionModel";
 import RenderSystem from "../systems/RenderSystem";
 
 export enum ArrowKeys {
@@ -10,12 +11,14 @@ export enum ArrowKeys {
 }
 
 export default class PositionController {
+  private _positionModel: PositionModel;
   private _renderSystem: RenderSystem;
   private _canvas: HTMLCanvasElement;
   private _lastMouseX: number;
   private _lastMouseY: number;
 
-  constructor(renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
+  constructor(positionModel: PositionModel, renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
+    this._positionModel = positionModel;
     this._renderSystem = renderSystem;
 
     canvasPromise.then(canvas => {
@@ -56,7 +59,7 @@ export default class PositionController {
   }
 
   private _keyDown(e: KeyboardEvent): void {
-    const panIncrement = this._renderSystem.getCellSize() * 4;
+    const panIncrement = this._positionModel.cellSize * 4;
     let x = 0;
     let y = 0;
 
@@ -75,7 +78,7 @@ export default class PositionController {
         break;
     }
 
-    this._renderSystem.translateOffset(x, y);
+    this._positionModel.translateOffset(x, y);
     this._renderSystem.tickLazy();
   }
 
@@ -94,7 +97,7 @@ export default class PositionController {
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
 
-    this._renderSystem.translateOffset(deltaX, deltaY);
+    this._positionModel.translateOffset(deltaX, deltaY);
     this._renderSystem.tickLazy();
   }
 
@@ -105,7 +108,7 @@ export default class PositionController {
 
   private _zoom(e: WheelEvent): void {
     e.preventDefault();
-    this._renderSystem.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
+    this._positionModel.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
     this._renderSystem.tickLazy();
   }
 
@@ -126,12 +129,11 @@ export default class PositionController {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
 
-    const cellSize = this._renderSystem.getCellSize();
-    const x = Math.round((width - cellSize) / 2);
-    const y = Math.round((height - cellSize) / 2);
+    const x = Math.round((width - this._positionModel.cellSize) / 2);
+    const y = Math.round((height - this._positionModel.cellSize) / 2);
 
-    this._renderSystem.resetZoom();
-    this._renderSystem.setOffset(x, y);
+    this._positionModel.setOffset(x, y);
+    this._positionModel.resetCellSize();
     this._renderSystem.tickLazy();
   }
 }

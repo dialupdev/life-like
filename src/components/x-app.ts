@@ -3,6 +3,7 @@ import { customElement, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import WorldModel from "../game/models/WorldModel";
 import ConfigModel from "../game/models/ConfigModel";
+import PositionModel from "../game/models/PositionModel";
 import PlaybackModel from "../game/models/PlaybackModel";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
@@ -37,6 +38,7 @@ class App extends LitElement {
   // Models
   private _worldModel: WorldModel;
   private _configModel: ConfigModel;
+  private _positionModel: PositionModel;
   private _playbackModel: PlaybackModel;
 
   // Systems
@@ -56,13 +58,19 @@ class App extends LitElement {
 
     this._worldModel = new WorldModel();
     this._configModel = new ConfigModel();
+    this._positionModel = new PositionModel();
     this._playbackModel = new PlaybackModel();
 
     this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
-    this._renderSystem = new RenderSystem(this._worldModel, this._playbackModel, this._canvasPromise);
+    this._renderSystem = new RenderSystem(
+      this._worldModel,
+      this._positionModel,
+      this._playbackModel,
+      this._canvasPromise
+    );
 
     this._configController = new ConfigController(this._configModel);
-    this._positionController = new PositionController(this._renderSystem, this._canvasPromise);
+    this._positionController = new PositionController(this._positionModel, this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
   }
 
