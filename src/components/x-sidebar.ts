@@ -6,8 +6,8 @@ import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
 
-@customElement("x-controls")
-class Controls extends MobxLitElement {
+@customElement("x-sidebar")
+class Sidebar extends MobxLitElement {
   static styles = css`
     :host {
       background: #f4f5f7;
@@ -86,6 +86,6 @@ class Controls extends MobxLitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "x-controls": Controls;
+    "x-sidebar": Sidebar;
   }
 }

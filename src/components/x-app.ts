@@ -10,7 +10,7 @@ import RenderSystem from "../game/systems/RenderSystem";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
-import "./x-controls";
+import "./x-sidebar";
 
 @customElement("x-app")
 class App extends LitElement {
@@ -19,12 +19,12 @@ class App extends LitElement {
       display: block;
       height: 100vh;
     }
-    x-controls,
+    x-sidebar,
     canvas {
       position: absolute;
       top: 0;
     }
-    x-controls {
+    x-sidebar {
       height: 100vh;
       left: 0;
       width: ${SIDEBAR_WIDTH}px;
@@ -83,12 +83,12 @@ class App extends LitElement {
 
   protected render(): TemplateResult {
     return html`<div>
-      <x-controls
+      <x-sidebar
         .configController=${this._configController}
         .positionController=${this._positionController}
         .playbackController=${this._playbackController}
         @reset=${this._reset}
-      ></x-controls>
+      ></x-sidebar>
       <canvas></canvas>
     </div>`;
   }
