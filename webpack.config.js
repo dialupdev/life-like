@@ -12,7 +12,13 @@ module.exports = {
     extensions: [".ts", ".js"],
   },
   module: {
-    rules: [{ test: /\.ts$/, loader: "ts-loader" }],
+    rules: [
+      { test: /\.ts$/, loader: "ts-loader" },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -20,8 +26,8 @@ module.exports = {
     }),
   ],
   devServer: {
-    historyApiFallback: true,
     compress: true,
+    historyApiFallback: true,
     port: 9000,
   },
 };

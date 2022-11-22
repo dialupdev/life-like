@@ -10,6 +10,7 @@ import RenderSystem from "../game/systems/RenderSystem";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
+import "@shoelace-style/shoelace/dist/themes/light.css";
 import "./x-sidebar";
 
 @customElement("x-app")
@@ -17,6 +18,7 @@ class App extends LitElement {
   static styles = css`
     :host {
       display: block;
+      font-family: var(--sl-font-sans);
       height: 100vh;
     }
     x-sidebar,
@@ -82,7 +84,7 @@ class App extends LitElement {
   }
 
   protected render(): TemplateResult {
-    return html`<div>
+    return html`
       <x-sidebar
         .configController=${this._configController}
         .positionController=${this._positionController}
@@ -90,7 +92,7 @@ class App extends LitElement {
         @reset=${this._reset}
       ></x-sidebar>
       <canvas></canvas>
-    </div>`;
+    `;
   }
 }
 

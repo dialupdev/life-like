@@ -5,6 +5,10 @@ import { Rule } from "../game/Rules";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/select/select.js";
+import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
+import "./x-control-group";
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
@@ -15,9 +19,6 @@ class Sidebar extends MobxLitElement {
       box-sizing: border-box;
       display: block;
       padding: 20px;
-    }
-    .buttons {
-      margin: 10px 0;
     }
   `;
 
@@ -60,26 +61,30 @@ class Sidebar extends MobxLitElement {
     const playbackModel = this.playbackController.model;
 
     return html`
-      <div class="buttons">
-        <label>
-          Rule
-          <select @change=${this._changeRule}>
-            ${Object.entries(Rule).map(([ruleName, rule]) => {
-              return html`<option value=${rule} ?selected=${configModel.rule === rule}>${ruleName}</option>`;
-            })}
-          </select>
-        </label>
-      </div>
-      <div class="buttons">
-        <button @click="${this._tick}" ?disabled=${playbackModel.playing}>Tick</button>
-        <button @click="${playbackModel.playing ? this._pause : this._play}">
+      <x-control-group label="Playback">
+        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${playbackModel.playing}
+          >Tick</sl-button
+        >
+        <sl-button size="small" variant="primary" outline @click="${playbackModel.playing ? this._pause : this._play}">
           ${playbackModel.playing ? "Pause" : "Play"}
-        </button>
-      </div>
-      <div class="buttons">
-        <button @click="${this._recenter}">Recenter</button>
-        <button @click="${this._reset}">Reset</button>
-      </div>
+        </sl-button>
+      </x-control-group>
+
+      <x-control-group label="Position">
+        <sl-button size="small" @click="${this._recenter}">Center</sl-button>
+      </x-control-group></x-control-group>
+
+      <x-control-group label="Config">
+        <sl-select size="small" label="Rule" value=${configModel.rule} @sl-change=${this._changeRule}>
+          ${Object.entries(Rule).map(([ruleName, rule]) => {
+            return html`<sl-menu-item value=${rule}>${ruleName}</sl-menu-item>`;
+          })}
+        </sl-select>
+      </x-control-group>
+
+      <x-control-group>
+        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset</sl-button>
+      </x-control-group>
     `;
   }
 }
