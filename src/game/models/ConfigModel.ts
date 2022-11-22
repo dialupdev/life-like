@@ -1,5 +1,4 @@
-import { Rule } from "../Rules";
-import { parseRule } from "../../utils/RuleUtils";
+import { Rule, parseRule } from "../Rules";
 
 export default class ConfigModel {
   private _rule: Rule;
