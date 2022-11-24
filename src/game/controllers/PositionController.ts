@@ -59,22 +59,22 @@ export default class PositionController {
   }
 
   private _keyDown(e: KeyboardEvent): void {
-    const panIncrement = this._positionModel.cellSize * 4;
+    const panIncrement = this._positionModel.cellSize * 10;
     let x = 0;
     let y = 0;
 
     switch (e.key) {
       case ArrowKeys.ArrowUp:
-        y -= panIncrement;
-        break;
-      case ArrowKeys.ArrowRight:
-        x += panIncrement;
-        break;
-      case ArrowKeys.ArrowDown:
         y += panIncrement;
         break;
-      case ArrowKeys.ArrowLeft:
+      case ArrowKeys.ArrowRight:
         x -= panIncrement;
+        break;
+      case ArrowKeys.ArrowDown:
+        y -= panIncrement;
+        break;
+      case ArrowKeys.ArrowLeft:
+        x += panIncrement;
         break;
     }
 
