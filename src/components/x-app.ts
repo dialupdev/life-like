@@ -38,10 +38,10 @@ class App extends LitElement {
   `;
 
   // Models
-  private _worldModel: WorldModel;
-  private _configModel: ConfigModel;
-  private _positionModel: PositionModel;
-  private _playbackModel: PlaybackModel;
+  private _worldModel = new WorldModel();
+  private _configModel = new ConfigModel();
+  private _positionModel = new PositionModel();
+  private _playbackModel = new PlaybackModel();
 
   // Systems
   private _lifecycleSystem: LifecycleSystem;
@@ -57,11 +57,6 @@ class App extends LitElement {
 
   constructor() {
     super();
-
-    this._worldModel = new WorldModel();
-    this._configModel = new ConfigModel();
-    this._positionModel = new PositionModel();
-    this._playbackModel = new PlaybackModel();
 
     this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
     this._renderSystem = new RenderSystem(
