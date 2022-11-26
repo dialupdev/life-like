@@ -1,21 +1,18 @@
-import throttle from "lodash.throttle";
 import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
 import PositionModel from "../models/PositionModel";
 import RenderSystem from "../systems/RenderSystem";
 
-export enum ArrowKeys {
-  ArrowUp = "ArrowUp",
-  ArrowRight = "ArrowRight",
-  ArrowDown = "ArrowDown",
-  ArrowLeft = "ArrowLeft",
+export enum Direction {
+  Up = "Up",
+  Right = "Right",
+  Down = "Down",
+  Left = "Left",
 }
 
 export default class PositionController {
   private _positionModel: PositionModel;
   private _renderSystem: RenderSystem;
   private _canvas: HTMLCanvasElement;
-  private _lastMouseX: number;
-  private _lastMouseY: number;
 
   constructor(positionModel: PositionModel, renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
     this._positionModel = positionModel;
@@ -24,21 +21,21 @@ export default class PositionController {
     canvasPromise.then(canvas => {
       this._canvas = canvas;
 
-      this._calculateCanvasSizeAndDefaultOffset();
-      this._listen();
+      this.fitCanvasToWindow();
+      this.recenterOffset();
     });
 
-    this._calculateCanvasSize = this._calculateCanvasSize.bind(this);
-    this._keyDown = this._keyDown.bind(this);
-    this._startDrag = this._startDrag.bind(this);
-    this._drag = this._drag.bind(this);
-    this._stopDrag = this._stopDrag.bind(this);
-    this._zoom = this._zoom.bind(this);
+    this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
+    this.translateOffset = this.translateOffset.bind(this);
+    this.zoomAt = this.zoomAt.bind(this);
   }
 
-  private _setCanvasSize(): void {
-    const width = window.innerWidth - SIDEBAR_WIDTH;
-    const height = window.innerHeight;
+  private _calculateCanvasSize(): [number, number] {
+    return [window.innerWidth - SIDEBAR_WIDTH, window.innerHeight];
+  }
+
+  public fitCanvasToWindow(): void {
+    const [width, height] = this._calculateCanvasSize();
 
     // Increase pixel density of canvas to match device
     this._canvas.width = Math.round(PIXEL_RATIO * width);
@@ -46,94 +43,75 @@ export default class PositionController {
 
     this._canvas.style.width = `${width}px`;
     this._canvas.style.height = `${height}px`;
-  }
 
-  private _calculateCanvasSizeAndDefaultOffset(): void {
-    this._setCanvasSize();
-    this.recenterOffset();
-  }
-
-  private _calculateCanvasSize(): void {
-    this._setCanvasSize();
     this._renderSystem.tickLazy();
   }
 
-  private _keyDown(e: KeyboardEvent): void {
-    const panIncrement = this._positionModel.cellSize * 10;
-    let x = 0;
-    let y = 0;
+  public setOffset(x: number, y: number): void {
+    this._positionModel.offsetX = PIXEL_RATIO * x;
+    this._positionModel.offsetY = PIXEL_RATIO * y;
+  }
 
-    switch (e.key) {
-      case ArrowKeys.ArrowUp:
-        y += panIncrement;
+  public translateOffset(deltaX: number, deltaY: number): void {
+    this._positionModel.offsetX += PIXEL_RATIO * deltaX;
+    this._positionModel.offsetY += PIXEL_RATIO * deltaY;
+
+    this._renderSystem.tickLazy();
+  }
+
+  public panInDirection(direction: Direction): void {
+    const panIncrement = this._positionModel.cellSize * 10;
+
+    let deltaX = 0;
+    let deltaY = 0;
+
+    switch (direction) {
+      case Direction.Up:
+        deltaY += panIncrement;
         break;
-      case ArrowKeys.ArrowRight:
-        x -= panIncrement;
+      case Direction.Right:
+        deltaX -= panIncrement;
         break;
-      case ArrowKeys.ArrowDown:
-        y -= panIncrement;
+      case Direction.Down:
+        deltaY -= panIncrement;
         break;
-      case ArrowKeys.ArrowLeft:
-        x += panIncrement;
+      case Direction.Left:
+        deltaX += panIncrement;
         break;
     }
 
-    this._positionModel.translateOffset(x, y);
-    this._renderSystem.tickLazy();
-  }
-
-  private _startDrag(e: MouseEvent): void {
-    this._lastMouseX = e.clientX;
-    this._lastMouseY = e.clientY;
-
-    document.body.style.setProperty("cursor", "grabbing");
-    window.addEventListener("mousemove", this._drag);
-  }
-
-  private _drag(e: MouseEvent): void {
-    const deltaX = e.clientX - this._lastMouseX;
-    const deltaY = e.clientY - this._lastMouseY;
-
-    this._lastMouseX = e.clientX;
-    this._lastMouseY = e.clientY;
-
-    this._positionModel.translateOffset(deltaX, deltaY);
-    this._renderSystem.tickLazy();
-  }
-
-  private _stopDrag(): void {
-    document.body.style.removeProperty("cursor");
-    window.removeEventListener("mousemove", this._drag);
-  }
-
-  private _zoom(e: WheelEvent): void {
-    e.preventDefault();
-    this._positionModel.zoomAt(-e.deltaY, e.clientX - SIDEBAR_WIDTH, e.clientY);
-    this._renderSystem.tickLazy();
-  }
-
-  private _listen(): void {
-    // Resize events
-    window.addEventListener("resize", throttle(this._calculateCanvasSize, 500));
-
-    // Keyboard events
-    window.addEventListener("keydown", this._keyDown);
-
-    // Mouse events
-    this._canvas.addEventListener("mousedown", this._startDrag);
-    window.addEventListener("mouseup", this._stopDrag);
-    this._canvas.addEventListener("wheel", throttle(this._zoom, 100));
+    this.translateOffset(deltaX, deltaY);
   }
 
   public recenterOffset(): void {
-    const width = window.innerWidth - SIDEBAR_WIDTH;
-    const height = window.innerHeight;
+    const [width, height] = this._calculateCanvasSize();
 
     const x = Math.round((width - this._positionModel.cellSize) / 2);
     const y = Math.round((height - this._positionModel.cellSize) / 2);
 
-    this._positionModel.setOffset(x, y);
-    this._positionModel.resetCellSize();
+    this.setOffset(x, y);
+    this.resetZoom();
+
     this._renderSystem.tickLazy();
+  }
+
+  public zoomAt(delta: number, windowX: number, windowY: number): void {
+    const [x, y] = [windowX - SIDEBAR_WIDTH, windowY];
+
+    if (delta < 0) {
+      this._positionModel.offsetX -= Math.round((this._positionModel.offsetX - PIXEL_RATIO * x) / 2);
+      this._positionModel.offsetY -= Math.round((this._positionModel.offsetY - PIXEL_RATIO * y) / 2);
+      this._positionModel.cellSize /= 2;
+    } else {
+      this._positionModel.offsetX += Math.round(this._positionModel.offsetX - PIXEL_RATIO * x);
+      this._positionModel.offsetY += Math.round(this._positionModel.offsetY - PIXEL_RATIO * y);
+      this._positionModel.cellSize *= 2;
+    }
+
+    this._renderSystem.tickLazy();
+  }
+
+  public resetZoom(): void {
+    this._positionModel.cellSize = 5;
   }
 }

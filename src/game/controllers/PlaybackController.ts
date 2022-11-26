@@ -14,6 +14,8 @@ export default class PlaybackController {
     this._renderSystem = renderSystem;
 
     this._tickRecursive = this._tickRecursive.bind(this);
+    this.tick = this.tick.bind(this);
+    this.togglePlaying = this.togglePlaying.bind(this);
 
     makeObservable(this, {
       tick: action,
@@ -43,6 +45,10 @@ export default class PlaybackController {
 
   public pause(): void {
     this._playbackModel.playing = false;
+  }
+
+  public togglePlaying(): void {
+    this._playbackModel.playing ? this.pause() : this.play();
   }
 
   public reset(): void {

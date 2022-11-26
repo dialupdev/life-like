@@ -10,6 +10,8 @@ import RenderSystem from "../game/systems/RenderSystem";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
+import PluginBuilder from "../game/plugins/PluginBuilder";
+import PluginManager, { PluginGroup } from "../game/plugins/PluginManager";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "./x-sidebar";
 
@@ -52,6 +54,10 @@ class App extends LitElement {
   private _positionController: PositionController;
   private _playbackController: PlaybackController;
 
+  // Plugins
+  private _pluginBuilder: PluginBuilder;
+  private _pluginManager: PluginManager;
+
   @queryAsync("canvas")
   private _canvasPromise: Promise<HTMLCanvasElement>;
 
@@ -69,6 +75,11 @@ class App extends LitElement {
     this._configController = new ConfigController(this._configModel);
     this._positionController = new PositionController(this._positionModel, this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
+
+    this._pluginBuilder = new PluginBuilder(this._canvasPromise);
+    this._pluginManager = new PluginManager(this._pluginBuilder, this._positionController);
+
+    this._pluginManager.activateGroup(PluginGroup.Default);
   }
 
   private _reset(): void {
