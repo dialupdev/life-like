@@ -63,15 +63,15 @@ class Sidebar extends MobxLitElement {
     return html`
       <x-control-group label="Playback">
         <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${playbackModel.playing}
-          >Tick</sl-button
+          >Tick (T)</sl-button
         >
         <sl-button size="small" variant="primary" outline @click="${playbackModel.playing ? this._pause : this._play}">
-          ${playbackModel.playing ? "Pause" : "Play"}
+          ${playbackModel.playing ? "Pause" : "Play"} (P)
         </sl-button>
       </x-control-group>
 
       <x-control-group label="Position">
-        <sl-button size="small" @click="${this._recenter}">Center</sl-button>
+        <sl-button size="small" @click="${this._recenter}">Center (C)</sl-button>
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">

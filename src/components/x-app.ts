@@ -77,9 +77,10 @@ class App extends LitElement {
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
 
     this._pluginBuilder = new PluginBuilder(this._canvasPromise);
-    this._pluginManager = new PluginManager(this._pluginBuilder, this._positionController);
+    this._pluginManager = new PluginManager(this._pluginBuilder, this._positionController, this._playbackController);
 
     this._pluginManager.activateGroup(PluginGroup.Default);
+    this._pluginManager.activateGroup(PluginGroup.Playback);
   }
 
   private _reset(): void {

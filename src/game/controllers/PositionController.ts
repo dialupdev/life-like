@@ -27,6 +27,7 @@ export default class PositionController {
 
     this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
     this.translateOffset = this.translateOffset.bind(this);
+    this.recenterOffset = this.recenterOffset.bind(this);
     this.zoomAt = this.zoomAt.bind(this);
   }
 
