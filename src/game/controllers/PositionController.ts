@@ -113,6 +113,6 @@ export default class PositionController {
   }
 
   public resetZoom(): void {
-    this._positionModel.cellSize = 5;
+    this._positionModel.cellSize = 4;
   }
 }
