@@ -1,5 +1,9 @@
 import throttle from "lodash.throttle";
 
+interface DragPluginOptions {
+  cursor: string;
+}
+
 export class ResizePlugin {
   constructor(public run: (width: number, height: number) => void) {}
 }
@@ -9,7 +13,10 @@ export class WheelPlugin {
 }
 
 export class DragPlugin {
-  constructor(public run: (deltaX: number, deltaY: number) => void) {}
+  constructor(
+    public run: (x: number, y: number, deltaX: number, deltaY: number) => void,
+    public options?: DragPluginOptions
+  ) {}
 }
 
 export class KeyboardPlugin {
@@ -25,6 +32,7 @@ export default class PluginBuilder {
   private _keyboardPlugins = new Map<string, KeyboardPlugin>();
   private _lastMouseX: number;
   private _lastMouseY: number;
+  private _dragCursor?: string;
 
   constructor(canvasPromise: Promise<HTMLCanvasElement>) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
@@ -64,7 +72,7 @@ export default class PluginBuilder {
     this._lastMouseY = e.clientY;
 
     for (const plugin of this._dragPlugins) {
-      plugin.run(deltaX, deltaY);
+      plugin.run(e.clientX, e.clientY, deltaX, deltaY);
     }
   }
 
@@ -72,12 +80,16 @@ export default class PluginBuilder {
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
 
-    document.body.style.setProperty("cursor", "grabbing");
+    for (const plugin of this._dragPlugins) {
+      plugin.run(e.clientX, e.clientY, 0, 0);
+    }
+
+    this._dragCursor && document.body.style.setProperty("cursor", this._dragCursor);
     window.addEventListener("mousemove", this._runDragPlugins);
   }
 
   private _stopDrag(): void {
-    document.body.style.removeProperty("cursor");
+    this._dragCursor && document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._runDragPlugins);
   }
 
@@ -103,6 +115,7 @@ export default class PluginBuilder {
       this._wheelPlugins.add(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.add(plugin);
+      if (plugin.options?.cursor) this._dragCursor = plugin.options.cursor;
     } else if (plugin instanceof KeyboardPlugin) {
       this._keyboardPlugins.set(plugin.key, plugin);
     }
@@ -115,6 +128,7 @@ export default class PluginBuilder {
       this._wheelPlugins.delete(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.delete(plugin);
+      if (plugin.options?.cursor) delete this._dragCursor;
     } else if (plugin instanceof KeyboardPlugin) {
       this._keyboardPlugins.delete(plugin.key);
     }

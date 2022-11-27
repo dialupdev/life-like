@@ -5,6 +5,7 @@ import { Rule } from "../game/Rules";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
+import EditController from "../game/controllers/EditController";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/select/select.js";
 import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
@@ -31,6 +32,9 @@ class Sidebar extends MobxLitElement {
   @property()
   public playbackController: PlaybackController;
 
+  @property()
+  public editController: EditController;
+
   private _changeRule(e: Event): void {
     const rule = (e.target as HTMLSelectElement).value as Rule;
     this.configController.setRule(rule);
@@ -56,9 +60,26 @@ class Sidebar extends MobxLitElement {
     this.dispatchEvent(new Event("reset"));
   }
 
+  private _edit(): void {
+    this.editController.start();
+  }
+
+  private _done(): void {
+    this.editController.stop();
+  }
+
   protected render(): TemplateResult {
     const configModel = this.configController.model;
     const playbackModel = this.playbackController.model;
+    const editModel = this.editController.model;
+
+    if (editModel.editing) {
+      return html`
+        <x-control-group>
+          <sl-button size="small" variant="primary" outline @click="${this._done}">Done</sl-button>
+        </x-control-group>
+      `;
+    }
 
     return html`
       <x-control-group label="Playback">
@@ -80,6 +101,10 @@ class Sidebar extends MobxLitElement {
             return html`<sl-menu-item value=${rule}>${ruleName}</sl-menu-item>`;
           })}
         </sl-select>
+      </x-control-group>
+
+      <x-control-group>
+        <sl-button size="small" @click="${this._edit}">Edit</sl-button>
       </x-control-group>
 
       <x-control-group>
