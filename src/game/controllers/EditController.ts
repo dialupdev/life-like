@@ -21,6 +21,8 @@ export default class EditController extends EventTarget {
     this._renderSystem = renderSystem;
 
     this.draw = this.draw.bind(this);
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
 
     makeObservable(this, {
       start: action,

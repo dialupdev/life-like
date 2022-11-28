@@ -44,12 +44,14 @@ export default class PluginManager {
       new KeyboardPlugin("t", this._playbackController.tick),
       new KeyboardPlugin("p", this._playbackController.togglePlaying),
       new KeyboardPlugin("c", this._positionController.recenterOffset),
+      new KeyboardPlugin("e", this._editController.start),
     ]);
 
     this._pluginGroups.set(PluginGroup.Edit, [
       new DragPlugin(this._editController.draw),
       new KeyboardPlugin("p", () => this._editController.setActiveTool(Tool.Pencil)),
       new KeyboardPlugin("e", () => this._editController.setActiveTool(Tool.Eraser)),
+      new KeyboardPlugin("Escape", this._editController.stop),
     ]);
   }
 

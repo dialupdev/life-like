@@ -104,7 +104,7 @@ class Sidebar extends MobxLitElement {
         </x-control-group>
 
         <x-control-group>
-          <sl-button size="small" variant="primary" outline @click="${this._done}">Done</sl-button>
+          <sl-button size="small" variant="primary" outline @click="${this._done}">Done (Esc)</sl-button>
         </x-control-group>
       `;
     }
@@ -132,7 +132,7 @@ class Sidebar extends MobxLitElement {
       </x-control-group>
 
       <x-control-group>
-        <sl-button size="small" @click="${this._edit}">Edit</sl-button>
+        <sl-button size="small" @click="${this._edit}">Edit (E)</sl-button>
       </x-control-group>
 
       <x-control-group>
