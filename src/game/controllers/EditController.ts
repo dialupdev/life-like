@@ -29,13 +29,20 @@ export default class EditController extends EventTarget {
   }
 
   public draw(windowX: number, windowY: number): void {
-    const worldX = PIXEL_RATIO * (windowX - SIDEBAR_WIDTH) - this._positionModel.offsetX;
-    const worldY = PIXEL_RATIO * windowY - this._positionModel.offsetY;
+    const canvasX = PIXEL_RATIO * (windowX - SIDEBAR_WIDTH) - this._positionModel.offsetX;
+    const canvasY = PIXEL_RATIO * windowY - this._positionModel.offsetY;
 
-    const x = Math.floor(worldX / this._positionModel.cellSize / PIXEL_RATIO);
-    const y = Math.floor(worldY / this._positionModel.cellSize / PIXEL_RATIO);
+    const worldX = Math.floor(canvasX / this._positionModel.cellSize / PIXEL_RATIO);
+    const worldY = Math.floor(canvasY / this._positionModel.cellSize / PIXEL_RATIO);
 
-    this._worldModel.spawn(new Cell(x, y));
+    const cell = new Cell(worldX, worldY);
+
+    // Don't spawn the cell if it already exists
+    if (this._worldModel.cells.has(cell.hash())) {
+      return;
+    }
+
+    this._worldModel.spawn(cell);
     this._renderSystem.tickLazy();
   }
 
