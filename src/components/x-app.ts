@@ -9,6 +9,7 @@ import PlaybackModel from "../game/models/PlaybackModel";
 import EditModel from "../game/models/EditModel";
 import LifecycleSystem from "../game/systems/LifecycleSystem";
 import RenderSystem from "../game/systems/RenderSystem";
+import WorldController from "../game/controllers/WorldController";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
@@ -60,6 +61,7 @@ class App extends MobxLitElement {
   private _renderSystem: RenderSystem;
 
   // Controllers
+  private _worldController: WorldController;
   private _configController: ConfigController;
   private _positionController: PositionController;
   private _playbackController: PlaybackController;
@@ -83,6 +85,7 @@ class App extends MobxLitElement {
       this._canvasPromise
     );
 
+    this._worldController = new WorldController(this._worldModel);
     this._configController = new ConfigController(this._configModel);
     this._positionController = new PositionController(this._positionModel, this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
@@ -116,9 +119,8 @@ class App extends MobxLitElement {
   }
 
   private _reset(): void {
+    this._worldController.randomize();
     this._playbackController.pause();
-    this._worldModel.reset();
-    this._worldModel.randomize();
     this._positionController.recenterOffset();
   }
 

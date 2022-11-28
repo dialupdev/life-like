@@ -8,10 +8,6 @@ export default class WorldModel {
   // which would remove the need for Cell.fromHash().
   public neighborCounts = new Map<string, number>();
 
-  constructor() {
-    this.randomize();
-  }
-
   private _incrementNeighborCount(cell: Cell): void {
     const neighborCount = this.neighborCounts.get(cell.hash());
     this.neighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
@@ -41,20 +37,5 @@ export default class WorldModel {
     }
 
     this.cells.delete(cell.hash());
-  }
-
-  public reset(): void {
-    this.cells = new Map<string, Cell>();
-    this.neighborCounts = new Map<string, number>();
-  }
-
-  public randomize(): void {
-    for (let x = -40; x <= 40; x++) {
-      for (let y = -40; y <= 40; y++) {
-        if (Math.random() < 0.5) {
-          this.spawn(new Cell(x, y));
-        }
-      }
-    }
   }
 }
