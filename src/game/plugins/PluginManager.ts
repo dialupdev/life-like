@@ -1,3 +1,4 @@
+import { Tool } from "../models/EditModel";
 import PositionController, { Direction } from "../controllers/PositionController";
 import PlaybackController from "../controllers/PlaybackController";
 import EditController from "../controllers/EditController";
@@ -45,7 +46,11 @@ export default class PluginManager {
       new KeyboardPlugin("c", this._positionController.recenterOffset),
     ]);
 
-    this._pluginGroups.set(PluginGroup.Edit, [new DragPlugin(this._editController.draw)]);
+    this._pluginGroups.set(PluginGroup.Edit, [
+      new DragPlugin(this._editController.draw),
+      new KeyboardPlugin("p", () => this._editController.setActiveTool(Tool.Pencil)),
+      new KeyboardPlugin("e", () => this._editController.setActiveTool(Tool.Eraser)),
+    ]);
   }
 
   public activateGroup(pluginGroup: PluginGroup): void {

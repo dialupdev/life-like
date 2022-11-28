@@ -3,7 +3,7 @@ import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
 import Cell from "../Cell";
 import WorldModel from "../models/WorldModel";
 import PositionModel from "../models/PositionModel";
-import EditModel from "../models/EditModel";
+import EditModel, { Tool } from "../models/EditModel";
 import RenderSystem from "../systems/RenderSystem";
 
 export default class EditController extends EventTarget {
@@ -36,13 +36,17 @@ export default class EditController extends EventTarget {
     const worldY = Math.floor(canvasY / this._positionModel.cellSize / PIXEL_RATIO);
 
     const cell = new Cell(worldX, worldY);
+    const cellExists = this._worldModel.cells.has(cell.hash());
 
-    // Don't spawn the cell if it already exists
-    if (this._worldModel.cells.has(cell.hash())) {
-      return;
+    switch (this._editModel.activeTool) {
+      case Tool.Pencil:
+        if (!cellExists) this._worldModel.spawn(cell);
+        break;
+      case Tool.Eraser:
+        if (cellExists) this._worldModel.kill(cell);
+        break;
     }
 
-    this._worldModel.spawn(cell);
     this._renderSystem.tickLazy();
   }
 
@@ -56,6 +60,10 @@ export default class EditController extends EventTarget {
     this.dispatchEvent(new Event("stop"));
 
     this._editModel.editing = false;
+  }
+
+  public setActiveTool(tool: Tool): void {
+    this._editModel.activeTool = tool;
   }
 
   public get model(): Readonly<EditModel> {

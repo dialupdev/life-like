@@ -2,11 +2,15 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../game/Rules";
+import { Tool } from "../game/models/EditModel";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
 import EditController from "../game/controllers/EditController";
+import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
+import "@shoelace-style/shoelace/dist/components/icon/icon.js";
 import "@shoelace-style/shoelace/dist/components/select/select.js";
 import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
 import "./x-control-group";
@@ -64,6 +68,10 @@ class Sidebar extends MobxLitElement {
     this.editController.start();
   }
 
+  private _setActiveTool(tool: Tool): void {
+    this.editController.setActiveTool(tool);
+  }
+
   private _done(): void {
     this.editController.stop();
   }
@@ -75,6 +83,26 @@ class Sidebar extends MobxLitElement {
 
     if (editModel.editing) {
       return html`
+        <x-control-group label="Edit">
+          <sl-button-group>
+            ${Object.keys(Tool).map(tool => {
+              return html`
+                <sl-tooltip content=${tool}>
+                  <sl-button
+                    size="small"
+                    variant="primary"
+                    ?outline=${tool !== editModel.activeTool}
+                    @click="${() => this._setActiveTool(tool as Tool)}"
+                  >
+                    <sl-icon slot="prefix" src=${`/images/${tool.toLowerCase()}.svg`}></sl-icon>
+                    (${tool.charAt(0)})
+                  </sl-button>
+                </sl-tooltip>
+              `;
+            })}
+          </sl-button-group>
+        </x-control-group>
+
         <x-control-group>
           <sl-button size="small" variant="primary" outline @click="${this._done}">Done</sl-button>
         </x-control-group>

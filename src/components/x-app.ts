@@ -40,8 +40,11 @@ class App extends MobxLitElement {
       image-rendering: pixelated;
       left: ${SIDEBAR_WIDTH}px;
     }
-    canvas.editing {
+    canvas.tool-pencil {
       cursor: url("/images/pencil.svg"), auto;
+    }
+    canvas.tool-eraser {
+      cursor: url("/images/eraser.svg"), auto;
     }
   `;
 
@@ -128,7 +131,7 @@ class App extends MobxLitElement {
         .editController=${this._editController}
         @reset=${this._reset}
       ></x-sidebar>
-      <canvas class=${this._editModel.editing && "editing"}></canvas>
+      <canvas class=${this._editModel.editing && `tool-${this._editModel.activeTool.toLowerCase()}`}></canvas>
     `;
   }
 }
