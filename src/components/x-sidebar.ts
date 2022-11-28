@@ -3,6 +3,7 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../game/Rules";
 import { Tool } from "../game/models/EditModel";
+import WorldController from "../game/controllers/WorldController";
 import ConfigController from "../game/controllers/ConfigController";
 import PositionController from "../game/controllers/PositionController";
 import PlaybackController from "../game/controllers/PlaybackController";
@@ -26,6 +27,9 @@ class Sidebar extends MobxLitElement {
       padding: 20px;
     }
   `;
+
+  @property()
+  public worldController: WorldController;
 
   @property()
   public configController: ConfigController;
@@ -61,7 +65,9 @@ class Sidebar extends MobxLitElement {
   }
 
   private _reset(): void {
-    this.dispatchEvent(new Event("reset"));
+    this.worldController.randomize();
+    this.playbackController.pause();
+    this.positionController.recenterOffset();
   }
 
   private _edit(): void {

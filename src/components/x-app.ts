@@ -118,20 +118,14 @@ class App extends MobxLitElement {
     });
   }
 
-  private _reset(): void {
-    this._worldController.randomize();
-    this._playbackController.pause();
-    this._positionController.recenterOffset();
-  }
-
   protected render(): TemplateResult {
     return html`
       <x-sidebar
+        .worldController=${this._worldController}
         .configController=${this._configController}
         .positionController=${this._positionController}
         .playbackController=${this._playbackController}
         .editController=${this._editController}
-        @reset=${this._reset}
       ></x-sidebar>
       <canvas class=${this._editModel.editing && `tool-${this._editModel.activeTool.toLowerCase()}`}></canvas>
     `;
