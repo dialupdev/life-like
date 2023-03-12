@@ -13,7 +13,7 @@ import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import "@shoelace-style/shoelace/dist/components/icon/icon.js";
 import "@shoelace-style/shoelace/dist/components/select/select.js";
-import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
+import "@shoelace-style/shoelace/dist/components/option/option.js";
 import "./x-control-group";
 
 @customElement("x-sidebar")
@@ -132,7 +132,7 @@ class Sidebar extends MobxLitElement {
       <x-control-group label="Config">
         <sl-select size="small" label="Rule" value=${configModel.rule} @sl-change=${this._changeRule}>
           ${Object.entries(Rule).map(([ruleName, rule]) => {
-            return html`<sl-menu-item value=${rule}>${ruleName}</sl-menu-item>`;
+            return html`<sl-option value=${rule}>${ruleName}</sl-option>`;
           })}
         </sl-select>
       </x-control-group>
