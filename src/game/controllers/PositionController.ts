@@ -12,7 +12,7 @@ export enum Direction {
 export default class PositionController {
   private _positionModel: PositionModel;
   private _renderSystem: RenderSystem;
-  private _canvas: HTMLCanvasElement;
+  private _canvas!: HTMLCanvasElement;
 
   constructor(positionModel: PositionModel, renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
     this._positionModel = positionModel;

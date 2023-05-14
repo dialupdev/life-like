@@ -1,9 +1,9 @@
 import { Rule, parseRule } from "../Rules";
 
 export default class ConfigModel {
-  private _rule: Rule;
-  public birthRule: Set<number>;
-  public survivalRule: Set<number>;
+  private _rule!: Rule;
+  public birthRule!: Set<number>;
+  public survivalRule!: Set<number>;
 
   constructor() {
     this.rule = Rule.life;

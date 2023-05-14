@@ -56,7 +56,7 @@ export default class PluginManager {
   }
 
   public activateGroup(pluginGroup: PluginGroup): void {
-    const plugins = this._pluginGroups.get(pluginGroup);
+    const plugins = this._pluginGroups.get(pluginGroup)!;
 
     for (const plugin of plugins) {
       this._pluginBuilder.activate(plugin);
@@ -64,7 +64,7 @@ export default class PluginManager {
   }
 
   public deactivateGroup(pluginGroup: PluginGroup): void {
-    const plugins = this._pluginGroups.get(pluginGroup);
+    const plugins = this._pluginGroups.get(pluginGroup)!;
 
     for (const plugin of plugins) {
       this._pluginBuilder.deactivate(plugin);

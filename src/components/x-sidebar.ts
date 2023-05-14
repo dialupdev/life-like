@@ -29,19 +29,19 @@ class Sidebar extends MobxLitElement {
   `;
 
   @property()
-  public worldController: WorldController;
+  public worldController!: WorldController;
 
   @property()
-  public configController: ConfigController;
+  public configController!: ConfigController;
 
   @property()
-  public positionController: PositionController;
+  public positionController!: PositionController;
 
   @property()
-  public playbackController: PlaybackController;
+  public playbackController!: PlaybackController;
 
   @property()
-  public editController: EditController;
+  public editController!: EditController;
 
   private _changeRule(e: Event): void {
     const rule = (e.target as HTMLSelectElement).value as Rule;

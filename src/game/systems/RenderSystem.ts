@@ -8,7 +8,7 @@ export default class RenderSystem implements System {
   private _worldModel: WorldModel;
   private _positionModel: PositionModel;
   private _playbackModel: PlaybackModel;
-  private _context: CanvasRenderingContext2D;
+  private _context!: CanvasRenderingContext2D;
 
   constructor(
     worldModel: WorldModel,
@@ -21,7 +21,7 @@ export default class RenderSystem implements System {
     this._playbackModel = playbackModel;
 
     canvasPromise.then(canvas => {
-      this._context = canvas.getContext("2d", { alpha: false });
+      this._context = canvas.getContext("2d", { alpha: false })!;
     });
   }
 

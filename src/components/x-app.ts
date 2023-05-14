@@ -72,7 +72,7 @@ class App extends MobxLitElement {
   private _pluginManager: PluginManager;
 
   @queryAsync("canvas")
-  private _canvasPromise: Promise<HTMLCanvasElement>;
+  private _canvasPromise!: Promise<HTMLCanvasElement>;
 
   constructor() {
     super();

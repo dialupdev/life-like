@@ -14,7 +14,7 @@ export default class WorldModel {
   }
 
   private _decrementNeighborCount(cell: Cell): void {
-    const neighborCountMinusOne = this.neighborCounts.get(cell.hash()) - 1;
+    const neighborCountMinusOne = this.neighborCounts.get(cell.hash())! - 1;
 
     if (neighborCountMinusOne === 0) {
       this.neighborCounts.delete(cell.hash());

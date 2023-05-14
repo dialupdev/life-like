@@ -30,8 +30,8 @@ export default class PluginBuilder {
   private _wheelPlugins = new Set<WheelPlugin>();
   private _dragPlugins = new Set<DragPlugin>();
   private _keyboardPlugins = new Map<string, KeyboardPlugin>();
-  private _lastMouseX: number;
-  private _lastMouseY: number;
+  private _lastMouseX!: number;
+  private _lastMouseY!: number;
   private _dragCursor?: string;
 
   constructor(canvasPromise: Promise<HTMLCanvasElement>) {

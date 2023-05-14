@@ -16,7 +16,7 @@ class ControlGroup extends LitElement {
   `;
 
   @property()
-  public label: string;
+  public label!: string;
 
   protected render(): TemplateResult {
     return html`
