@@ -97,8 +97,6 @@ export class PositionController {
     const x = Math.round((width - cellSize) / 2);
     const y = Math.round((height - cellSize) / 2);
 
-    console.log("reset", { x, y });
-
     this.setOffset(x, y);
     this.resetZoom();
 
