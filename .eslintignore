@@ -1,3 +1,4 @@
+core
 dist
 *.config.js
 .eslintrc.js
