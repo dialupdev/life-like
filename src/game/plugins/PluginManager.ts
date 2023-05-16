@@ -39,7 +39,7 @@ export default class PluginManager {
 
     this._pluginGroups.set(PluginGroup.Playback, [
       new DragPlugin((_x, _y, deltaX, deltaY) => this._positionController.translateOffset(deltaX, deltaY), {
-        cursor: "grabbing",
+        cursor: "move",
       }),
       new KeyboardPlugin("t", this._playbackController.tick),
       new KeyboardPlugin("p", this._playbackController.togglePlaying),

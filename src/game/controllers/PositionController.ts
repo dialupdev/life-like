@@ -115,7 +115,7 @@ export default class PositionController {
     const oldZoomScale = this._positionModel.zoomScale;
     let newZoomScale = this._positionModel.zoomScale * Math.exp(normalizedDelta * ZOOM_INTENSITY);
 
-    // Clamp zoom scale within valid zoom range
+    // Clamp zoom scale within valid range
     newZoomScale = Math.min(Math.max(newZoomScale, MIN_ZOOM_FACTOR), MAX_ZOOM_FACTOR);
 
     // Get the canvas position of the mouse after scaling
