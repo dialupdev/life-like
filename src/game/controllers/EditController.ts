@@ -1,9 +1,9 @@
 import { makeObservable, action } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../../Constants";
 import { Cell } from "../Cell";
-import { WorldModel } from "../models/WorldModel";
-import { PositionModel } from "../models/PositionModel";
 import { EditModel, Tool } from "../models/EditModel";
+import { PositionModel } from "../models/PositionModel";
+import { WorldModel } from "../models/WorldModel";
 import { RenderSystem } from "../systems/RenderSystem";
 
 export class EditController extends EventTarget {

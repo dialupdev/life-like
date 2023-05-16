@@ -1,19 +1,19 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Rule } from "../game/Rules";
-import { Tool } from "../game/models/EditModel";
-import { WorldController } from "../game/controllers/WorldController";
 import { ConfigController } from "../game/controllers/ConfigController";
-import { PositionController } from "../game/controllers/PositionController";
-import { PlaybackController } from "../game/controllers/PlaybackController";
 import { EditController } from "../game/controllers/EditController";
+import { PlaybackController } from "../game/controllers/PlaybackController";
+import { PositionController } from "../game/controllers/PositionController";
+import { WorldController } from "../game/controllers/WorldController";
+import { Tool } from "../game/models/EditModel";
+import { Rule } from "../game/Rules";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import "@shoelace-style/shoelace/dist/components/icon/icon.js";
-import "@shoelace-style/shoelace/dist/components/select/select.js";
 import "@shoelace-style/shoelace/dist/components/option/option.js";
+import "@shoelace-style/shoelace/dist/components/select/select.js";
+import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import "./x-control-group";
 
 @customElement("x-sidebar")

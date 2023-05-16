@@ -1,8 +1,8 @@
-import { Tool } from "../models/EditModel";
-import { PositionController, Direction } from "../controllers/PositionController";
-import { PlaybackController } from "../controllers/PlaybackController";
-import { EditController } from "../controllers/EditController";
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
+import { EditController } from "../controllers/EditController";
+import { PlaybackController } from "../controllers/PlaybackController";
+import { PositionController, Direction } from "../controllers/PositionController";
+import { Tool } from "../models/EditModel";
 
 export enum PluginGroup {
   Default = "Default",

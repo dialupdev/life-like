@@ -1,6 +1,6 @@
 import { Cell } from "../Cell";
-import { WorldModel } from "../models/WorldModel";
 import { ConfigModel } from "../models/ConfigModel";
+import { WorldModel } from "../models/WorldModel";
 import type { System } from "./System";
 
 export class LifecycleSystem implements System {

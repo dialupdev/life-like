@@ -31,6 +31,17 @@ module.exports = {
       },
     ],
     "import/no-default-export": "error",
+    "import/order": [
+      "error",
+      {
+        groups: [["builtin", "external"], ["internal", "parent", "sibling", "index"], ["type"]],
+        "newlines-between": "never",
+        alphabetize: {
+          order: "asc",
+          caseInsensitive: true,
+        },
+      },
+    ],
     "no-await-in-loop": "error",
   },
   overrides: [

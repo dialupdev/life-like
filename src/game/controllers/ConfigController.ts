@@ -1,5 +1,5 @@
-import { Rule } from "../Rules";
 import { ConfigModel } from "../models/ConfigModel";
+import { Rule } from "../Rules";
 
 export class ConfigController {
   private _configModel: ConfigModel;

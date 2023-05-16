@@ -1,7 +1,7 @@
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../../Constants";
-import { WorldModel } from "../models/WorldModel";
-import { PositionModel } from "../models/PositionModel";
 import { PlaybackModel } from "../models/PlaybackModel";
+import { PositionModel } from "../models/PositionModel";
+import { WorldModel } from "../models/WorldModel";
 import type { System } from "./System";
 
 export class RenderSystem implements System {
