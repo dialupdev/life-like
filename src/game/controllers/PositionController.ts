@@ -58,8 +58,8 @@ export default class PositionController {
   }
 
   public translateOffset(deltaX: number, deltaY: number): void {
-    this._positionModel.offsetX += PIXEL_RATIO * deltaX;
-    this._positionModel.offsetY += PIXEL_RATIO * deltaY;
+    this._positionModel.offsetX += deltaX;
+    this._positionModel.offsetY += deltaY;
 
     this._renderSystem.tickLazy();
   }

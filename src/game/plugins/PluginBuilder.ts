@@ -59,15 +59,8 @@ export default class PluginBuilder {
   private _runWheelPlugins(e: WheelEvent): void {
     e.preventDefault();
 
-    // e.ctrlKey is the magic way to tell pan and zoom apart
-    if (e.ctrlKey) {
-      for (const plugin of this._wheelPlugins) {
-        plugin.run(e.deltaY, e.clientX, e.clientY);
-      }
-    } else {
-      for (const plugin of this._dragPlugins) {
-        plugin.run(e.clientX, e.clientY, -e.deltaX, -e.deltaY);
-      }
+    for (const plugin of this._wheelPlugins) {
+      plugin.run(e.deltaY, e.clientX, e.clientY);
     }
   }
 
