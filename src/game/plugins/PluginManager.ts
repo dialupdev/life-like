@@ -1,8 +1,8 @@
 import { Tool } from "../models/EditModel";
-import PositionController, { Direction } from "../controllers/PositionController";
-import PlaybackController from "../controllers/PlaybackController";
-import EditController from "../controllers/EditController";
-import PluginBuilder, { ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
+import { PositionController, Direction } from "../controllers/PositionController";
+import { PlaybackController } from "../controllers/PlaybackController";
+import { EditController } from "../controllers/EditController";
+import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 
 export enum PluginGroup {
   Default = "Default",
@@ -10,7 +10,7 @@ export enum PluginGroup {
   Edit = "Edit",
 }
 
-export default class PluginManager {
+export class PluginManager {
   private _pluginBuilder: PluginBuilder;
   private _positionController: PositionController;
   private _playbackController: PlaybackController;

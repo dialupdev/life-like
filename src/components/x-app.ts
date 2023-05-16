@@ -2,26 +2,26 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import WorldModel from "../game/models/WorldModel";
-import ConfigModel from "../game/models/ConfigModel";
-import PositionModel from "../game/models/PositionModel";
-import PlaybackModel from "../game/models/PlaybackModel";
-import EditModel from "../game/models/EditModel";
-import LifecycleSystem from "../game/systems/LifecycleSystem";
-import RenderSystem from "../game/systems/RenderSystem";
-import WorldController from "../game/controllers/WorldController";
-import ConfigController from "../game/controllers/ConfigController";
-import PositionController from "../game/controllers/PositionController";
-import PlaybackController from "../game/controllers/PlaybackController";
-import PluginBuilder from "../game/plugins/PluginBuilder";
-import PluginManager, { PluginGroup } from "../game/plugins/PluginManager";
-import EditController from "../game/controllers/EditController";
+import { WorldModel } from "../game/models/WorldModel";
+import { ConfigModel } from "../game/models/ConfigModel";
+import { PositionModel } from "../game/models/PositionModel";
+import { PlaybackModel } from "../game/models/PlaybackModel";
+import { EditModel } from "../game/models/EditModel";
+import { LifecycleSystem } from "../game/systems/LifecycleSystem";
+import { RenderSystem } from "../game/systems/RenderSystem";
+import { WorldController } from "../game/controllers/WorldController";
+import { ConfigController } from "../game/controllers/ConfigController";
+import { PositionController } from "../game/controllers/PositionController";
+import { PlaybackController } from "../game/controllers/PlaybackController";
+import { PluginBuilder } from "../game/plugins/PluginBuilder";
+import { PluginManager, PluginGroup } from "../game/plugins/PluginManager";
+import { EditController } from "../game/controllers/EditController";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "./x-sidebar";
 
 @customElement("x-app")
 class App extends MobxLitElement {
-  static styles = css`
+  public static styles = css`
     :host {
       display: block;
       font-family: var(--sl-font-sans);

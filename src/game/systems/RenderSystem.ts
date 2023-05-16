@@ -1,10 +1,10 @@
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../../Constants";
-import WorldModel from "../models/WorldModel";
-import PositionModel from "../models/PositionModel";
-import PlaybackModel from "../models/PlaybackModel";
+import { WorldModel } from "../models/WorldModel";
+import { PositionModel } from "../models/PositionModel";
+import { PlaybackModel } from "../models/PlaybackModel";
 import type { System } from "./System";
 
-export default class RenderSystem implements System {
+export class RenderSystem implements System {
   private _worldModel: WorldModel;
   private _positionModel: PositionModel;
   private _playbackModel: PlaybackModel;

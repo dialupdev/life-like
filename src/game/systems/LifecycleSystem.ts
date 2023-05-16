@@ -1,9 +1,9 @@
-import Cell from "../Cell";
-import WorldModel from "../models/WorldModel";
-import ConfigModel from "../models/ConfigModel";
+import { Cell } from "../Cell";
+import { WorldModel } from "../models/WorldModel";
+import { ConfigModel } from "../models/ConfigModel";
 import type { System } from "./System";
 
-export default class LifecycleSystem implements System {
+export class LifecycleSystem implements System {
   private _worldModel: WorldModel;
   private _configModel: ConfigModel;
 

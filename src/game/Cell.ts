@@ -1,4 +1,4 @@
-export default class Cell {
+export class Cell {
   public x: number;
   public y: number;
 

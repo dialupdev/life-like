@@ -1,6 +1,6 @@
 import { Rule, parseRule } from "../Rules";
 
-export default class ConfigModel {
+export class ConfigModel {
   private _rule!: Rule;
   public birthRule!: Set<number>;
   public survivalRule!: Set<number>;

@@ -5,7 +5,7 @@ export enum Tool {
   Eraser = "Eraser",
 }
 
-export default class PositionModel {
+export class EditModel {
   public editing = false;
   public activeTool = Tool.Pencil;
 

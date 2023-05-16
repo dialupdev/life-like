@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 
-export default class PlaybackModel {
+export class PlaybackModel {
   public playing = false;
   public ticks = 0;
 

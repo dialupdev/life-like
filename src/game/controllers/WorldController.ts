@@ -1,7 +1,7 @@
-import Cell from "../Cell";
-import WorldModel from "../models/WorldModel";
+import { Cell } from "../Cell";
+import { WorldModel } from "../models/WorldModel";
 
-export default class WorldController {
+export class WorldController {
   private _worldModel: WorldModel;
 
   constructor(worldModel: WorldModel) {

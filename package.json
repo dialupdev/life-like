@@ -13,7 +13,9 @@
     "tsc": "tsc --noEmit",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
-    "lint": "npm run tsc && npm run prettier"
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix",
+    "lint": "npm run tsc && npm run prettier && npm run eslint"
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.0",
@@ -25,6 +27,13 @@
   "devDependencies": {
     "@types/lodash.throttle": "^4.1.7",
     "css-loader": "^6.7.3",
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-lit": "^1.8.3",
+    "eslint-plugin-lit-a11y": "^2.4.1",
     "html-webpack-plugin": "^5.5.1",
     "prettier": "^2.8.8",
     "style-loader": "^3.3.2",

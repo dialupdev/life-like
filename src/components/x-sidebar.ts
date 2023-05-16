@@ -3,11 +3,11 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../game/Rules";
 import { Tool } from "../game/models/EditModel";
-import WorldController from "../game/controllers/WorldController";
-import ConfigController from "../game/controllers/ConfigController";
-import PositionController from "../game/controllers/PositionController";
-import PlaybackController from "../game/controllers/PlaybackController";
-import EditController from "../game/controllers/EditController";
+import { WorldController } from "../game/controllers/WorldController";
+import { ConfigController } from "../game/controllers/ConfigController";
+import { PositionController } from "../game/controllers/PositionController";
+import { PlaybackController } from "../game/controllers/PlaybackController";
+import { EditController } from "../game/controllers/EditController";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
@@ -18,7 +18,7 @@ import "./x-control-group";
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
-  static styles = css`
+  public static styles = css`
     :host {
       background: #f4f5f7;
       border-right: 2px solid #ddd;

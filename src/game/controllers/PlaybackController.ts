@@ -1,9 +1,9 @@
 import { makeObservable, action } from "mobx";
-import PlaybackModel from "../models/PlaybackModel";
-import LifecycleSystem from "../systems/LifecycleSystem";
-import RenderSystem from "../systems/RenderSystem";
+import { PlaybackModel } from "../models/PlaybackModel";
+import { LifecycleSystem } from "../systems/LifecycleSystem";
+import { RenderSystem } from "../systems/RenderSystem";
 
-export default class PlaybackController {
+export class PlaybackController {
   private _playbackModel: PlaybackModel;
   private _lifecycleSystem: LifecycleSystem;
   private _renderSystem: RenderSystem;

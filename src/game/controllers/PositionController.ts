@@ -1,6 +1,6 @@
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../../Constants";
-import PositionModel from "../models/PositionModel";
-import RenderSystem from "../systems/RenderSystem";
+import { PositionModel } from "../models/PositionModel";
+import { RenderSystem } from "../systems/RenderSystem";
 
 export enum Direction {
   Up = "Up",
@@ -13,7 +13,7 @@ const ZOOM_INTENSITY = 0.01;
 const MIN_ZOOM_FACTOR = 0.1; // 10%
 const MAX_ZOOM_FACTOR = 64.0; // 6400%
 
-export default class PositionController {
+export class PositionController {
   private _positionModel: PositionModel;
   private _renderSystem: RenderSystem;
   private _canvas!: HTMLCanvasElement;

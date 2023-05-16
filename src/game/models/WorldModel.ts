@@ -1,6 +1,6 @@
-import Cell from "../Cell";
+import { Cell } from "../Cell";
 
-export default class WorldModel {
+export class WorldModel {
   // If JS had a way to hash entities for comparison within a Set,
   // we could use a Set for cells instead of a Map.
   public cells = new Map<string, Cell>();

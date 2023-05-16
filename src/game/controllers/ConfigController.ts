@@ -1,7 +1,7 @@
 import { Rule } from "../Rules";
-import ConfigModel from "../models/ConfigModel";
+import { ConfigModel } from "../models/ConfigModel";
 
-export default class ConfigController {
+export class ConfigController {
   private _configModel: ConfigModel;
 
   constructor(configModel: ConfigModel) {

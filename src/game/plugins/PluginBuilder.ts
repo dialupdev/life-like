@@ -25,7 +25,7 @@ export class KeyboardPlugin {
 
 export type Plugin = ResizePlugin | WheelPlugin | DragPlugin | KeyboardPlugin;
 
-export default class PluginBuilder {
+export class PluginBuilder {
   private _resizePlugins = new Set<ResizePlugin>();
   private _wheelPlugins = new Set<WheelPlugin>();
   private _dragPlugins = new Set<DragPlugin>();

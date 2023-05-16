@@ -5,7 +5,7 @@ import "@shoelace-style/shoelace/dist/components/divider/divider.js";
 
 @customElement("x-control-group")
 class ControlGroup extends LitElement {
-  static styles = css`
+  public static styles = css`
     :host {
       display: block;
       margin: 10px 0;
