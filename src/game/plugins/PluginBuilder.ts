@@ -59,8 +59,15 @@ export default class PluginBuilder {
   private _runWheelPlugins(e: WheelEvent): void {
     e.preventDefault();
 
-    for (const plugin of this._wheelPlugins) {
-      plugin.run(-e.deltaY, e.clientX, e.clientY);
+    // e.ctrlKey is the magic way to tell pan and zoom apart
+    if (e.ctrlKey) {
+      for (const plugin of this._wheelPlugins) {
+        plugin.run(e.deltaY, e.clientX, e.clientY);
+      }
+    } else {
+      for (const plugin of this._dragPlugins) {
+        plugin.run(e.clientX, e.clientY, -e.deltaX, -e.deltaY);
+      }
     }
   }
 
@@ -102,7 +109,7 @@ export default class PluginBuilder {
 
   private _addEventListeners(canvas: HTMLCanvasElement): void {
     window.addEventListener("resize", throttle(this._runResizePlugins, 500));
-    canvas.addEventListener("wheel", throttle(this._runWheelPlugins, 100));
+    canvas.addEventListener("wheel", this._runWheelPlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
     window.addEventListener("keydown", this._runKeyboardPlugin);

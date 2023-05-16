@@ -1,4 +1,4 @@
-import { PIXEL_RATIO } from "../../Constants";
+import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../../Constants";
 import WorldModel from "../models/WorldModel";
 import PositionModel from "../models/PositionModel";
 import PlaybackModel from "../models/PlaybackModel";
@@ -30,13 +30,16 @@ export default class RenderSystem implements System {
     this._context.fillRect(0, 0, this._context.canvas.width, this._context.canvas.height);
   }
 
-  private _drawCell(x: number, y: number): void {
+  private _drawCell(worldX: number, worldY: number): void {
     this._context.fillStyle = "rgb(10, 90, 70)";
+
+    const cellSize = NATURAL_CELL_SIZE * this._positionModel.zoomScale;
+
     this._context.fillRect(
-      PIXEL_RATIO * this._positionModel.cellSize * x + this._positionModel.offsetX,
-      PIXEL_RATIO * this._positionModel.cellSize * y + this._positionModel.offsetY,
-      PIXEL_RATIO * this._positionModel.cellSize,
-      PIXEL_RATIO * this._positionModel.cellSize
+      PIXEL_RATIO * cellSize * worldX + PIXEL_RATIO * this._positionModel.offsetX,
+      PIXEL_RATIO * cellSize * worldY + PIXEL_RATIO * this._positionModel.offsetY,
+      PIXEL_RATIO * cellSize,
+      PIXEL_RATIO * cellSize
     );
   }
 

@@ -1,5 +1,5 @@
 export default class PositionModel {
-  public offsetX = 0;
-  public offsetY = 0;
-  public cellSize = 4;
+  public zoomScale = 1; // 100%
+  public offsetX = 0; // Not including pixel multiplier
+  public offsetY = 0; // Not including pixel multiplier
 }

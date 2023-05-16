@@ -1,5 +1,5 @@
 import { makeObservable, action } from "mobx";
-import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../../Constants";
+import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../../Constants";
 import Cell from "../Cell";
 import WorldModel from "../models/WorldModel";
 import PositionModel from "../models/PositionModel";
@@ -31,11 +31,13 @@ export default class EditController extends EventTarget {
   }
 
   public draw(windowX: number, windowY: number): void {
-    const canvasX = PIXEL_RATIO * (windowX - SIDEBAR_WIDTH) - this._positionModel.offsetX;
-    const canvasY = PIXEL_RATIO * windowY - this._positionModel.offsetY;
+    const canvasX = PIXEL_RATIO * (windowX - SIDEBAR_WIDTH) - PIXEL_RATIO * this._positionModel.offsetX;
+    const canvasY = PIXEL_RATIO * windowY - PIXEL_RATIO * this._positionModel.offsetY;
 
-    const worldX = Math.floor(canvasX / this._positionModel.cellSize / PIXEL_RATIO);
-    const worldY = Math.floor(canvasY / this._positionModel.cellSize / PIXEL_RATIO);
+    const cellSize = NATURAL_CELL_SIZE * this._positionModel.zoomScale;
+
+    const worldX = Math.floor(canvasX / cellSize / PIXEL_RATIO);
+    const worldY = Math.floor(canvasY / cellSize / PIXEL_RATIO);
 
     const cell = new Cell(worldX, worldY);
     const cellExists = this._worldModel.cells.has(cell.hash());
