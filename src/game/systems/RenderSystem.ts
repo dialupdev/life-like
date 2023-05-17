@@ -1,3 +1,4 @@
+import * as core from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../../Constants";
 import { PlaybackModel } from "../models/PlaybackModel";
 import { PositionModel } from "../models/PositionModel";
@@ -49,6 +50,8 @@ export class RenderSystem implements System {
     for (const cell of this._worldModel.cells.values()) {
       this._drawCell(cell.x, cell.y);
     }
+
+    core.draw(this._context.canvas, "orange");
   }
 
   public tickLazy(): void {

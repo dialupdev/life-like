@@ -1,4 +1,3 @@
-import * as core from "core";
 import { configure } from "mobx";
 import "./components/x-app";
 
@@ -8,5 +7,3 @@ configure({
 
 const app = document.createElement("x-app");
 document.body.appendChild(app);
-
-core.main();
