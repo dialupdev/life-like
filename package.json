@@ -20,6 +20,7 @@
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.0",
     "@shoelace-style/shoelace": "^2.4.0",
+    "core": "file:./core/pkg",
     "lit": "^2.7.4",
     "lodash.throttle": "^4.1.1",
     "mobx": "^6.9.0"
