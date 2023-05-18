@@ -26,7 +26,7 @@ export class RenderSystem implements System {
     canvasPromise.then(canvas => {
       this._context = canvas.getContext("2d", { alpha: false })!;
 
-      renderer = Renderer.new(canvas, PIXEL_RATIO, "lightblue");
+      renderer = Renderer.new(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE, "lightblue");
     });
   }
 
@@ -55,7 +55,7 @@ export class RenderSystem implements System {
       this._drawCell(cell.x, cell.y);
     }
 
-    renderer.update(this._positionModel.offsetX, this._positionModel.offsetY);
+    renderer.update(this._positionModel.offsetX, this._positionModel.offsetY, this._positionModel.zoomScale);
   }
 
   public tickLazy(): void {
