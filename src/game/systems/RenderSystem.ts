@@ -1,9 +1,11 @@
-import * as core from "core";
+import { Renderer } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../../Constants";
 import { PlaybackModel } from "../models/PlaybackModel";
 import { PositionModel } from "../models/PositionModel";
 import { WorldModel } from "../models/WorldModel";
 import type { System } from "./System";
+
+let renderer: Renderer;
 
 export class RenderSystem implements System {
   private _worldModel: WorldModel;
@@ -23,6 +25,8 @@ export class RenderSystem implements System {
 
     canvasPromise.then(canvas => {
       this._context = canvas.getContext("2d", { alpha: false })!;
+
+      renderer = Renderer.new(canvas, "lightblue");
     });
   }
 
@@ -51,7 +55,7 @@ export class RenderSystem implements System {
       this._drawCell(cell.x, cell.y);
     }
 
-    core.draw(this._context.canvas, "orange");
+    renderer.update(this._positionModel.offsetX, this._positionModel.offsetY);
   }
 
   public tickLazy(): void {
