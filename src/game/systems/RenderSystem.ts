@@ -26,7 +26,7 @@ export class RenderSystem implements System {
     canvasPromise.then(canvas => {
       this._context = canvas.getContext("2d", { alpha: false })!;
 
-      renderer = Renderer.new(canvas, "lightblue");
+      renderer = Renderer.new(canvas, PIXEL_RATIO, "lightblue");
     });
   }
 

@@ -6,12 +6,13 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 pub struct Renderer {
     canvas: HtmlCanvasElement,
     context: CanvasRenderingContext2d,
+    pixel_ratio: u32,
     color: JsValue,
 }
 
 #[wasm_bindgen]
 impl Renderer {
-    pub fn new(canvas: HtmlCanvasElement, color: JsValue) -> Self {
+    pub fn new(canvas: HtmlCanvasElement, pixel_ratio: u32, color: JsValue) -> Self {
         let context = canvas
             .get_context("2d")
             .unwrap()
@@ -22,6 +23,7 @@ impl Renderer {
         Renderer {
             canvas,
             context,
+            pixel_ratio,
             color,
         }
     }
@@ -32,9 +34,9 @@ impl Renderer {
         self.context.begin_path();
         self.context
             .arc(
-                (offset_x - 25).into(),
-                (offset_y - 25).into(),
-                50.0,
+                (self.pixel_ratio * offset_x - 25).into(),
+                (self.pixel_ratio * offset_y - 25).into(),
+                (self.pixel_ratio * 50).into(),
                 0.0,
                 f64::consts::PI * 2.0,
             )
