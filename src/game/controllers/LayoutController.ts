@@ -1,5 +1,5 @@
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../../Constants";
-import { PositionModel } from "../models/PositionModel";
+import { LayoutModel } from "../models/LayoutModel";
 import { RenderSystem } from "../systems/RenderSystem";
 
 export enum Direction {
@@ -13,13 +13,13 @@ const ZOOM_INTENSITY = 0.01;
 const MIN_ZOOM_FACTOR = 0.1; // 10%
 const MAX_ZOOM_FACTOR = 64.0; // 6400%
 
-export class PositionController {
-  private _positionModel: PositionModel;
+export class LayoutController {
+  private _layoutModel: LayoutModel;
   private _renderSystem: RenderSystem;
   private _canvas!: HTMLCanvasElement;
 
-  constructor(positionModel: PositionModel, renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
-    this._positionModel = positionModel;
+  constructor(layoutModel: LayoutModel, renderSystem: RenderSystem, canvasPromise: Promise<HTMLCanvasElement>) {
+    this._layoutModel = layoutModel;
     this._renderSystem = renderSystem;
 
     canvasPromise.then(canvas => {
@@ -53,19 +53,19 @@ export class PositionController {
   }
 
   public setOffset(x: number, y: number): void {
-    this._positionModel.offsetX = x;
-    this._positionModel.offsetY = y;
+    this._layoutModel.offsetX = x;
+    this._layoutModel.offsetY = y;
   }
 
   public translateOffset(deltaX: number, deltaY: number): void {
-    this._positionModel.offsetX += deltaX;
-    this._positionModel.offsetY += deltaY;
+    this._layoutModel.offsetX += deltaX;
+    this._layoutModel.offsetY += deltaY;
 
     this._renderSystem.tickLazy();
   }
 
   public panInDirection(direction: Direction): void {
-    const cellSize = NATURAL_CELL_SIZE * this._positionModel.zoomScale;
+    const cellSize = NATURAL_CELL_SIZE * this._layoutModel.zoomScale;
     const panIncrement = cellSize * 10;
 
     let deltaX = 0;
@@ -92,7 +92,7 @@ export class PositionController {
   public recenterOffset(): void {
     const [width, height] = this._calculateCanvasSize();
 
-    const cellSize = NATURAL_CELL_SIZE * this._positionModel.zoomScale;
+    const cellSize = NATURAL_CELL_SIZE * this._layoutModel.zoomScale;
 
     const x = Math.round((width - cellSize) / 2);
     const y = Math.round((height - cellSize) / 2);
@@ -105,13 +105,13 @@ export class PositionController {
 
   public zoomAt(delta: number, windowX: number, windowY: number): void {
     // Zoom point relative to world offset
-    const zoomX = windowX - SIDEBAR_WIDTH - this._positionModel.offsetX;
-    const zoomY = windowY - this._positionModel.offsetY;
+    const zoomX = windowX - SIDEBAR_WIDTH - this._layoutModel.offsetX;
+    const zoomY = windowY - this._layoutModel.offsetY;
 
     const normalizedDelta = -delta;
 
-    const oldZoomScale = this._positionModel.zoomScale;
-    let newZoomScale = this._positionModel.zoomScale * Math.exp(normalizedDelta * ZOOM_INTENSITY);
+    const oldZoomScale = this._layoutModel.zoomScale;
+    let newZoomScale = this._layoutModel.zoomScale * Math.exp(normalizedDelta * ZOOM_INTENSITY);
 
     // Clamp zoom scale within valid range
     newZoomScale = Math.min(Math.max(newZoomScale, MIN_ZOOM_FACTOR), MAX_ZOOM_FACTOR);
@@ -121,15 +121,15 @@ export class PositionController {
     const newY = zoomY * (newZoomScale / oldZoomScale);
 
     // Reverse the translation caused by scaling
-    this._positionModel.offsetX += zoomX - newX;
-    this._positionModel.offsetY += zoomY - newY;
+    this._layoutModel.offsetX += zoomX - newX;
+    this._layoutModel.offsetY += zoomY - newY;
 
-    this._positionModel.zoomScale = newZoomScale;
+    this._layoutModel.zoomScale = newZoomScale;
 
     this._renderSystem.tickLazy();
   }
 
   public resetZoom(): void {
-    this._positionModel.zoomScale = 1;
+    this._layoutModel.zoomScale = 1;
   }
 }

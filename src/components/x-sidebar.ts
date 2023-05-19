@@ -2,8 +2,8 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ConfigController } from "../game/controllers/ConfigController";
+import { LayoutController } from "../game/controllers/LayoutController";
 import { PlaybackController } from "../game/controllers/PlaybackController";
-import { PositionController } from "../game/controllers/PositionController";
 import { WorldController } from "../game/controllers/WorldController";
 import { Rule } from "../game/Rules";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
@@ -33,7 +33,7 @@ class Sidebar extends MobxLitElement {
   public configController!: ConfigController;
 
   @property()
-  public positionController!: PositionController;
+  public layoutController!: LayoutController;
 
   @property()
   public playbackController!: PlaybackController;
@@ -44,7 +44,7 @@ class Sidebar extends MobxLitElement {
   }
 
   private _recenter(): void {
-    this.positionController.recenterOffset();
+    this.layoutController.recenterOffset();
   }
 
   private _tick(): void {
@@ -62,7 +62,7 @@ class Sidebar extends MobxLitElement {
   private _reset(): void {
     this.worldController.randomize();
     this.playbackController.pause();
-    this.positionController.recenterOffset();
+    this.layoutController.recenterOffset();
   }
 
   protected render(): TemplateResult {
@@ -79,7 +79,7 @@ class Sidebar extends MobxLitElement {
         </sl-button>
       </x-control-group>
 
-      <x-control-group label="Position">
+      <x-control-group label="Layout">
         <sl-button size="small" @click="${this._recenter}">Center (C)</sl-button>
       </x-control-group></x-control-group>
 

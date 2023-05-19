@@ -3,12 +3,12 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController } from "../game/controllers/ConfigController";
+import { LayoutController } from "../game/controllers/LayoutController";
 import { PlaybackController } from "../game/controllers/PlaybackController";
-import { PositionController } from "../game/controllers/PositionController";
 import { WorldController } from "../game/controllers/WorldController";
 import { ConfigModel } from "../game/models/ConfigModel";
+import { LayoutModel } from "../game/models/LayoutModel";
 import { PlaybackModel } from "../game/models/PlaybackModel";
-import { PositionModel } from "../game/models/PositionModel";
 import { WorldModel } from "../game/models/WorldModel";
 import { PluginBuilder } from "../game/plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "../game/plugins/PluginManager";
@@ -50,7 +50,7 @@ class App extends MobxLitElement {
   // Models
   private _worldModel = new WorldModel();
   private _configModel = new ConfigModel();
-  private _positionModel = new PositionModel();
+  private _layoutModel = new LayoutModel();
   private _playbackModel = new PlaybackModel();
 
   // Systems
@@ -60,7 +60,7 @@ class App extends MobxLitElement {
   // Controllers
   private _worldController: WorldController;
   private _configController: ConfigController;
-  private _positionController: PositionController;
+  private _layoutController: LayoutController;
   private _playbackController: PlaybackController;
 
   // Plugins
@@ -76,18 +76,18 @@ class App extends MobxLitElement {
     this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
     this._renderSystem = new RenderSystem(
       this._worldModel,
-      this._positionModel,
+      this._layoutModel,
       this._playbackModel,
       this._canvasPromise
     );
 
     this._worldController = new WorldController(this._worldModel);
     this._configController = new ConfigController(this._configModel);
-    this._positionController = new PositionController(this._positionModel, this._renderSystem, this._canvasPromise);
+    this._layoutController = new LayoutController(this._layoutModel, this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
 
     this._pluginBuilder = new PluginBuilder(this._canvasPromise);
-    this._pluginManager = new PluginManager(this._pluginBuilder, this._positionController, this._playbackController);
+    this._pluginManager = new PluginManager(this._pluginBuilder, this._layoutController, this._playbackController);
 
     this._pluginManager.activateGroup(PluginGroup.Default);
     this._pluginManager.activateGroup(PluginGroup.Playback);
@@ -98,7 +98,7 @@ class App extends MobxLitElement {
       <x-sidebar
         .worldController=${this._worldController}
         .configController=${this._configController}
-        .positionController=${this._positionController}
+        .LayoutController=${this._layoutController}
         .playbackController=${this._playbackController}
       ></x-sidebar>
       <canvas></canvas>
