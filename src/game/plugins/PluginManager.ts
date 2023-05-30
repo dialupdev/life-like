@@ -1,32 +1,26 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
-import { EditController } from "../controllers/EditController";
 import { PlaybackController } from "../controllers/PlaybackController";
 import { PositionController, Direction } from "../controllers/PositionController";
-import { Tool } from "../models/EditModel";
 
 export enum PluginGroup {
   Default = "Default",
   Playback = "Playback",
-  Edit = "Edit",
 }
 
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
   private _positionController: PositionController;
   private _playbackController: PlaybackController;
-  private _editController: EditController;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
   constructor(
     pluginBuilder: PluginBuilder,
     positionController: PositionController,
-    playbackController: PlaybackController,
-    editController: EditController
+    playbackController: PlaybackController
   ) {
     this._pluginBuilder = pluginBuilder;
     this._positionController = positionController;
     this._playbackController = playbackController;
-    this._editController = editController;
 
     this._pluginGroups.set(PluginGroup.Default, [
       new ResizePlugin(this._positionController.fitCanvasToWindow),
@@ -44,14 +38,6 @@ export class PluginManager {
       new KeyboardPlugin("t", this._playbackController.tick),
       new KeyboardPlugin("p", this._playbackController.togglePlaying),
       new KeyboardPlugin("c", this._positionController.recenterOffset),
-      new KeyboardPlugin("e", this._editController.start),
-    ]);
-
-    this._pluginGroups.set(PluginGroup.Edit, [
-      new DragPlugin(this._editController.draw),
-      new KeyboardPlugin("p", () => this._editController.setActiveTool(Tool.Pencil)),
-      new KeyboardPlugin("e", () => this._editController.setActiveTool(Tool.Eraser)),
-      new KeyboardPlugin("Escape", this._editController.stop),
     ]);
   }
 

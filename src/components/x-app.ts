@@ -3,12 +3,10 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, queryAsync } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController } from "../game/controllers/ConfigController";
-import { EditController } from "../game/controllers/EditController";
 import { PlaybackController } from "../game/controllers/PlaybackController";
 import { PositionController } from "../game/controllers/PositionController";
 import { WorldController } from "../game/controllers/WorldController";
 import { ConfigModel } from "../game/models/ConfigModel";
-import { EditModel } from "../game/models/EditModel";
 import { PlaybackModel } from "../game/models/PlaybackModel";
 import { PositionModel } from "../game/models/PositionModel";
 import { WorldModel } from "../game/models/WorldModel";
@@ -54,7 +52,6 @@ class App extends MobxLitElement {
   private _configModel = new ConfigModel();
   private _positionModel = new PositionModel();
   private _playbackModel = new PlaybackModel();
-  private _editModel = new EditModel();
 
   // Systems
   private _lifecycleSystem: LifecycleSystem;
@@ -65,7 +62,6 @@ class App extends MobxLitElement {
   private _configController: ConfigController;
   private _positionController: PositionController;
   private _playbackController: PlaybackController;
-  private _editController: EditController;
 
   // Plugins
   private _pluginBuilder: PluginBuilder;
@@ -89,33 +85,12 @@ class App extends MobxLitElement {
     this._configController = new ConfigController(this._configModel);
     this._positionController = new PositionController(this._positionModel, this._renderSystem, this._canvasPromise);
     this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
-    this._editController = new EditController(
-      this._worldModel,
-      this._positionModel,
-      this._editModel,
-      this._renderSystem
-    );
 
     this._pluginBuilder = new PluginBuilder(this._canvasPromise);
-    this._pluginManager = new PluginManager(
-      this._pluginBuilder,
-      this._positionController,
-      this._playbackController,
-      this._editController
-    );
+    this._pluginManager = new PluginManager(this._pluginBuilder, this._positionController, this._playbackController);
 
     this._pluginManager.activateGroup(PluginGroup.Default);
     this._pluginManager.activateGroup(PluginGroup.Playback);
-
-    this._editController.addEventListener("start", () => {
-      this._pluginManager.deactivateGroup(PluginGroup.Playback);
-      this._pluginManager.activateGroup(PluginGroup.Edit);
-    });
-
-    this._editController.addEventListener("stop", () => {
-      this._pluginManager.deactivateGroup(PluginGroup.Edit);
-      this._pluginManager.activateGroup(PluginGroup.Playback);
-    });
   }
 
   protected render(): TemplateResult {
@@ -125,9 +100,8 @@ class App extends MobxLitElement {
         .configController=${this._configController}
         .positionController=${this._positionController}
         .playbackController=${this._playbackController}
-        .editController=${this._editController}
       ></x-sidebar>
-      <canvas class=${this._editModel.editing && `tool-${this._editModel.activeTool.toLowerCase()}`}></canvas>
+      <canvas></canvas>
     `;
   }
 }
