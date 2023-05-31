@@ -1,7 +1,11 @@
 [package]
 name = "life-like-core"
 version = "0.1.0"
+authors = ["Steve Davis <steve@celery.club>"]
 edition = "2021"
+description = "Life-like"
+repository = "https://github.com/celeryclub/life-like"
+license = "MIT"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
