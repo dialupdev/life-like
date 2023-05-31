@@ -1,4 +1,4 @@
-use super::rule::{self, Rule};
+use super::rule::Rule;
 use std::collections::HashSet;
 use wasm_bindgen::prelude::*;
 
@@ -13,7 +13,7 @@ pub struct Config {
 impl Config {
     pub fn new() -> Config {
         let rule = Rule::Life;
-        let [birth_set, survival_set] = rule::parse(&rule);
+        let [birth_set, survival_set] = rule.parse();
 
         Config {
             rule,
@@ -27,7 +27,7 @@ impl Config {
     }
 
     pub fn set_rule(&mut self, rule: Rule) {
-        [self.birth_set, self.survival_set] = rule::parse(&rule);
+        [self.birth_set, self.survival_set] = rule.parse();
         self.rule = rule;
     }
 }
