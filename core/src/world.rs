@@ -1,4 +1,5 @@
 use super::cell::Cell;
+use super::config::Config;
 use rand::Rng;
 use std::collections::{HashMap, HashSet};
 use wasm_bindgen::prelude::*;
@@ -44,15 +45,7 @@ impl World {
         }
     }
 
-    pub fn tick(&mut self) {
-        // 3/23 is hardcoded for now
-        let mut birth_rule: HashSet<_> = HashSet::new();
-        birth_rule.insert(3);
-
-        let mut survival_rule: HashSet<_> = HashSet::new();
-        survival_rule.insert(2);
-        survival_rule.insert(3);
-
+    pub fn tick(&mut self, config: &Config) {
         let mut cells_to_kill: HashSet<Cell> = HashSet::new();
         let mut cells_to_spawn: HashSet<Cell> = HashSet::new();
 
@@ -60,14 +53,16 @@ impl World {
         self.cells.iter().for_each(|cell| {
             let neighbor_count = self.neighbor_counts.get(cell);
 
-            if neighbor_count.is_none() || !survival_rule.contains(neighbor_count.unwrap()) {
+            if neighbor_count.is_none()
+                || !config.get_survival_set().contains(neighbor_count.unwrap())
+            {
                 cells_to_kill.insert(*cell);
             }
         });
 
         // Mark cells to spawn
         self.neighbor_counts.iter().for_each(|(cell, count)| {
-            if birth_rule.contains(count) && !self.cells.contains(cell) {
+            if config.get_birth_set().contains(count) && !self.cells.contains(cell) {
                 cells_to_spawn.insert(*cell);
             }
         });

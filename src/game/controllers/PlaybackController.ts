@@ -1,16 +1,18 @@
 import { makeObservable, action } from "mobx";
-import { Layout, World, Renderer } from "core";
+import { Layout, World, Renderer, Config } from "core";
 import { PlaybackModel } from "../models/PlaybackModel";
 
 export class PlaybackController {
-  private _layout: Layout;
   private _world: World;
+  private _config: Config;
+  private _layout: Layout;
   private _renderer: Renderer;
   private _playbackModel: PlaybackModel;
 
-  constructor(layout: Layout, world: World, playbackModel: PlaybackModel, renderer: Renderer) {
-    this._layout = layout;
+  constructor(world: World, config: Config, layout: Layout, playbackModel: PlaybackModel, renderer: Renderer) {
     this._world = world;
+    this._config = config;
+    this._layout = layout;
     this._renderer = renderer;
     this._playbackModel = playbackModel;
 
@@ -34,7 +36,7 @@ export class PlaybackController {
   }
 
   public tick(): void {
-    this._world.tick();
+    this._world.tick(this._config);
     this._renderer.update(this._layout, this._world);
   }
 

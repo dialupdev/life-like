@@ -1,11 +1,10 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ConfigController } from "../game/controllers/ConfigController";
+import { ConfigController, Rule } from "../game/controllers/ConfigController";
 import { LayoutController } from "../game/controllers/LayoutController";
 import { PlaybackController } from "../game/controllers/PlaybackController";
 import { WorldController } from "../game/controllers/WorldController";
-import { Rule } from "../game/Rules";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
 import "@shoelace-style/shoelace/dist/components/icon/icon.js";
@@ -39,7 +38,7 @@ class Sidebar extends MobxLitElement {
   public playbackController!: PlaybackController;
 
   private _changeRule(e: Event): void {
-    const rule = (e.target as HTMLSelectElement).value as Rule;
+    const rule = parseInt((e.target as HTMLSelectElement).value, 10) as Rule;
     this.configController.setRule(rule);
   }
 
@@ -66,7 +65,6 @@ class Sidebar extends MobxLitElement {
   }
 
   protected render(): TemplateResult {
-    const configModel = this.configController.model;
     const playbackModel = this.playbackController.model;
 
     return html`
@@ -84,9 +82,9 @@ class Sidebar extends MobxLitElement {
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">
-        <sl-select size="small" label="Rule" value=${configModel.rule} @sl-change=${this._changeRule}>
-          ${Object.entries(Rule).map(([ruleName, rule]) => {
-            return html`<sl-option value=${rule}>${ruleName}</sl-option>`;
+        <sl-select size="small" label="Rule" value=${this.configController.getRule()} @sl-change=${this._changeRule}>
+          ${this.configController.getAllRules().map(([name, value]) => {
+            return html`<sl-option value=${value}>${name}</sl-option>`;
           })}
         </sl-select>
       </x-control-group>
