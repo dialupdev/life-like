@@ -2,8 +2,8 @@ import { configure } from "mobx";
 import { World, Layout, Config, Renderer } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "./Constants";
 import { ConfigController } from "./game/controllers/ConfigController";
+import { GameController } from "./game/controllers/GameController";
 import { LayoutController } from "./game/controllers/LayoutController";
-import { PlaybackController } from "./game/controllers/PlaybackController";
 import { WorldController } from "./game/controllers/WorldController";
 import { PlaybackModel } from "./game/models/PlaybackModel";
 import { PluginBuilder } from "./game/plugins/PluginBuilder";
@@ -29,10 +29,10 @@ const playbackModel = new PlaybackModel();
 const worldController = new WorldController(world);
 const configController = new ConfigController(config);
 const layoutController = new LayoutController(canvas, layout, world, renderer);
-const playbackController = new PlaybackController(world, config, layout, playbackModel, renderer);
+const gameController = new GameController(world, config, layout, playbackModel, renderer);
 
 const pluginBuilder = new PluginBuilder(canvas);
-const pluginManager = new PluginManager(pluginBuilder, layoutController, playbackController);
+const pluginManager = new PluginManager(pluginBuilder, layoutController, gameController);
 
 pluginManager.activateGroup(PluginGroup.Default);
 pluginManager.activateGroup(PluginGroup.Playback);
@@ -42,6 +42,6 @@ const app = document.createElement("x-app");
 app.worldController = worldController;
 app.configController = configController;
 app.layoutController = layoutController;
-app.playbackController = playbackController;
+app.gameController = gameController;
 
 document.body.appendChild(app);

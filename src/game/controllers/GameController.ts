@@ -2,7 +2,7 @@ import { makeObservable, action } from "mobx";
 import { Layout, World, Renderer, Config } from "core";
 import { PlaybackModel } from "../models/PlaybackModel";
 
-export class PlaybackController {
+export class GameController {
   private _world: World;
   private _config: Config;
   private _layout: Layout;

@@ -3,8 +3,8 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController, Rule } from "../game/controllers/ConfigController";
+import { GameController } from "../game/controllers/GameController";
 import { LayoutController } from "../game/controllers/LayoutController";
-import { PlaybackController } from "../game/controllers/PlaybackController";
 import { WorldController } from "../game/controllers/WorldController";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
@@ -48,7 +48,7 @@ class App extends MobxLitElement {
   public layoutController!: LayoutController;
 
   @property()
-  public playbackController!: PlaybackController;
+  public gameController!: GameController;
 
   private _changeRule(e: Event): void {
     const rule = parseInt((e.target as HTMLSelectElement).value, 10) as Rule;
@@ -60,25 +60,25 @@ class App extends MobxLitElement {
   }
 
   private _tick(): void {
-    this.playbackController.tick();
+    this.gameController.tick();
   }
 
   private _play(): void {
-    this.playbackController.play();
+    this.gameController.play();
   }
 
   private _pause(): void {
-    this.playbackController.pause();
+    this.gameController.pause();
   }
 
   private _resetAll(): void {
     this.worldController.randomize();
-    this.playbackController.pause();
+    this.gameController.pause();
     this.layoutController.reset();
   }
 
   protected render(): TemplateResult {
-    const playbackModel = this.playbackController.model;
+    const playbackModel = this.gameController.model;
 
     return html`
       <x-control-group label="Playback">

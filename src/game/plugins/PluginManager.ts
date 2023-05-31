@@ -1,6 +1,6 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
+import { GameController } from "../controllers/GameController";
 import { LayoutController, Direction } from "../controllers/LayoutController";
-import { PlaybackController } from "../controllers/PlaybackController";
 
 export enum PluginGroup {
   Default = "Default",
@@ -10,17 +10,13 @@ export enum PluginGroup {
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
   private _layoutController: LayoutController;
-  private _playbackController: PlaybackController;
+  private _gameController: GameController;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
-  constructor(
-    pluginBuilder: PluginBuilder,
-    layoutController: LayoutController,
-    playbackController: PlaybackController
-  ) {
+  constructor(pluginBuilder: PluginBuilder, layoutController: LayoutController, gameController: GameController) {
     this._pluginBuilder = pluginBuilder;
     this._layoutController = layoutController;
-    this._playbackController = playbackController;
+    this._gameController = gameController;
 
     this._pluginGroups.set(PluginGroup.Default, [
       new ResizePlugin(this._layoutController.fitCanvasToWindow),
@@ -35,8 +31,8 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutController.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin("t", this._playbackController.tick),
-      new KeyboardPlugin("p", this._playbackController.togglePlaying),
+      new KeyboardPlugin("t", this._gameController.tick),
+      new KeyboardPlugin("p", this._gameController.togglePlaying),
       new KeyboardPlugin("c", this._layoutController.reset),
     ]);
   }
