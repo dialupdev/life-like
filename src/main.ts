@@ -22,7 +22,7 @@ canvas.style.left = `${SIDEBAR_WIDTH}px`;
 const world = World.new();
 const config = Config.new();
 const layout = Layout.new(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
-const renderer = Renderer.new(context, "lightblue");
+const renderer = Renderer.new(context, "#A76FDE");
 
 const playbackModel = new PlaybackModel();
 
