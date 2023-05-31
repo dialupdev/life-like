@@ -1,5 +1,5 @@
-import { World, Layout, Renderer } from "core";
 import { configure } from "mobx";
+import { World, Layout, Renderer } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "./Constants";
 import { ConfigController } from "./game/controllers/ConfigController";
 import { LayoutController } from "./game/controllers/LayoutController";
