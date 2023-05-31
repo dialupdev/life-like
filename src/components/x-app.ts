@@ -1,8 +1,7 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { World, Layout, Renderer } from "core";
 import { TemplateResult, html, css } from "lit";
-import { customElement, queryAsync, state } from "lit/decorators.js";
-import { when } from "lit/directives/when.js";
+import { customElement, property } from "lit/decorators.js";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController } from "../game/controllers/ConfigController";
 import { LayoutController } from "../game/controllers/LayoutController";
@@ -23,8 +22,7 @@ class App extends MobxLitElement {
       font-family: var(--sl-font-sans);
       height: 100vh;
     }
-    x-sidebar,
-    canvas {
+    x-sidebar {
       position: absolute;
       top: 0;
     }
@@ -33,17 +31,10 @@ class App extends MobxLitElement {
       left: 0;
       width: ${SIDEBAR_WIDTH}px;
     }
-    canvas {
-      image-rendering: pixelated;
-      left: ${SIDEBAR_WIDTH}px;
-    }
-    canvas.tool-pencil {
-      cursor: url("/images/pencil.svg"), auto;
-    }
-    canvas.tool-eraser {
-      cursor: url("/images/eraser.svg"), auto;
-    }
   `;
+
+  // Canvas
+  private _canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
   // Core
   private _world!: World;
@@ -64,50 +55,37 @@ class App extends MobxLitElement {
   private _pluginBuilder!: PluginBuilder;
   private _pluginManager!: PluginManager;
 
-  @state()
-  private _loading = true;
-
-  @queryAsync("canvas")
-  private _canvasPromise!: Promise<HTMLCanvasElement>;
+  @property()
+  public canvas!: HTMLCanvasElement;
 
   constructor() {
     super();
 
-    this._canvasPromise.then(canvas => {
-      const context = canvas.getContext("2d", { alpha: false })!;
+    const context = this._canvas.getContext("2d", { alpha: false })!;
 
-      this._world = World.new();
-      this._layout = Layout.new(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
-      this._renderer = Renderer.new(context, "lightblue");
+    this._world = World.new();
+    this._layout = Layout.new(this._canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
+    this._renderer = Renderer.new(context, "lightblue");
 
-      this._worldController = new WorldController(this._world);
-      this._configController = new ConfigController(this._configModel);
-      this._layoutController = new LayoutController(canvas, this._layout, this._world, this._renderer);
-      this._playbackController = new PlaybackController(this._layout, this._world, this._playbackModel, this._renderer);
+    this._worldController = new WorldController(this._world);
+    this._configController = new ConfigController(this._configModel);
+    this._layoutController = new LayoutController(this._canvas, this._layout, this._world, this._renderer);
+    this._playbackController = new PlaybackController(this._layout, this._world, this._playbackModel, this._renderer);
 
-      this._pluginBuilder = new PluginBuilder(canvas);
-      this._pluginManager = new PluginManager(this._pluginBuilder, this._layoutController, this._playbackController);
+    this._pluginBuilder = new PluginBuilder(this._canvas);
+    this._pluginManager = new PluginManager(this._pluginBuilder, this._layoutController, this._playbackController);
 
-      this._pluginManager.activateGroup(PluginGroup.Default);
-      this._pluginManager.activateGroup(PluginGroup.Playback);
-
-      this._loading = false;
-    });
+    this._pluginManager.activateGroup(PluginGroup.Default);
+    this._pluginManager.activateGroup(PluginGroup.Playback);
   }
 
   protected render(): TemplateResult {
-    return html`
-      ${when(
-        !this._loading,
-        () => html`<x-sidebar
-          .worldController=${this._worldController}
-          .configController=${this._configController}
-          .layoutController=${this._layoutController}
-          .playbackController=${this._playbackController}
-        ></x-sidebar>`
-      )}
-      <canvas></canvas>
-    `;
+    return html`<x-sidebar
+      .worldController=${this._worldController}
+      .configController=${this._configController}
+      .layoutController=${this._layoutController}
+      .playbackController=${this._playbackController}
+    ></x-sidebar> `;
   }
 }
 

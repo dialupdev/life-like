@@ -13,7 +13,21 @@
       body {
         margin: 0;
       }
+      canvas {
+        image-rendering: pixelated;
+        left: 280px; /* SIDEBAR_WIDTH=280 */
+        position: absolute;
+        top: 0;
+      }
+      canvas.tool-pencil {
+        cursor: url("/images/pencil.svg"), auto;
+      }
+      canvas.tool-eraser {
+        cursor: url("/images/eraser.svg"), auto;
+      }
     </style>
   </head>
-  <body></body>
+  <body>
+    <canvas id="canvas"></canvas>
+  </body>
 </html>
