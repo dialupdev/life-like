@@ -1,19 +1,17 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { World, Layout, Renderer } from "core";
 import { TemplateResult, html, css } from "lit";
-import { customElement, queryAsync } from "lit/decorators.js";
-import { SIDEBAR_WIDTH } from "../Constants";
+import { customElement, queryAsync, state } from "lit/decorators.js";
+import { when } from "lit/directives/when.js";
+import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController } from "../game/controllers/ConfigController";
 import { LayoutController } from "../game/controllers/LayoutController";
 import { PlaybackController } from "../game/controllers/PlaybackController";
 import { WorldController } from "../game/controllers/WorldController";
 import { ConfigModel } from "../game/models/ConfigModel";
-import { LayoutModel } from "../game/models/LayoutModel";
 import { PlaybackModel } from "../game/models/PlaybackModel";
-import { WorldModel } from "../game/models/WorldModel";
 import { PluginBuilder } from "../game/plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "../game/plugins/PluginManager";
-import { LifecycleSystem } from "../game/systems/LifecycleSystem";
-import { RenderSystem } from "../game/systems/RenderSystem";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "./x-sidebar";
 
@@ -47,25 +45,27 @@ class App extends MobxLitElement {
     }
   `;
 
+  // Core
+  private _world!: World;
+  private _layout!: Layout;
+  private _renderer!: Renderer;
+
   // Models
-  private _worldModel = new WorldModel();
   private _configModel = new ConfigModel();
-  private _layoutModel = new LayoutModel();
   private _playbackModel = new PlaybackModel();
 
-  // Systems
-  private _lifecycleSystem: LifecycleSystem;
-  private _renderSystem: RenderSystem;
-
   // Controllers
-  private _worldController: WorldController;
-  private _configController: ConfigController;
-  private _layoutController: LayoutController;
-  private _playbackController: PlaybackController;
+  private _worldController!: WorldController;
+  private _configController!: ConfigController;
+  private _layoutController!: LayoutController;
+  private _playbackController!: PlaybackController;
 
   // Plugins
-  private _pluginBuilder: PluginBuilder;
-  private _pluginManager: PluginManager;
+  private _pluginBuilder!: PluginBuilder;
+  private _pluginManager!: PluginManager;
+
+  @state()
+  private _loading = true;
 
   @queryAsync("canvas")
   private _canvasPromise!: Promise<HTMLCanvasElement>;
@@ -73,34 +73,39 @@ class App extends MobxLitElement {
   constructor() {
     super();
 
-    this._lifecycleSystem = new LifecycleSystem(this._worldModel, this._configModel);
-    this._renderSystem = new RenderSystem(
-      this._worldModel,
-      this._layoutModel,
-      this._playbackModel,
-      this._canvasPromise
-    );
+    this._canvasPromise.then(canvas => {
+      const context = canvas.getContext("2d", { alpha: false })!;
 
-    this._worldController = new WorldController(this._worldModel);
-    this._configController = new ConfigController(this._configModel);
-    this._layoutController = new LayoutController(this._layoutModel, this._renderSystem, this._canvasPromise);
-    this._playbackController = new PlaybackController(this._playbackModel, this._lifecycleSystem, this._renderSystem);
+      this._world = World.new();
+      this._layout = Layout.new(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
+      this._renderer = Renderer.new(context, "lightblue");
 
-    this._pluginBuilder = new PluginBuilder(this._canvasPromise);
-    this._pluginManager = new PluginManager(this._pluginBuilder, this._layoutController, this._playbackController);
+      this._worldController = new WorldController(this._world);
+      this._configController = new ConfigController(this._configModel);
+      this._layoutController = new LayoutController(canvas, this._layout, this._world, this._renderer);
+      this._playbackController = new PlaybackController(this._layout, this._world, this._playbackModel, this._renderer);
 
-    this._pluginManager.activateGroup(PluginGroup.Default);
-    this._pluginManager.activateGroup(PluginGroup.Playback);
+      this._pluginBuilder = new PluginBuilder(canvas);
+      this._pluginManager = new PluginManager(this._pluginBuilder, this._layoutController, this._playbackController);
+
+      this._pluginManager.activateGroup(PluginGroup.Default);
+      this._pluginManager.activateGroup(PluginGroup.Playback);
+
+      this._loading = false;
+    });
   }
 
   protected render(): TemplateResult {
     return html`
-      <x-sidebar
-        .worldController=${this._worldController}
-        .configController=${this._configController}
-        .LayoutController=${this._layoutController}
-        .playbackController=${this._playbackController}
-      ></x-sidebar>
+      ${when(
+        !this._loading,
+        () => html`<x-sidebar
+          .worldController=${this._worldController}
+          .configController=${this._configController}
+          .layoutController=${this._layoutController}
+          .playbackController=${this._playbackController}
+        ></x-sidebar>`
+      )}
       <canvas></canvas>
     `;
   }

@@ -34,7 +34,7 @@ export class PluginBuilder {
   private _lastMouseY!: number;
   private _dragCursor?: string;
 
-  constructor(canvasPromise: Promise<HTMLCanvasElement>) {
+  constructor(canvas: HTMLCanvasElement) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
     this._runWheelPlugins = this._runWheelPlugins.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
@@ -42,9 +42,7 @@ export class PluginBuilder {
     this._stopDrag = this._stopDrag.bind(this);
     this._runKeyboardPlugin = this._runKeyboardPlugin.bind(this);
 
-    canvasPromise.then(canvas => {
-      this._addEventListeners(canvas);
-    });
+    this._addEventListeners(canvas);
   }
 
   private _runResizePlugins(e: UIEvent): void {

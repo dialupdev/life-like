@@ -44,7 +44,7 @@ class Sidebar extends MobxLitElement {
   }
 
   private _recenter(): void {
-    this.layoutController.recenterOffset();
+    this.layoutController.reset();
   }
 
   private _tick(): void {
@@ -62,7 +62,7 @@ class Sidebar extends MobxLitElement {
   private _reset(): void {
     this.worldController.randomize();
     this.playbackController.pause();
-    this.layoutController.recenterOffset();
+    this.layoutController.reset();
   }
 
   protected render(): TemplateResult {

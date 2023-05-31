@@ -35,6 +35,9 @@ http://vasir.net/blog/game-development/how-to-build-entity-component-system-in-j
 V2 game engine (JS via hash tables):
 https://pzemtsov.github.io/2015/04/24/game-of-life-hash-tables-and-hash-codes.html
 
+V3 game engine (Rust via hash tables):
+https://rustwasm.github.io/docs/book/game-of-life/introduction.html
+
 Reference:
 http://www.mirekw.com/ca/rullex_life.html
 https://conwaylife.com/ref/lexicon/lex.htm

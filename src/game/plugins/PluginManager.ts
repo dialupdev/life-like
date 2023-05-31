@@ -37,7 +37,7 @@ export class PluginManager {
       }),
       new KeyboardPlugin("t", this._playbackController.tick),
       new KeyboardPlugin("p", this._playbackController.togglePlaying),
-      new KeyboardPlugin("c", this._layoutController.recenterOffset),
+      new KeyboardPlugin("c", this._layoutController.reset),
     ]);
   }
 

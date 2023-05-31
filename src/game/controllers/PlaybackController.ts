@@ -1,17 +1,18 @@
+import { Layout, World, Renderer } from "core";
 import { makeObservable, action } from "mobx";
 import { PlaybackModel } from "../models/PlaybackModel";
-import { LifecycleSystem } from "../systems/LifecycleSystem";
-import { RenderSystem } from "../systems/RenderSystem";
 
 export class PlaybackController {
+  private _layout: Layout;
+  private _world: World;
+  private _renderer: Renderer;
   private _playbackModel: PlaybackModel;
-  private _lifecycleSystem: LifecycleSystem;
-  private _renderSystem: RenderSystem;
 
-  constructor(playbackModel: PlaybackModel, lifecycleSystem: LifecycleSystem, renderSystem: RenderSystem) {
+  constructor(layout: Layout, world: World, playbackModel: PlaybackModel, renderer: Renderer) {
+    this._layout = layout;
+    this._world = world;
+    this._renderer = renderer;
     this._playbackModel = playbackModel;
-    this._lifecycleSystem = lifecycleSystem;
-    this._renderSystem = renderSystem;
 
     this._tickRecursive = this._tickRecursive.bind(this);
     this.tick = this.tick.bind(this);
@@ -33,9 +34,8 @@ export class PlaybackController {
   }
 
   public tick(): void {
-    this._playbackModel.ticks++;
-    this._lifecycleSystem.tick();
-    this._renderSystem.tick();
+    this._world.tick();
+    this._renderer.update(this._layout, this._world);
   }
 
   public play(): void {
@@ -53,7 +53,6 @@ export class PlaybackController {
 
   public reset(): void {
     this._playbackModel.playing = false;
-    this._playbackModel.ticks = 0;
   }
 
   public get model(): Readonly<PlaybackModel> {
