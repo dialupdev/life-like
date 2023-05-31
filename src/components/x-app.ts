@@ -55,7 +55,7 @@ class App extends MobxLitElement {
     this.configController.setRule(rule);
   }
 
-  private _recenter(): void {
+  private _center(): void {
     this.layoutController.reset();
   }
 
@@ -71,7 +71,7 @@ class App extends MobxLitElement {
     this.playbackController.pause();
   }
 
-  private _reset(): void {
+  private _resetAll(): void {
     this.worldController.randomize();
     this.playbackController.pause();
     this.layoutController.reset();
@@ -90,8 +90,9 @@ class App extends MobxLitElement {
         </sl-button>
       </x-control-group>
 
-      <x-control-group label="Layout">
-        <sl-button size="small" @click="${this._recenter}">Center (C)</sl-button>
+      <x-control-group label="Reset">
+        <sl-button size="small" variant="success" outline @click="${this._center}">Center (C)</sl-button>
+        <sl-button size="small" variant="danger" outline @click="${this._resetAll}">Reset all</sl-button>
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">
@@ -100,10 +101,6 @@ class App extends MobxLitElement {
             return html`<sl-option value=${value}>${name}</sl-option>`;
           })}
         </sl-select>
-      </x-control-group>
-
-      <x-control-group>
-        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset</sl-button>
       </x-control-group>
     `;
   }
