@@ -20,7 +20,7 @@ impl Renderer {
         self.clear(layout);
         self.context.set_fill_style(&self.color);
 
-        world.get_cells().iter().for_each(|cell| {
+        world.cells.iter().for_each(|cell| {
             self.draw_cell(layout, cell.x, cell.y);
         });
     }

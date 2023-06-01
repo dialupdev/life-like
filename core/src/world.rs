@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct World {
-    cells: HashSet<Cell>,
+    pub(crate) cells: HashSet<Cell>,
     neighbor_counts: HashMap<Cell, u8>,
 }
 
@@ -53,16 +53,14 @@ impl World {
         self.cells.iter().for_each(|cell| {
             let neighbor_count = self.neighbor_counts.get(cell);
 
-            if neighbor_count.is_none()
-                || !config.get_survival_set().contains(neighbor_count.unwrap())
-            {
+            if neighbor_count.is_none() || !config.survival_set.contains(neighbor_count.unwrap()) {
                 cells_to_kill.insert(*cell);
             }
         });
 
         // Mark cells to spawn
         self.neighbor_counts.iter().for_each(|(cell, count)| {
-            if config.get_birth_set().contains(count) && !self.cells.contains(cell) {
+            if config.birth_set.contains(count) && !self.cells.contains(cell) {
                 cells_to_spawn.insert(*cell);
             }
         });
@@ -80,10 +78,6 @@ impl World {
 }
 
 impl World {
-    pub fn get_cells(&self) -> &HashSet<Cell> {
-        &self.cells
-    }
-
     fn spawn(&mut self, cell: &Cell) {
         cell.generate_neighbors().iter().for_each(|neighbor| {
             self.increment_neighbor_count(neighbor);
