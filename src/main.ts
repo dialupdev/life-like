@@ -1,13 +1,13 @@
 import { configure } from "mobx";
 import { World, Layout, Config, Renderer } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "./Constants";
-import { ConfigController } from "./game/controllers/ConfigController";
-import { GameController } from "./game/controllers/GameController";
-import { LayoutController } from "./game/controllers/LayoutController";
-import { WorldController } from "./game/controllers/WorldController";
-import { PlaybackModel } from "./game/models/PlaybackModel";
-import { PluginBuilder } from "./game/plugins/PluginBuilder";
-import { PluginManager, PluginGroup } from "./game/plugins/PluginManager";
+import { ConfigController } from "./controllers/ConfigController";
+import { GameController } from "./controllers/GameController";
+import { LayoutController } from "./controllers/LayoutController";
+import { WorldController } from "./controllers/WorldController";
+import { PlaybackModel } from "./models/PlaybackModel";
+import { PluginBuilder } from "./plugins/PluginBuilder";
+import { PluginManager, PluginGroup } from "./plugins/PluginManager";
 import "./ui/x-app";
 
 configure({

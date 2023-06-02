@@ -1,5 +1,5 @@
 import { Layout, World, Renderer } from "core";
-import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../../Constants";
+import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 
 export enum Direction {
   Up = "Up",
