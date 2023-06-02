@@ -8,7 +8,7 @@ import { WorldController } from "./game/controllers/WorldController";
 import { PlaybackModel } from "./game/models/PlaybackModel";
 import { PluginBuilder } from "./game/plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "./game/plugins/PluginManager";
-import "./components/x-app";
+import "./ui/x-app";
 
 configure({
   enforceActions: "always",
