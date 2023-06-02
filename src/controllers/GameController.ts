@@ -1,26 +1,26 @@
-import { makeObservable, action } from "mobx";
+import { makeObservable, observable, action } from "mobx";
 import { Layout, World, Renderer, Config } from "core";
-import { PlaybackModel } from "../models/PlaybackModel";
 
 export class GameController {
   private _world: World;
   private _config: Config;
   private _layout: Layout;
   private _renderer: Renderer;
-  private _playbackModel: PlaybackModel;
 
-  constructor(world: World, config: Config, layout: Layout, playbackModel: PlaybackModel, renderer: Renderer) {
+  public playing = false;
+
+  constructor(world: World, config: Config, layout: Layout, renderer: Renderer) {
     this._world = world;
     this._config = config;
     this._layout = layout;
     this._renderer = renderer;
-    this._playbackModel = playbackModel;
 
     this._tickRecursive = this._tickRecursive.bind(this);
     this.tick = this.tick.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
 
     makeObservable(this, {
+      playing: observable,
       tick: action,
       play: action,
       pause: action,
@@ -29,7 +29,7 @@ export class GameController {
   }
 
   private _tickRecursive(): void {
-    if (this._playbackModel.playing) {
+    if (this.playing) {
       this.tick();
       requestAnimationFrame(this._tickRecursive);
     }
@@ -41,23 +41,19 @@ export class GameController {
   }
 
   public play(): void {
-    this._playbackModel.playing = true;
+    this.playing = true;
     this._tickRecursive();
   }
 
   public pause(): void {
-    this._playbackModel.playing = false;
+    this.playing = false;
   }
 
   public togglePlaying(): void {
-    this._playbackModel.playing ? this.pause() : this.play();
+    this.playing ? this.pause() : this.play();
   }
 
   public reset(): void {
-    this._playbackModel.playing = false;
-  }
-
-  public get model(): Readonly<PlaybackModel> {
-    return this._playbackModel;
+    this.playing = false;
   }
 }

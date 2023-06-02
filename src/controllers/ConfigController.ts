@@ -24,10 +24,6 @@ export class ConfigController {
   public setRule(rule: Rule): void {
     this._config.set_rule(rule);
   }
-
-  public get model(): Readonly<Config> {
-    return this._config;
-  }
 }
 
 export { Rule } from "core";

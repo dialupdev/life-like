@@ -78,15 +78,17 @@ class App extends MobxLitElement {
   }
 
   protected render(): TemplateResult {
-    const playbackModel = this.gameController.model;
-
     return html`
       <x-control-group label="Playback">
-        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${playbackModel.playing}
+        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
+      this.gameController.playing
+    }
           >Tick (T)</sl-button
         >
-        <sl-button size="small" variant="primary" outline @click="${playbackModel.playing ? this._pause : this._play}">
-          ${playbackModel.playing ? "Pause" : "Play"} (P)
+        <sl-button size="small" variant="primary" outline @click="${
+          this.gameController.playing ? this._pause : this._play
+        }">
+          ${this.gameController.playing ? "Pause" : "Play"} (P)
         </sl-button>
       </x-control-group>
 

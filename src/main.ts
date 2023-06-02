@@ -5,7 +5,6 @@ import { ConfigController } from "./controllers/ConfigController";
 import { GameController } from "./controllers/GameController";
 import { LayoutController } from "./controllers/LayoutController";
 import { WorldController } from "./controllers/WorldController";
-import { PlaybackModel } from "./models/PlaybackModel";
 import { PluginBuilder } from "./plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "./plugins/PluginManager";
 import "./ui/x-app";
@@ -24,12 +23,10 @@ const config = Config.new();
 const layout = Layout.new(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
 const renderer = Renderer.new(context, "#A76FDE");
 
-const playbackModel = new PlaybackModel();
-
 const worldController = new WorldController(world);
 const configController = new ConfigController(config);
 const layoutController = new LayoutController(canvas, layout, world, renderer);
-const gameController = new GameController(world, config, layout, playbackModel, renderer);
+const gameController = new GameController(world, config, layout, renderer);
 
 const pluginBuilder = new PluginBuilder(canvas);
 const pluginManager = new PluginManager(pluginBuilder, layoutController, gameController);
