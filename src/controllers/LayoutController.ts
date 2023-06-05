@@ -1,5 +1,5 @@
 import { Layout, World, Renderer } from "core";
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 
 export enum Direction {
@@ -40,9 +40,13 @@ export class LayoutController {
     return [window.innerWidth - SIDEBAR_WIDTH, window.innerHeight];
   }
 
-  private _setZoomScaleTruncated(zoomScale: number) {
+  private _setZoomScaleTruncated(zoomScale: number): void {
     // Multiply by 100 and truncate number to two decimal places for nicer UI
-    this.zoomScale = Math.round((zoomScale + Number.EPSILON) * 100);
+    const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
+
+    runInAction(() => {
+      this.zoomScale = zoomScaleTruncated;
+    });
   }
 
   public fitCanvasToWindow(): void {
