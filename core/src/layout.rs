@@ -52,7 +52,7 @@ impl Layout {
     }
 
     #[wasm_bindgen(js_name = zoomAt)]
-    pub fn zoom_at(&mut self, delta: f64, canvas_x: f64, canvas_y: f64) {
+    pub fn zoom_at(&mut self, delta: f64, canvas_x: f64, canvas_y: f64) -> f64 {
         let old_zoom_scale = self.zoom_scale;
         // I don't understand the next line, but it works...
         let new_zoom_scale = self.zoom_scale * ((delta * ZOOM_INTENSITY).exp());
@@ -69,6 +69,8 @@ impl Layout {
         self.offset_y += canvas_y - new_y;
 
         self.zoom_scale = new_zoom_scale;
+
+        new_zoom_scale
     }
 }
 

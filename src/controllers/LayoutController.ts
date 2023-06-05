@@ -1,4 +1,5 @@
 import { Layout, World, Renderer } from "core";
+import { makeObservable, observable } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 
 export enum Direction {
@@ -14,6 +15,8 @@ export class LayoutController {
   private _world: World;
   private _renderer: Renderer;
 
+  public zoomScale = 1;
+
   constructor(canvas: HTMLCanvasElement, layout: Layout, world: World, renderer: Renderer) {
     this._canvas = canvas;
     this._layout = layout;
@@ -24,6 +27,10 @@ export class LayoutController {
     this.translateOffset = this.translateOffset.bind(this);
     this.zoomAt = this.zoomAt.bind(this);
     this.reset = this.reset.bind(this);
+
+    makeObservable(this, {
+      zoomScale: observable,
+    });
 
     this.fitCanvasToWindow();
     this.reset();
@@ -79,6 +86,8 @@ export class LayoutController {
   public zoomToScale(scale: number): void {
     this._layout.setZoomScale(scale);
 
+    this.zoomScale = scale;
+
     this._renderer.update(this._layout, this._world); // make this lazy
   }
 
@@ -89,7 +98,9 @@ export class LayoutController {
 
     const normalizedDelta = -delta;
 
-    this._layout.zoomAt(normalizedDelta, canvasX, canvasY);
+    const scale = this._layout.zoomAt(normalizedDelta, canvasX, canvasY);
+
+    this.zoomScale = scale;
 
     this._renderer.update(this._layout, this._world); // make this lazy
   }
@@ -104,6 +115,8 @@ export class LayoutController {
 
     this._layout.setOffset(x, y);
     this._layout.setZoomScale(1);
+
+    this.zoomScale = 1;
 
     this._renderer.update(this._layout, this._world); // make this lazy
   }
