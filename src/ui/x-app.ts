@@ -9,7 +9,10 @@ import { WorldController } from "../controllers/WorldController";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/dropdown/dropdown.js";
 import "@shoelace-style/shoelace/dist/components/icon/icon.js";
+import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
+import "@shoelace-style/shoelace/dist/components/menu/menu.js";
 import "@shoelace-style/shoelace/dist/components/option/option.js";
 import "@shoelace-style/shoelace/dist/components/select/select.js";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
@@ -71,6 +74,12 @@ class App extends MobxLitElement {
     this.gameController.pause();
   }
 
+  private _zoomToScale(e: CustomEvent): void {
+    const scale = parseFloat(e.detail.item.value);
+
+    this.layoutController.zoomToScale(scale);
+  }
+
   private _resetAll(): void {
     this.worldController.randomize();
     this.gameController.pause();
@@ -90,6 +99,21 @@ class App extends MobxLitElement {
         }">
           ${this.gameController.playing ? "Pause" : "Play"} (P)
         </sl-button>
+      </x-control-group>
+
+      <x-control-group label="Zoom">
+        <sl-dropdown stay-open-on-select>
+          <sl-button slot="trigger" caret>100%</sl-button>
+          <sl-menu @sl-select=${this._zoomToScale}>
+            <sl-menu-item value=".1">10%</sl-menu-item>
+            <sl-menu-item value=".25">25%</sl-menu-item>
+            <sl-menu-item value=".5">50%</sl-menu-item>
+            <sl-menu-item value="1">100%</sl-menu-item>
+            <sl-menu-item value="1.5">150%</sl-menu-item>
+            <sl-menu-item value="2">200%</sl-menu-item>
+            <sl-menu-item value="4">400%</sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
       </x-control-group>
 
       <x-control-group label="Reset">

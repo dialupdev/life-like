@@ -76,6 +76,12 @@ export class LayoutController {
     this.translateOffset(deltaX, deltaY);
   }
 
+  public zoomToScale(scale: number): void {
+    this._layout.setZoomScale(scale);
+
+    this._renderer.update(this._layout, this._world); // make this lazy
+  }
+
   public zoomAt(delta: number, windowX: number, windowY: number): void {
     // Zoom point relative to world offset
     const canvasX = windowX - SIDEBAR_WIDTH - this._layout.offset_x;
