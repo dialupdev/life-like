@@ -9,6 +9,7 @@
     "node": "^18"
   },
   "scripts": {
+    "build": "webpack --mode=development",
     "watch": "webpack serve --mode=development",
     "tsc": "tsc --noEmit",
     "prettier": "prettier --check .",
