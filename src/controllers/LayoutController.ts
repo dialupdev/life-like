@@ -1,5 +1,5 @@
-import { Layout, World, Renderer } from "core";
 import { makeObservable, observable, runInAction } from "mobx";
+import { Layout, World, Renderer } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 
 export enum Direction {
@@ -108,6 +108,14 @@ export class LayoutController {
     const normalizedDelta = -delta;
 
     const scale = this._layout.zoomAt(normalizedDelta, canvasX, canvasY);
+
+    this._setZoomScaleTruncated(scale);
+
+    this._renderer.update(this._layout, this._world); // make this lazy
+  }
+
+  public zoomToFit(): void {
+    const scale = this._layout.zoomToFit(this._world);
 
     this._setZoomScaleTruncated(scale);
 

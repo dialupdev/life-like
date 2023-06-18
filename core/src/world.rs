@@ -112,4 +112,25 @@ impl World {
         self.cells.clear();
         self.neighbor_counts.clear();
     }
+
+    pub fn get_bounds(&self) -> (i32, i32, u32, u32) {
+        let mut min_x = i32::MAX;
+        let mut max_x = i32::MIN;
+        let mut min_y = i32::MAX;
+        let mut max_y = i32::MIN;
+
+        self.cells.iter().for_each(|cell| {
+            min_x = i32::min(min_x, cell.x);
+            max_x = i32::max(max_x, cell.x);
+            min_y = i32::min(min_y, cell.y);
+            max_y = i32::max(max_y, cell.y);
+        });
+
+        // Add 1 to each of these to account for the size of the final cell in the row or column
+        let width = (max_x - min_x + 1) as u32;
+        let height = (max_y - min_y + 1) as u32;
+
+        // x, y, width, height
+        (min_x, min_y, width, height)
+    }
 }

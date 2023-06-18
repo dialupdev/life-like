@@ -75,8 +75,14 @@ class App extends MobxLitElement {
   }
 
   private _zoomToScale(e: CustomEvent): void {
-    const scale = parseFloat(e.detail.item.value);
+    const value = e.detail.item.value;
 
+    if (value === "fit") {
+      this.layoutController.zoomToFit();
+      return;
+    }
+
+    const scale = parseFloat(value);
     this.layoutController.zoomToScale(scale);
   }
 
@@ -112,6 +118,8 @@ class App extends MobxLitElement {
             <sl-menu-item value="1.5">150%</sl-menu-item>
             <sl-menu-item value="2">200%</sl-menu-item>
             <sl-menu-item value="4">400%</sl-menu-item>
+            <sl-divider></sl-divider>
+            <sl-menu-item value="fit">Zoom to fit</sl-menu-item>
           </sl-menu>
         </sl-dropdown>
       </x-control-group>

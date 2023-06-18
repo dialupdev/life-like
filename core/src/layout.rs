@@ -1,3 +1,4 @@
+use super::world::World;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlCanvasElement;
 
@@ -67,6 +68,51 @@ impl Layout {
         // Reverse the translation caused by scaling
         self.offset_x += canvas_x - new_x;
         self.offset_y += canvas_y - new_y;
+
+        self.zoom_scale = new_zoom_scale;
+
+        new_zoom_scale
+    }
+
+    #[wasm_bindgen(js_name = zoomToFit)]
+    pub fn zoom_to_fit(&mut self, world: &World) -> f64 {
+        let (world_x, world_y, world_width, world_height) = world.get_bounds();
+
+        let pixel_ratio = self.pixel_ratio as f64;
+        let natural_cell_size = self.natural_cell_size as f64;
+
+        let natural_world_width = natural_cell_size * world_width as f64;
+        let natural_world_height = natural_cell_size * world_height as f64;
+
+        let (canvas_width, canvas_height) = self.get_canvas_size();
+
+        let actual_canvas_width = canvas_width as f64 / pixel_ratio;
+        let actual_canvas_height = canvas_height as f64 / pixel_ratio;
+
+        let horizontal_fit_scale = actual_canvas_width / natural_world_width;
+        let vertical_fit_scale = actual_canvas_height / natural_world_height;
+
+        // Use the minimum of horizontal or vertical fit to ensure everything is visible
+        let new_zoom_scale = f64::min(horizontal_fit_scale, vertical_fit_scale);
+
+        // Clamp zoom scale within valid range
+        let new_zoom_scale = new_zoom_scale.clamp(MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
+
+        // After the new zoom scale is computed, we can use it to compute the new offset
+        let actual_cell_size = natural_cell_size * new_zoom_scale;
+
+        let actual_world_x = pixel_ratio * actual_cell_size * world_x as f64;
+        let actual_world_y = pixel_ratio * actual_cell_size * world_y as f64;
+        let actual_world_width = pixel_ratio * actual_cell_size * world_width as f64;
+        let actual_world_height = pixel_ratio * actual_cell_size * world_height as f64;
+
+        let actual_world_center_x = actual_world_x + (actual_world_width / 2.0);
+        let actual_world_center_y = actual_world_y + (actual_world_height / 2.0);
+
+        // Set offset to the center of the canvas, plus half of the difference
+        // between the world center and true center
+        self.offset_x = (actual_canvas_width) / 2.0 + actual_world_center_x * -0.5;
+        self.offset_y = (actual_canvas_height) / 2.0 + actual_world_center_y * -0.5;
 
         self.zoom_scale = new_zoom_scale;
 
