@@ -59,7 +59,7 @@ class App extends MobxLitElement {
   }
 
   private _center(): void {
-    this.layoutController.reset();
+    this.layoutController.zoomToFit();
   }
 
   private _tick(): void {
@@ -89,7 +89,7 @@ class App extends MobxLitElement {
   private _resetAll(): void {
     this.worldController.randomize();
     this.gameController.pause();
-    this.layoutController.reset();
+    this.layoutController.zoomToFit();
   }
 
   protected render(): TemplateResult {

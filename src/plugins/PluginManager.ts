@@ -33,7 +33,7 @@ export class PluginManager {
       }),
       new KeyboardPlugin("t", this._gameController.tick),
       new KeyboardPlugin("p", this._gameController.togglePlaying),
-      new KeyboardPlugin("c", this._layoutController.reset),
+      new KeyboardPlugin("c", this._layoutController.zoomToFit),
     ]);
   }
 

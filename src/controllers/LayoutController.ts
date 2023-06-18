@@ -26,18 +26,14 @@ export class LayoutController {
     this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
     this.translateOffset = this.translateOffset.bind(this);
     this.zoomAt = this.zoomAt.bind(this);
-    this.reset = this.reset.bind(this);
+    this.zoomToFit = this.zoomToFit.bind(this);
 
     makeObservable(this, {
       zoomScale: observable,
     });
 
     this.fitCanvasToWindow();
-    this.reset();
-  }
-
-  private _calculateCanvasSize(): [number, number] {
-    return [window.innerWidth - SIDEBAR_WIDTH, window.innerHeight];
+    this.zoomToFit();
   }
 
   private _setZoomScaleTruncated(zoomScale: number): void {
@@ -50,7 +46,8 @@ export class LayoutController {
   }
 
   public fitCanvasToWindow(): void {
-    const [width, height] = this._calculateCanvasSize();
+    const width = window.innerWidth - SIDEBAR_WIDTH;
+    const height = window.innerHeight;
 
     // Increase pixel density of canvas to match device
     this._layout.setCanvasSize(Math.round(PIXEL_RATIO * width), Math.round(PIXEL_RATIO * height));
@@ -118,22 +115,6 @@ export class LayoutController {
     const scale = this._layout.zoomToFit(this._world);
 
     this._setZoomScaleTruncated(scale);
-
-    this._renderer.update(this._layout, this._world); // make this lazy
-  }
-
-  public reset(): void {
-    const [width, height] = this._calculateCanvasSize();
-
-    const cellSize = NATURAL_CELL_SIZE * this._layout.zoom_scale;
-
-    const x = Math.round((width - cellSize) / 2);
-    const y = Math.round((height - cellSize) / 2);
-
-    this._layout.setOffset(x, y);
-    this._layout.setZoomScale(1);
-
-    this._setZoomScaleTruncated(1);
 
     this._renderer.update(this._layout, this._world); // make this lazy
   }
