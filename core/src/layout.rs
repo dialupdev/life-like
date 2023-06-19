@@ -2,9 +2,19 @@ use super::world::World;
 use wasm_bindgen::prelude::*;
 use web_sys::HtmlCanvasElement;
 
+#[derive(PartialEq)]
+#[wasm_bindgen]
+pub enum ZoomDirection {
+    In,
+    Out,
+}
+
 const ZOOM_INTENSITY: f64 = 0.01;
 const MIN_ZOOM_SCALE: f64 = 0.1; // 10%
 const MAX_ZOOM_SCALE: f64 = 64.0; // 6400%
+const ZOOM_SCALE_STEPS: [f64; 16] = [
+    0.1, 0.15, 0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 8.0, 12.0, 16.0, 32.0, 64.0,
+];
 const ZOOM_TO_FIT_PADDING: f64 = 0.15; // 15%
 
 #[wasm_bindgen]
@@ -51,6 +61,36 @@ impl Layout {
     #[wasm_bindgen(js_name = setZoomScale)]
     pub fn set_zoom_scale(&mut self, scale: f64) {
         self.zoom_scale = scale;
+    }
+
+    #[wasm_bindgen(js_name = zoomByStep)]
+    pub fn zoom_by_step(&mut self, direction: ZoomDirection) -> f64 {
+        let is_zoom_out = direction == ZoomDirection::Out;
+        let increment: isize = if is_zoom_out { -1 } else { 1 };
+        let last_step_index = ZOOM_SCALE_STEPS.len() as isize - 1;
+        let mut step_index: isize = if is_zoom_out { last_step_index } else { 0 };
+        let mut scale_candidate = if is_zoom_out {
+            MAX_ZOOM_SCALE
+        } else {
+            MIN_ZOOM_SCALE
+        };
+
+        while step_index >= 0 && step_index <= last_step_index {
+            scale_candidate = ZOOM_SCALE_STEPS[step_index as usize];
+
+            // Return the next closest scale step
+            if (is_zoom_out && scale_candidate < self.zoom_scale)
+                || (!is_zoom_out && scale_candidate > self.zoom_scale)
+            {
+                break;
+            }
+
+            step_index += increment;
+        }
+
+        self.zoom_scale = scale_candidate;
+
+        scale_candidate
     }
 
     #[wasm_bindgen(js_name = zoomAt)]

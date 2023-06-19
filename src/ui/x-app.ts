@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ConfigController, Rule } from "../controllers/ConfigController";
 import { GameController } from "../controllers/GameController";
-import { LayoutController } from "../controllers/LayoutController";
+import { LayoutController, ZoomDirection } from "../controllers/LayoutController";
 import { WorldController } from "../controllers/WorldController";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
@@ -77,6 +77,16 @@ class App extends MobxLitElement {
   private _zoomToScale(e: CustomEvent): void {
     const value = e.detail.item.value;
 
+    if (value === "in") {
+      this.layoutController.zoomByStep(ZoomDirection.In);
+      return;
+    }
+
+    if (value === "out") {
+      this.layoutController.zoomByStep(ZoomDirection.Out);
+      return;
+    }
+
     if (value === "fit") {
       this.layoutController.zoomToFit();
       return;
@@ -111,6 +121,9 @@ class App extends MobxLitElement {
         <sl-dropdown stay-open-on-select>
           <sl-button slot="trigger" caret>${this.layoutController.zoomScale}%</sl-button>
           <sl-menu @sl-select=${this._zoomToScale}>
+            <sl-menu-item value="in">Zoom in</sl-menu-item>
+            <sl-menu-item value="out">Zoom out</sl-menu-item>
+            <sl-divider></sl-divider>
             <sl-menu-item value=".1">10%</sl-menu-item>
             <sl-menu-item value=".25">25%</sl-menu-item>
             <sl-menu-item value=".5">50%</sl-menu-item>

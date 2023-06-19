@@ -1,5 +1,8 @@
 import { Config, Rule } from "core";
 
+// Re-export for UI
+export { Rule } from "core";
+
 export class ConfigController {
   private _config: Config;
 
@@ -25,5 +28,3 @@ export class ConfigController {
     this._config.set_rule(rule);
   }
 }
-
-export { Rule } from "core";

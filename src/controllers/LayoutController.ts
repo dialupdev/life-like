@@ -1,6 +1,9 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { Layout, World, Renderer } from "core";
+import { Layout, World, Renderer, ZoomDirection } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
+
+// Re-export for UI
+export { ZoomDirection } from "core";
 
 export enum Direction {
   Up = "Up",
@@ -91,6 +94,14 @@ export class LayoutController {
 
   public zoomToScale(scale: number): void {
     this._layout.setZoomScale(scale);
+
+    this._setZoomScaleTruncated(scale);
+
+    this._renderer.update(this._layout, this._world); // make this lazy
+  }
+
+  public zoomByStep(direction: ZoomDirection): void {
+    const scale = this._layout.zoomByStep(direction);
 
     this._setZoomScaleTruncated(scale);
 
