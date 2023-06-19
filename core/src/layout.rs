@@ -5,6 +5,7 @@ use web_sys::HtmlCanvasElement;
 const ZOOM_INTENSITY: f64 = 0.01;
 const MIN_ZOOM_SCALE: f64 = 0.1; // 10%
 const MAX_ZOOM_SCALE: f64 = 64.0; // 6400%
+const ZOOM_TO_FIT_PADDING: f64 = 20.0;
 
 #[wasm_bindgen]
 pub struct Layout {
@@ -86,8 +87,8 @@ impl Layout {
         // We're using the actual canvas size here (not including pixel ratio)
         let (canvas_width, canvas_height) = self.get_actual_canvas_size();
 
-        let horizontal_fit_scale = canvas_width / natural_world_width;
-        let vertical_fit_scale = canvas_height / natural_world_height;
+        let horizontal_fit_scale = (canvas_width - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_width;
+        let vertical_fit_scale = (canvas_height - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_height;
 
         // Use the minimum of horizontal or vertical fit to ensure everything is visible
         let new_zoom_scale = f64::min(horizontal_fit_scale, vertical_fit_scale);
