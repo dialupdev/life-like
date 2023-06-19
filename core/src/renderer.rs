@@ -43,7 +43,11 @@ impl Renderer {
         let (canvas_width, canvas_height) = layout.get_canvas_size();
 
         self.context.set_fill_style(&JsValue::from_str("#fff"));
-        self.context
-            .fill_rect(0.0, 0.0, canvas_width.into(), canvas_height.into());
+        self.context.fill_rect(
+            0.0,
+            0.0,
+            canvas_width as f64 * layout.pixel_ratio as f64,
+            canvas_height as f64 * layout.pixel_ratio as f64,
+        );
     }
 }

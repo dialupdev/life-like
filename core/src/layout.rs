@@ -85,10 +85,12 @@ impl Layout {
         let natural_world_height = natural_cell_size * world_height as f64;
 
         // We're using the actual canvas size here (not including pixel ratio)
-        let (canvas_width, canvas_height) = self.get_actual_canvas_size();
+        let (canvas_width, canvas_height) = self.get_canvas_size();
 
-        let horizontal_fit_scale = (canvas_width - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_width;
-        let vertical_fit_scale = (canvas_height - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_height;
+        let horizontal_fit_scale =
+            (canvas_width as f64 - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_width;
+        let vertical_fit_scale =
+            (canvas_height as f64 - ZOOM_TO_FIT_PADDING * 2.0) / natural_world_height;
 
         // Use the minimum of horizontal or vertical fit to ensure everything is visible
         let new_zoom_scale = f64::min(horizontal_fit_scale, vertical_fit_scale);
@@ -109,8 +111,8 @@ impl Layout {
 
         // Offset should be the center of the canvas,
         // plus the difference between the world center and true center
-        self.offset_x = canvas_width / 2.0 + actual_world_center_x * -1.0;
-        self.offset_y = canvas_height / 2.0 + actual_world_center_y * -1.0;
+        self.offset_x = canvas_width as f64 / 2.0 + actual_world_center_x * -1.0;
+        self.offset_y = canvas_height as f64 / 2.0 + actual_world_center_y * -1.0;
 
         self.zoom_scale = new_zoom_scale;
 
@@ -120,15 +122,11 @@ impl Layout {
 
 impl Layout {
     pub fn get_canvas_size(&self) -> (u32, u32) {
-        (self.canvas.width(), self.canvas.height())
-    }
-
-    pub fn get_actual_canvas_size(&self) -> (f64, f64) {
-        let pixel_ratio = self.pixel_ratio as f64;
+        let pixel_ratio = self.pixel_ratio as u32;
 
         (
-            self.canvas.width() as f64 / pixel_ratio,
-            self.canvas.height() as f64 / pixel_ratio,
+            self.canvas.width() as u32 / pixel_ratio,
+            self.canvas.height() as u32 / pixel_ratio,
         )
     }
 }
