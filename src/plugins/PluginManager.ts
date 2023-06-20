@@ -1,6 +1,6 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { GameController } from "../controllers/GameController";
-import { LayoutController, Direction } from "../controllers/LayoutController";
+import { LayoutController, Direction, ZoomDirection } from "../controllers/LayoutController";
 
 export enum PluginGroup {
   Default = "Default",
@@ -21,6 +21,9 @@ export class PluginManager {
     this._pluginGroups.set(PluginGroup.Default, [
       new ResizePlugin(this._layoutController.fitCanvasToWindow),
       new WheelPlugin(this._layoutController.zoomAt),
+      new KeyboardPlugin("mod+=", () => this._layoutController.zoomByStep(ZoomDirection.In)),
+      new KeyboardPlugin("mod+-", () => this._layoutController.zoomByStep(ZoomDirection.Out)),
+      new KeyboardPlugin("mod+0", () => this._layoutController.zoomToFit()),
       new KeyboardPlugin("ArrowUp", () => this._layoutController.panInDirection(Direction.Up)),
       new KeyboardPlugin("ArrowRight", () => this._layoutController.panInDirection(Direction.Right)),
       new KeyboardPlugin("ArrowDown", () => this._layoutController.panInDirection(Direction.Down)),

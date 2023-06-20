@@ -26,18 +26,25 @@ class App extends MobxLitElement {
       border-right: 2px solid #ddd;
       box-sizing: border-box;
       display: block;
-      padding: 20px;
-
-      display: block;
       font-family: var(--sl-font-sans);
       height: 100vh;
-
+      left: 0;
+      padding: 20px;
       position: absolute;
       top: 0;
-
-      height: 100vh;
-      left: 0;
       width: ${SIDEBAR_WIDTH}px;
+    }
+
+    .zoom-menu {
+      width: 240px;
+    }
+
+    .shortcut .char {
+      color: var(--sl-color-neutral-400);
+      display: inline-block;
+      font-size: var(--sl-font-size-small);
+      text-align: center;
+      width: 1.1em;
     }
   `;
 
@@ -120,9 +127,9 @@ class App extends MobxLitElement {
       <x-control-group label="Zoom">
         <sl-dropdown stay-open-on-select>
           <sl-button slot="trigger" caret>${this.layoutController.zoomScale}%</sl-button>
-          <sl-menu @sl-select=${this._zoomToScale}>
-            <sl-menu-item value="in">Zoom in</sl-menu-item>
-            <sl-menu-item value="out">Zoom out</sl-menu-item>
+          <sl-menu class="zoom-menu" @sl-select=${this._zoomToScale}>
+            <sl-menu-item value="in">Zoom in <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">=</span></span></sl-menu-item>
+            <sl-menu-item value="out">Zoom out <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">-</span></span></sl-menu-item>
             <sl-divider></sl-divider>
             <sl-menu-item value=".1">10%</sl-menu-item>
             <sl-menu-item value=".25">25%</sl-menu-item>
@@ -132,7 +139,7 @@ class App extends MobxLitElement {
             <sl-menu-item value="2">200%</sl-menu-item>
             <sl-menu-item value="4">400%</sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-item value="fit">Zoom to fit</sl-menu-item>
+            <sl-menu-item value="fit">Zoom to fit <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">0</span></span></sl-menu-item>
           </sl-menu>
         </sl-dropdown>
       </x-control-group>

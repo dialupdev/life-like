@@ -20,7 +20,7 @@ export class DragPlugin {
 }
 
 export class KeyboardPlugin {
-  constructor(public key: string, public run: (key: string) => void) {}
+  constructor(public keyBindings: string, public run: (key: string) => void) {}
 }
 
 export type Plugin = ResizePlugin | WheelPlugin | DragPlugin | KeyboardPlugin;
@@ -92,10 +92,20 @@ export class PluginBuilder {
   }
 
   private _runKeyboardPlugin(e: KeyboardEvent): void {
-    const { key } = e;
-    const plugin = this._keyboardPlugins.get(key);
+    let keyBindings = "";
 
-    plugin && plugin.run(key);
+    if (e.metaKey || e.ctrlKey) {
+      keyBindings += "mod+";
+    }
+
+    keyBindings += e.key;
+
+    const plugin = this._keyboardPlugins.get(keyBindings);
+
+    if (plugin) {
+      e.preventDefault();
+      plugin.run(keyBindings);
+    }
   }
 
   private _addEventListeners(canvas: HTMLCanvasElement): void {
@@ -115,7 +125,7 @@ export class PluginBuilder {
       this._dragPlugins.add(plugin);
       if (plugin.options?.cursor) this._dragCursor = plugin.options.cursor;
     } else if (plugin instanceof KeyboardPlugin) {
-      this._keyboardPlugins.set(plugin.key, plugin);
+      this._keyboardPlugins.set(plugin.keyBindings, plugin);
     }
   }
 
@@ -128,7 +138,7 @@ export class PluginBuilder {
       this._dragPlugins.delete(plugin);
       if (plugin.options?.cursor) delete this._dragCursor;
     } else if (plugin instanceof KeyboardPlugin) {
-      this._keyboardPlugins.delete(plugin.key);
+      this._keyboardPlugins.delete(plugin.keyBindings);
     }
   }
 }
