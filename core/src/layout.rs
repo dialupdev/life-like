@@ -58,9 +58,19 @@ impl Layout {
         self.offset_y += delta_y;
     }
 
-    #[wasm_bindgen(js_name = setZoomScale)]
-    pub fn set_zoom_scale(&mut self, scale: f64) {
-        self.zoom_scale = scale;
+    #[wasm_bindgen(js_name = zoomToScale)]
+    pub fn zoom_to_scale(&mut self, scale: f64) {
+        // Clamp zoom scale within valid range
+        let new_zoom_scale = scale.clamp(MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
+
+        let (canvas_x, canvas_y) = self.get_canvas_center_offset();
+
+        let (tx, ty) = self.compute_zoom_translation(canvas_x, canvas_y, new_zoom_scale);
+
+        self.offset_x += tx;
+        self.offset_y += ty;
+
+        self.zoom_scale = new_zoom_scale;
     }
 
     #[wasm_bindgen(js_name = zoomByStep)]
@@ -88,6 +98,13 @@ impl Layout {
             step_index += increment;
         }
 
+        let (canvas_x, canvas_y) = self.get_canvas_center_offset();
+
+        let (tx, ty) = self.compute_zoom_translation(canvas_x, canvas_y, scale_candidate);
+
+        self.offset_x += tx;
+        self.offset_y += ty;
+
         self.zoom_scale = scale_candidate;
 
         scale_candidate
@@ -95,20 +112,20 @@ impl Layout {
 
     #[wasm_bindgen(js_name = zoomAt)]
     pub fn zoom_at(&mut self, delta: f64, canvas_x: f64, canvas_y: f64) -> f64 {
-        let old_zoom_scale = self.zoom_scale;
+        // Use canvas offset instead of true canvas position
+        let canvas_x = canvas_x - self.offset_x;
+        let canvas_y = canvas_y - self.offset_y;
+
         // I don't understand the next line, but it works...
         let new_zoom_scale = self.zoom_scale * ((delta * ZOOM_INTENSITY).exp());
 
         // Clamp zoom scale within valid range
         let new_zoom_scale = new_zoom_scale.clamp(MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
 
-        // Get the canvas position of the mouse after scaling
-        let new_x = canvas_x * (new_zoom_scale / old_zoom_scale);
-        let new_y = canvas_y * (new_zoom_scale / old_zoom_scale);
+        let (tx, ty) = self.compute_zoom_translation(canvas_x, canvas_y, new_zoom_scale);
 
-        // Reverse the translation caused by scaling
-        self.offset_x += canvas_x - new_x;
-        self.offset_y += canvas_y - new_y;
+        self.offset_x += tx;
+        self.offset_y += ty;
 
         self.zoom_scale = new_zoom_scale;
 
@@ -124,7 +141,6 @@ impl Layout {
         let natural_world_width = natural_cell_size * world_width as f64;
         let natural_world_height = natural_cell_size * world_height as f64;
 
-        // We're using the actual canvas size here (not including pixel ratio)
         let (canvas_width, canvas_height) = self.get_canvas_size();
 
         let horizontal_fit_scale =
@@ -157,6 +173,31 @@ impl Layout {
         self.zoom_scale = new_zoom_scale;
 
         new_zoom_scale
+    }
+
+    fn get_canvas_center_offset(&self) -> (f64, f64) {
+        let (canvas_width, canvas_height) = self.get_canvas_size();
+        let canvas_center_x = canvas_width as f64 / 2.0 - self.offset_x;
+        let canvas_center_y = canvas_height as f64 / 2.0 - self.offset_y;
+
+        (canvas_center_x, canvas_center_y)
+    }
+
+    fn compute_zoom_translation(
+        &self,
+        zoom_point_x: f64,
+        zoom_point_y: f64,
+        new_zoom_scale: f64,
+    ) -> (f64, f64) {
+        let old_zoom_scale = self.zoom_scale;
+        let zoom_scale_ratio = new_zoom_scale / old_zoom_scale;
+
+        // Get the canvas position of the mouse after scaling
+        let new_x = zoom_point_x * zoom_scale_ratio;
+        let new_y = zoom_point_y * zoom_scale_ratio;
+
+        // Reverse the translation caused by scaling
+        (zoom_point_x - new_x, zoom_point_y - new_y)
     }
 }
 

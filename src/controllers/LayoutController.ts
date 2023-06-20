@@ -93,7 +93,7 @@ export class LayoutController {
   }
 
   public zoomToScale(scale: number): void {
-    this._layout.setZoomScale(scale);
+    this._layout.zoomToScale(scale);
 
     this._setZoomScaleTruncated(scale);
 
@@ -110,8 +110,8 @@ export class LayoutController {
 
   public zoomAt(delta: number, windowX: number, windowY: number): void {
     // Zoom point relative to world offset
-    const canvasX = windowX - SIDEBAR_WIDTH - this._layout.offset_x;
-    const canvasY = windowY - this._layout.offset_y;
+    const canvasX = windowX - SIDEBAR_WIDTH;
+    const canvasY = windowY;
 
     const normalizedDelta = -delta;
 
