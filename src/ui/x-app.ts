@@ -2,10 +2,9 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
+import { AppController } from "../controllers/AppController";
 import { ConfigController, Rule } from "../controllers/ConfigController";
-import { GameController } from "../controllers/GameController";
 import { LayoutController, ZoomDirection } from "../controllers/LayoutController";
-import { WorldController } from "../controllers/WorldController";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
@@ -49,16 +48,13 @@ class App extends MobxLitElement {
   `;
 
   @property()
-  public worldController!: WorldController;
-
-  @property()
   public configController!: ConfigController;
 
   @property()
   public layoutController!: LayoutController;
 
   @property()
-  public gameController!: GameController;
+  public appController!: AppController;
 
   private _changeRule(e: Event): void {
     const rule = parseInt((e.target as HTMLSelectElement).value, 10) as Rule;
@@ -70,15 +66,15 @@ class App extends MobxLitElement {
   }
 
   private _tick(): void {
-    this.gameController.tick();
+    this.appController.tick();
   }
 
   private _play(): void {
-    this.gameController.play();
+    this.appController.play();
   }
 
   private _pause(): void {
-    this.gameController.pause();
+    this.appController.pause();
   }
 
   private _zoomToScale(e: CustomEvent): void {
@@ -103,24 +99,20 @@ class App extends MobxLitElement {
     this.layoutController.zoomToScale(scale);
   }
 
-  private _resetAll(): void {
-    this.worldController.randomize();
-    this.gameController.pause();
-    this.layoutController.zoomToFit();
+  private _reset(): void {
+    this.appController.reset();
   }
 
   protected render(): TemplateResult {
     return html`
       <x-control-group label="Playback">
         <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
-      this.gameController.playing
-    }
-          >Tick (T)</sl-button
-        >
+      this.appController.playing
+    }>Tick (T)</sl-button>
         <sl-button size="small" variant="primary" outline @click="${
-          this.gameController.playing ? this._pause : this._play
+          this.appController.playing ? this._pause : this._play
         }">
-          ${this.gameController.playing ? "Pause" : "Play"} (P)
+          ${this.appController.playing ? "Pause" : "Play"} (P)
         </sl-button>
       </x-control-group>
 
@@ -146,7 +138,7 @@ class App extends MobxLitElement {
 
       <x-control-group label="Reset">
         <sl-button size="small" variant="success" outline @click="${this._center}">Center (C)</sl-button>
-        <sl-button size="small" variant="danger" outline @click="${this._resetAll}">Reset all</sl-button>
+        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset all</sl-button>
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">

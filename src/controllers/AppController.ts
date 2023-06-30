@@ -1,19 +1,22 @@
 import { makeObservable, observable, action } from "mobx";
 import { Layout, World, Renderer, Config } from "core";
+import { LayoutController } from "./LayoutController";
 
-export class GameController {
+export class AppController {
   private _world: World;
   private _config: Config;
   private _layout: Layout;
   private _renderer: Renderer;
+  private _layoutController: LayoutController;
 
   public playing = false;
 
-  constructor(world: World, config: Config, layout: Layout, renderer: Renderer) {
+  constructor(world: World, config: Config, layout: Layout, renderer: Renderer, layoutController: LayoutController) {
     this._world = world;
     this._config = config;
     this._layout = layout;
     this._renderer = renderer;
+    this._layoutController = layoutController;
 
     this._tickRecursive = this._tickRecursive.bind(this);
     this.tick = this.tick.bind(this);
@@ -26,6 +29,8 @@ export class GameController {
       pause: action,
       reset: action,
     });
+
+    this.reset();
   }
 
   private _tickRecursive(): void {
@@ -54,6 +59,8 @@ export class GameController {
   }
 
   public reset(): void {
-    this.playing = false;
+    this.pause();
+    this._world.randomize();
+    this._layoutController.zoomToFit();
   }
 }

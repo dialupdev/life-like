@@ -36,7 +36,6 @@ export class LayoutController {
     });
 
     this.fitCanvasToWindow();
-    this.zoomToFit();
   }
 
   private _setZoomScaleTruncated(zoomScale: number): void {

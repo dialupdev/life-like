@@ -1,5 +1,5 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
-import { GameController } from "../controllers/GameController";
+import { AppController } from "../controllers/AppController";
 import { LayoutController, Direction, ZoomDirection } from "../controllers/LayoutController";
 
 export enum PluginGroup {
@@ -10,13 +10,13 @@ export enum PluginGroup {
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
   private _layoutController: LayoutController;
-  private _gameController: GameController;
+  private _appController: AppController;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
-  constructor(pluginBuilder: PluginBuilder, layoutController: LayoutController, gameController: GameController) {
+  constructor(pluginBuilder: PluginBuilder, layoutController: LayoutController, appController: AppController) {
     this._pluginBuilder = pluginBuilder;
     this._layoutController = layoutController;
-    this._gameController = gameController;
+    this._appController = appController;
 
     this._pluginGroups.set(PluginGroup.Default, [
       new ResizePlugin(this._layoutController.fitCanvasToWindow),
@@ -34,8 +34,8 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutController.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin("t", this._gameController.tick),
-      new KeyboardPlugin("p", this._gameController.togglePlaying),
+      new KeyboardPlugin("t", this._appController.tick),
+      new KeyboardPlugin("p", this._appController.togglePlaying),
       new KeyboardPlugin("c", this._layoutController.zoomToFit),
     ]);
   }
