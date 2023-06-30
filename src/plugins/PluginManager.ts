@@ -34,9 +34,10 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutController.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin("t", this._appController.tick),
-      new KeyboardPlugin("p", this._appController.togglePlaying),
-      new KeyboardPlugin("c", this._layoutController.zoomToFit),
+      new KeyboardPlugin("t", this._appController.tickLazy),
+      new KeyboardPlugin(" ", this._appController.togglePlaying),
+      new KeyboardPlugin("f", this._layoutController.zoomToFit),
+      new KeyboardPlugin("r", this._appController.reset),
     ]);
   }
 

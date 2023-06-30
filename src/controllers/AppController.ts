@@ -19,12 +19,13 @@ export class AppController {
     this._layoutController = layoutController;
 
     this._tickRecursive = this._tickRecursive.bind(this);
-    this.tick = this.tick.bind(this);
+    this.tickLazy = this.tickLazy.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
+    this.reset = this.reset.bind(this);
 
     makeObservable(this, {
       playing: observable,
-      tick: action,
+      tickLazy: action,
       play: action,
       pause: action,
       reset: action,
@@ -35,14 +36,22 @@ export class AppController {
 
   private _tickRecursive(): void {
     if (this.playing) {
-      this.tick();
+      this._tick();
       requestAnimationFrame(this._tickRecursive);
     }
   }
 
-  public tick(): void {
+  private _tick(): void {
     this._world.tick(this._config);
     this._renderer.update(this._layout, this._world);
+  }
+
+  public tickLazy(): void {
+    if (this.playing) {
+      return;
+    }
+
+    this._tick();
   }
 
   public play(): void {

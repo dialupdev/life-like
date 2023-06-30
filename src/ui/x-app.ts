@@ -61,12 +61,8 @@ class App extends MobxLitElement {
     this.configController.setRule(rule);
   }
 
-  private _center(): void {
-    this.layoutController.zoomToFit();
-  }
-
   private _tick(): void {
-    this.appController.tick();
+    this.appController.tickLazy();
   }
 
   private _play(): void {
@@ -99,6 +95,10 @@ class App extends MobxLitElement {
     this.layoutController.zoomToScale(scale);
   }
 
+  private _fit(): void {
+    this.layoutController.zoomToFit();
+  }
+
   private _reset(): void {
     this.appController.reset();
   }
@@ -112,7 +112,7 @@ class App extends MobxLitElement {
         <sl-button size="small" variant="primary" outline @click="${
           this.appController.playing ? this._pause : this._play
         }">
-          ${this.appController.playing ? "Pause" : "Play"} (P)
+          ${this.appController.playing ? "Pause" : "Play"} (Space)
         </sl-button>
       </x-control-group>
 
@@ -137,8 +137,8 @@ class App extends MobxLitElement {
       </x-control-group>
 
       <x-control-group label="Reset">
-        <sl-button size="small" variant="success" outline @click="${this._center}">Center (C)</sl-button>
-        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset all</sl-button>
+        <sl-button size="small" variant="success" outline @click="${this._fit}">Fit (F)</sl-button>
+        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset (R)</sl-button>
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">
