@@ -15,13 +15,13 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 console_error_panic_hook = { version = "0.1.7", optional = true }
-getrandom = { version = "0.2.9", features = ["js"] }
-js-sys = "0.3.63"
+getrandom = { version = "0.2.10", features = ["js"] }
+js-sys = "0.3.64"
 rand = "0.8.5"
-wasm-bindgen = "0.2.86"
+wasm-bindgen = "0.2.87"
 
 [dependencies.web-sys]
-version = "0.3.63"
+version = "0.3.64"
 features = [
   'CanvasRenderingContext2d',
   'Document',
