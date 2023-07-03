@@ -1,4 +1,5 @@
 .DS_Store
-target
+core/target
+core/pkg
 node_modules
 dist

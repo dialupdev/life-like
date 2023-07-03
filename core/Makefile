@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := build
 
 build:
-	wasm-pack build
+	wasm-pack --log-level warn build --no-pack
 
 debug:
-	wasm-pack build --debug
+	wasm-pack --log-level warn build --no-pack --debug

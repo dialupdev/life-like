@@ -25,6 +25,7 @@ module.exports = {
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, "core"),
       args: "--log-level warn",
+      extraArgs: "--no-pack",
     }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
