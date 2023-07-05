@@ -49,13 +49,13 @@ class App extends MobxLitElement {
     }
   `;
 
-  @property()
+  @property({ attribute: false })
   public configController!: ConfigController;
 
-  @property()
+  @property({ attribute: false })
   public layoutController!: LayoutController;
 
-  @property()
+  @property({ attribute: false })
   public appController!: AppController;
 
   private _changeRule(e: Event): void {
