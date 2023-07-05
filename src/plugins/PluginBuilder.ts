@@ -75,6 +75,11 @@ export class PluginBuilder {
   }
 
   private _startDrag(e: MouseEvent): void {
+    // Ignore drag events triggered by right click
+    if (e.button !== 0) {
+      return;
+    }
+
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
 
