@@ -20,7 +20,10 @@ export class DragPlugin {
 }
 
 export class KeyboardPlugin {
-  constructor(public keyBindings: string, public run: (key: string) => void) {}
+  constructor(
+    public keyBindings: string,
+    public run: (key: string) => void
+  ) {}
 }
 
 export type Plugin = ResizePlugin | WheelPlugin | DragPlugin | KeyboardPlugin;

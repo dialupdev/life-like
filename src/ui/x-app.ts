@@ -109,8 +109,8 @@ class App extends MobxLitElement {
     return html`
       <x-control-group label="Playback">
         <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
-      this.appController.playing
-    }>Tick (T)</sl-button>
+          this.appController.playing
+        }>Tick (T)</sl-button>
         <sl-button size="small" variant="primary" outline @click="${
           this.appController.playing ? this._pause : this._play
         }">
