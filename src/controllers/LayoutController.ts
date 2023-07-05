@@ -1,15 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
-import { Layout, ZoomDirection } from "../core/Layout";
+import { Layout, PanDirection, ZoomDirection } from "../core/Layout";
 import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
-
-export enum Direction {
-  Up = "Up",
-  Right = "Right",
-  Down = "Down",
-  Left = "Left",
-}
 
 export class LayoutController {
   private _canvas: HTMLCanvasElement;
@@ -65,7 +58,7 @@ export class LayoutController {
     this._renderer.update(this._layout, this._world); // make this lazy
   }
 
-  public panInDirection(direction: Direction): void {
+  public panInDirection(direction: PanDirection): void {
     const cellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
     const panIncrement = cellSize * 10;
 
@@ -73,16 +66,16 @@ export class LayoutController {
     let deltaY = 0;
 
     switch (direction) {
-      case Direction.Up:
+      case PanDirection.Up:
         deltaY += panIncrement;
         break;
-      case Direction.Right:
+      case PanDirection.Right:
         deltaX -= panIncrement;
         break;
-      case Direction.Down:
+      case PanDirection.Down:
         deltaY -= panIncrement;
         break;
-      case Direction.Left:
+      case PanDirection.Left:
         deltaX += panIncrement;
         break;
     }

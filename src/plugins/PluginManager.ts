@@ -1,7 +1,7 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { AppController } from "../controllers/AppController";
-import { LayoutController, Direction } from "../controllers/LayoutController";
-import { ZoomDirection } from "../core/Layout";
+import { LayoutController } from "../controllers/LayoutController";
+import { PanDirection, ZoomDirection } from "../core/Layout";
 
 export enum PluginGroup {
   Default = "Default",
@@ -25,10 +25,10 @@ export class PluginManager {
       new KeyboardPlugin("mod+=", () => this._layoutController.zoomByStep(ZoomDirection.In)),
       new KeyboardPlugin("mod+-", () => this._layoutController.zoomByStep(ZoomDirection.Out)),
       new KeyboardPlugin("mod+0", () => this._layoutController.zoomToFit()),
-      new KeyboardPlugin("ArrowUp", () => this._layoutController.panInDirection(Direction.Up)),
-      new KeyboardPlugin("ArrowRight", () => this._layoutController.panInDirection(Direction.Right)),
-      new KeyboardPlugin("ArrowDown", () => this._layoutController.panInDirection(Direction.Down)),
-      new KeyboardPlugin("ArrowLeft", () => this._layoutController.panInDirection(Direction.Left)),
+      new KeyboardPlugin("ArrowUp", () => this._layoutController.panInDirection(PanDirection.Up)),
+      new KeyboardPlugin("ArrowRight", () => this._layoutController.panInDirection(PanDirection.Right)),
+      new KeyboardPlugin("ArrowDown", () => this._layoutController.panInDirection(PanDirection.Down)),
+      new KeyboardPlugin("ArrowLeft", () => this._layoutController.panInDirection(PanDirection.Left)),
     ]);
 
     this._pluginGroups.set(PluginGroup.Playback, [
