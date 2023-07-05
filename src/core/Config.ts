@@ -25,27 +25,27 @@ export enum Rule {
 }
 
 export class Config {
-  rule: Rule;
-  birthSet: Set<number>;
-  survivalSet: Set<number>;
+  private _rule: Rule;
+  public birthSet: Set<number>;
+  public survivalSet: Set<number>;
 
   constructor() {
     const rule = Rule.life;
     const [birthSet, survivalSet] = this._parseRule(rule);
 
-    this.rule = rule;
+    this._rule = rule;
     this.birthSet = birthSet;
     this.survivalSet = survivalSet;
   }
 
   public getRule(): Rule {
-    return this.rule;
+    return this._rule;
   }
 
   public setRule(rule: Rule): void {
     [this.birthSet, this.survivalSet] = this._parseRule(rule);
 
-    this.rule = rule;
+    this._rule = rule;
   }
 
   private _parseRule(rule: Rule): [Set<number>, Set<number>] {

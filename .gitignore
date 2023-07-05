@@ -1,6 +1,4 @@
 .DS_Store
-core/target
-core/pkg
 node_modules
 dist
 screenshots

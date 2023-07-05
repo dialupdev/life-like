@@ -30,12 +30,12 @@ export class World {
     return [min_x, min_y, width, height];
   }
 
-  public addCell(worldX: number, worldY: number) {
+  public addCell(worldX: number, worldY: number): void {
     const cell = new Cell(worldX, worldY);
     this._spawn(cell);
   }
 
-  public removeCell(worldX: number, worldY: number) {
+  public removeCell(worldX: number, worldY: number): void {
     const cell = new Cell(worldX, worldY);
     this._kill(cell);
   }
@@ -52,7 +52,7 @@ export class World {
     }
   }
 
-  public tick(config: Config) {
+  public tick(config: Config): void {
     const cellsToKill = new Set<Cell>();
     const cellsToSpawn = new Set<Cell>();
 
@@ -84,7 +84,7 @@ export class World {
     }
   }
 
-  private _spawn(cell: Cell) {
+  private _spawn(cell: Cell): void {
     for (const neighbor of cell.generateNeighbors()) {
       this._incrementNeighborCount(neighbor);
     }
@@ -92,7 +92,7 @@ export class World {
     this.cells.set(cell.hash(), cell);
   }
 
-  private _kill(cell: Cell) {
+  private _kill(cell: Cell): void {
     for (const neighbor of cell.generateNeighbors()) {
       this._decrementNeighborCount(neighbor);
     }
@@ -115,7 +115,7 @@ export class World {
     }
   }
 
-  private _reset() {
+  private _reset(): void {
     this.cells.clear();
     this._neighborCounts.clear();
   }

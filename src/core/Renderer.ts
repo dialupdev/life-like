@@ -1,5 +1,5 @@
-import { World } from "./World";
 import { Layout } from "./Layout";
+import { World } from "./World";
 
 export class Renderer {
   private _context: CanvasRenderingContext2D;
@@ -10,7 +10,7 @@ export class Renderer {
     this._color = color;
   }
 
-  public update(layout: Layout, world: World) {
+  public update(layout: Layout, world: World): void {
     this._clear(layout);
     this._context.fillStyle = this._color;
 
@@ -19,7 +19,7 @@ export class Renderer {
     });
   }
 
-  private _drawCell(layout: Layout, world_x: number, world_y: number) {
+  private _drawCell(layout: Layout, world_x: number, world_y: number): void {
     const pixelRatio = layout.pixelRatio;
     const actualCellSize = layout.naturalCellSize * layout.zoomScale;
 
@@ -31,7 +31,7 @@ export class Renderer {
     );
   }
 
-  private _clear(layout: Layout) {
+  private _clear(layout: Layout): void {
     const [canvasWidth, canvasHeight] = layout.getCanvasSize();
 
     this._context.fillStyle = "#fff";

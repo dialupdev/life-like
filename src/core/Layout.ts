@@ -42,22 +42,22 @@ export class Layout {
     return [this._canvas.width / pixelRatio, this._canvas.height / pixelRatio];
   }
 
-  public setCanvasSize(width: number, height: number) {
+  public setCanvasSize(width: number, height: number): void {
     this._canvas.width = width;
     this._canvas.height = height;
   }
 
-  public setOffset(x: number, y: number) {
+  public setOffset(x: number, y: number): void {
     this.offsetX = x;
     this.offsetY = y;
   }
 
-  public translateOffset(deltaX: number, deltaY: number) {
+  public translateOffset(deltaX: number, deltaY: number): void {
     this.offsetX += deltaX;
     this.offsetY += deltaY;
   }
 
-  public zoomToScale(scale: number) {
+  public zoomToScale(scale: number): void {
     // Clamp zoom scale within valid range
     const newZoomScale = MathUtils.clamp(scale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
 
