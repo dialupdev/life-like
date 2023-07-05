@@ -3,8 +3,10 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { AppController } from "../controllers/AppController";
-import { ConfigController, Rule } from "../controllers/ConfigController";
-import { LayoutController, ZoomDirection } from "../controllers/LayoutController";
+import { ConfigController } from "../controllers/ConfigController";
+import { LayoutController } from "../controllers/LayoutController";
+import { Rule } from "../core/Config";
+import { ZoomDirection } from "../core/Layout";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
@@ -57,7 +59,7 @@ class App extends MobxLitElement {
   public appController!: AppController;
 
   private _changeRule(e: Event): void {
-    const rule = parseInt((e.target as HTMLSelectElement).value, 10) as Rule;
+    const rule = (e.target as HTMLSelectElement).value as Rule;
     this.configController.setRule(rule);
   }
 

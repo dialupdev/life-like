@@ -1,9 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { Layout, World, Renderer, ZoomDirection } from "core";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
-
-// Re-export for UI
-export { ZoomDirection } from "core";
+import { Layout, ZoomDirection } from "../core/Layout";
+import { Renderer } from "../core/Renderer";
+import { World } from "../core/World";
 
 export enum Direction {
   Up = "Up",
@@ -67,7 +66,7 @@ export class LayoutController {
   }
 
   public panInDirection(direction: Direction): void {
-    const cellSize = NATURAL_CELL_SIZE * this._layout.zoom_scale;
+    const cellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
     const panIncrement = cellSize * 10;
 
     let deltaX = 0;

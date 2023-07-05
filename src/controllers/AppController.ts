@@ -1,6 +1,9 @@
 import { makeObservable, observable, action } from "mobx";
-import { Layout, World, Renderer, Config } from "core";
 import { LayoutController } from "./LayoutController";
+import { Config } from "../core/Config";
+import { Layout } from "../core/Layout";
+import { Renderer } from "../core/Renderer";
+import { World } from "../core/World";
 
 export class AppController {
   private _world: World;

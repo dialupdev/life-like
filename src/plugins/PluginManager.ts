@@ -1,6 +1,7 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { AppController } from "../controllers/AppController";
-import { LayoutController, Direction, ZoomDirection } from "../controllers/LayoutController";
+import { LayoutController, Direction } from "../controllers/LayoutController";
+import { ZoomDirection } from "../core/Layout";
 
 export enum PluginGroup {
   Default = "Default",

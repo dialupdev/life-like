@@ -1,7 +1,4 @@
-import { Config, Rule } from "core";
-
-// Re-export for UI
-export { Rule } from "core";
+import { Config, Rule } from "../core/Config";
 
 export class ConfigController {
   private _config: Config;
@@ -10,8 +7,8 @@ export class ConfigController {
     this._config = config;
   }
 
-  public getAllRules(): [string, number][] {
-    const ruleNames = Object.values(Rule).filter(value => isNaN(value as Rule)) as string[];
+  public getAllRules(): [string, string][] {
+    const ruleNames = Object.keys(Rule);
 
     return ruleNames.map(ruleName => {
       const ruleValue = Rule[ruleName as keyof typeof Rule];
@@ -21,10 +18,10 @@ export class ConfigController {
   }
 
   public getRule(): Rule {
-    return this._config.get_rule();
+    return this._config.getRule();
   }
 
   public setRule(rule: Rule): void {
-    this._config.set_rule(rule);
+    this._config.setRule(rule);
   }
 }
