@@ -2,6 +2,7 @@ import { configure } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "./Constants";
 import { Config } from "./core/Config";
 import { Layout } from "./core/Layout";
+import { Library } from "./core/Library";
 import { Playback } from "./core/Playback";
 import { Renderer } from "./core/Renderer";
 import { World } from "./core/World";
@@ -22,16 +23,17 @@ const context = canvas.getContext("2d", { alpha: false })!;
 
 canvas.style.left = `${SIDEBAR_WIDTH}px`;
 
-const world = new World();
 const config = new Config();
+const world = new World();
+const library = new Library();
 const layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
 const renderer = new Renderer(context, "#A76FDE");
-const playback = new Playback(world, config, layout, renderer);
+const playback = new Playback(config, world, layout, renderer);
 
 const configStore = new ConfigStore(config, playback);
 const layoutStore = new LayoutStore(canvas, world, layout, renderer);
 const playbackStore = new PlaybackStore(playback);
-const appStore = new AppStore(world, layoutStore, playbackStore);
+const appStore = new AppStore(world, library, layoutStore, playbackStore);
 
 const pluginBuilder = new PluginBuilder(canvas);
 const pluginManager = new PluginManager(pluginBuilder, layoutStore, playbackStore, appStore);

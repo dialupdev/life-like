@@ -40,8 +40,13 @@ export class World {
     this._kill(cell);
   }
 
+  public clear(): void {
+    this.cells.clear();
+    this._neighborCounts.clear();
+  }
+
   public randomize(): void {
-    this._reset();
+    this.clear();
 
     for (let x = -40; x < 40; x++) {
       for (let y = -40; y < 40; y++) {
@@ -113,10 +118,5 @@ export class World {
     } else {
       this._neighborCounts.set(cell.hash(), neighborCountMinusOne);
     }
-  }
-
-  private _reset(): void {
-    this.cells.clear();
-    this._neighborCounts.clear();
   }
 }

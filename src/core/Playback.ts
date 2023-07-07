@@ -4,8 +4,8 @@ import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
 
 export class Playback {
-  private _world: World;
   private _config: Config;
+  private _world: World;
   private _layout: Layout;
   private _renderer: Renderer;
   private _lastFrameTime!: number;
@@ -15,9 +15,9 @@ export class Playback {
 
   public playing = false;
 
-  constructor(world: World, config: Config, layout: Layout, renderer: Renderer) {
-    this._world = world;
+  constructor(config: Config, world: World, layout: Layout, renderer: Renderer) {
     this._config = config;
+    this._world = world;
     this._layout = layout;
     this._renderer = renderer;
 

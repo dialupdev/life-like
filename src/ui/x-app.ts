@@ -109,6 +109,10 @@ class App extends MobxLitElement {
     this.layoutStore.zoomToFit();
   }
 
+  private _loadPattern(): void {
+    void this.appStore.loadPattern("gosperglidergun.rle");
+  }
+
   private _reset(): void {
     this.appStore.reset();
   }
@@ -187,6 +191,12 @@ class App extends MobxLitElement {
           <sp-action-group size="m">
             <sp-action-button @click="${this._fit}">Fit (F)</sp-action-button>
             <sp-action-button @click="${this._reset}">Reset (R)</sp-action-button>
+          </sp-action-group>
+        </x-control-group>
+
+        <x-control-group label="Library">
+          <sp-action-group size="m">
+            <sp-action-button @click="${this._loadPattern}">Load pattern</sp-action-button>
           </sp-action-group>
         </x-control-group>
 
