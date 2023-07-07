@@ -11,7 +11,10 @@ export class Library {
   private _parseRle(patternString: string, world: World): void {
     // We compile these outside of the loop for better performance
     const commentRe = /^#/;
-    const headerRe = /^x = \d+, y = \d+/;
+    const headerRe = /^x = (\d+), y = (\d+)/;
+
+    let width = 0;
+    let height = 0;
 
     let index = 0;
     let line: string;
@@ -21,26 +24,34 @@ export class Library {
       // Add one to account for the newline char
       index += line.length + 1;
 
+      // Comment
       if (line.match(commentRe)) {
         // eslint-disable-next-line
         console.log("comment", line);
+
         continue;
       }
 
-      if (line.match(headerRe)) {
-        // eslint-disable-next-line
-        console.log("header", line);
+      const headerMatch = line.match(headerRe);
+
+      // Header
+      if (headerMatch) {
+        width = parseInt(headerMatch[1], 10);
+        height = parseInt(headerMatch[2], 10);
+
         break;
       }
     }
 
-    // Body
-    let x = 0;
-    let y = 0;
+    const originX = Math.floor(width / -2);
+    let x = originX;
+    let y = Math.floor(height / -2);
+
     let charCode: number;
     let count = 1;
     let numberInProgress = false;
 
+    // Body
     for (; index < patternString.length; index++) {
       charCode = patternString.charCodeAt(index);
 
@@ -66,7 +77,7 @@ export class Library {
         } else if (charCode === 36) {
           // $
           y += count;
-          x = 0;
+          x = originX;
         } else if (charCode === 33) {
           // !
           break;
