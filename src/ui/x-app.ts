@@ -128,9 +128,9 @@ class App extends MobxLitElement {
             <sl-menu-item value=".1">10%</sl-menu-item>
             <sl-menu-item value=".25">25%</sl-menu-item>
             <sl-menu-item value=".5">50%</sl-menu-item>
-            <sl-menu-item value="1">100%</sl-menu-item>
+            <sl-menu-item value="1">100% <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">1</span></span></sl-menu-item>
             <sl-menu-item value="1.5">150%</sl-menu-item>
-            <sl-menu-item value="2">200%</sl-menu-item>
+            <sl-menu-item value="2">200% <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">2</span></span></sl-menu-item>
             <sl-menu-item value="4">400%</sl-menu-item>
             <sl-divider></sl-divider>
             <sl-menu-item value="fit">Zoom to fit <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">0</span></span></sl-menu-item>

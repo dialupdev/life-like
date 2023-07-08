@@ -24,6 +24,8 @@ export class PluginManager {
       new WheelPlugin(this._layoutController.zoomAt),
       new KeyboardPlugin("mod+=", () => this._layoutController.zoomByStep(ZoomDirection.In)),
       new KeyboardPlugin("mod+-", () => this._layoutController.zoomByStep(ZoomDirection.Out)),
+      new KeyboardPlugin("mod+1", () => this._layoutController.zoomToScale(1)),
+      new KeyboardPlugin("mod+2", () => this._layoutController.zoomToScale(2)),
       new KeyboardPlugin("mod+0", () => this._layoutController.zoomToFit()),
       new KeyboardPlugin("ArrowUp", () => this._layoutController.panInDirection(PanDirection.Up)),
       new KeyboardPlugin("ArrowRight", () => this._layoutController.panInDirection(PanDirection.Right)),
