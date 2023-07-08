@@ -11,9 +11,9 @@ export class World {
 
   public getBounds(): [number, number, number, number] {
     let min_x = Number.MAX_VALUE;
-    let max_x = Number.MIN_VALUE;
+    let max_x = Number.MAX_VALUE * -1;
     let min_y = Number.MAX_VALUE;
-    let max_y = Number.MIN_VALUE;
+    let max_y = Number.MAX_VALUE * -1;
 
     this.cells.forEach(cell => {
       min_x = Math.min(min_x, cell.x);
