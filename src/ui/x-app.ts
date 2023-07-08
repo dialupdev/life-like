@@ -120,7 +120,7 @@ class App extends MobxLitElement {
 
       <x-control-group label="Zoom">
         <sl-dropdown stay-open-on-select>
-          <sl-button slot="trigger" caret>${this.layoutController.zoomScale}%</sl-button>
+          <sl-button size="small" slot="trigger" caret>${this.layoutController.zoomScale}%</sl-button>
           <sl-menu class="zoom-menu" @sl-select=${this._zoomToScale}>
             <sl-menu-item value="in">Zoom in <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">=</span></span></sl-menu-item>
             <sl-menu-item value="out">Zoom out <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">-</span></span></sl-menu-item>
