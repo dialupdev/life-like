@@ -29,11 +29,10 @@ export class AppStore {
     this._playbackStore.pause();
 
     try {
-      const format = filename.split(".")[1];
       const response = await fetch(`/patterns/${filename}`);
       const patternString = await response.text();
 
-      this._library.loadPattern(format, patternString, this._world);
+      this._library.loadPattern(patternString, this._world);
 
       this._layoutStore.zoomToFit();
     } catch (error) {

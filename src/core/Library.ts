@@ -1,13 +1,15 @@
 import { World } from "./World";
 
 export class Library {
-  public loadPattern(_format: string, patternString: string, world: World): void {
+  // Only supports RLE format for now
+  public loadPattern(patternString: string, world: World): void {
     world.clear();
 
     patternString = patternString.replace(/\r/g, "");
     this._parseRle(patternString, world);
   }
 
+  // https://conwaylife.com/wiki/Run_Length_Encoded
   private _parseRle(patternString: string, world: World): void {
     // We compile these outside of the loop for better performance
     const commentRe = /^#/;
