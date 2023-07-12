@@ -7,7 +7,7 @@ export class ConfigStore {
   private _playback: Playback;
 
   public rule = Rule.life;
-  public frameRate = 24;
+  public frameRate = 30;
 
   constructor(config: Config, playback: Playback) {
     this._config = config;

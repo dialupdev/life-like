@@ -11,8 +11,7 @@ export class Playback {
   private _lastFrameTime!: number;
   private _currentTime!: number;
   private _elapsedTime!: number;
-  private _frameRate = 24;
-  private _frameInterval = 1000 / 24;
+  private _frameInterval = 1000 / 30;
 
   public playing = false;
 
@@ -47,7 +46,6 @@ export class Playback {
   }
 
   public setFrameRate(frameRate: number): void {
-    this._frameRate = frameRate;
     this._frameInterval = 1000 / frameRate;
   }
 
