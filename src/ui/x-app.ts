@@ -1,5 +1,7 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { SlRange, SlSelect, SlChangeEvent } from "@shoelace-style/shoelace";
 import { TemplateResult, html, css } from "lit";
+import { query } from "lit/decorators/query.js";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { AppController } from "../controllers/AppController";
@@ -63,8 +65,11 @@ class App extends MobxLitElement {
   @property({ attribute: false })
   public appController!: AppController;
 
+  @query(".range-with-custom-formatter")
+  private speedRange!: SlRange;
+
   private _changeRule(e: Event): void {
-    const rule = (e.target as HTMLSelectElement).value as Rule;
+    const rule = (e.target as SlSelect).value as Rule;
     this.configController.setRule(rule);
   }
 
@@ -74,6 +79,11 @@ class App extends MobxLitElement {
 
   private _tick(): void {
     this.playbackController.tickLazy();
+  }
+
+  private _setFrameRate(e: SlChangeEvent): void {
+    const frameRate = (e.target as SlRange).value;
+    this.playbackController.setFrameRate(frameRate);
   }
 
   private _zoomToScale(e: CustomEvent): void {
@@ -106,6 +116,10 @@ class App extends MobxLitElement {
     this.appController.reset();
   }
 
+  public firstUpdated(): void {
+    this.speedRange.tooltipFormatter = value => `${value} FPS`;
+  }
+
   protected render(): TemplateResult {
     return html`
       <x-control-group label="Playback">
@@ -115,6 +129,12 @@ class App extends MobxLitElement {
         <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
           this.playbackController.playing
         }>Tick (T)</sl-button>
+      </x-control-group>
+
+      <x-control-group label="Frame rate">
+        <sl-range min="1" max="30" step="1" value=${this.playbackController.frameRate} @sl-input="${
+          this._setFrameRate
+        }" tooltip="bottom" class="range-with-custom-formatter" style="--tooltip-offset: 20px;"></sl-range>
       </x-control-group>
 
       <x-control-group label="Zoom">
