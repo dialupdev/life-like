@@ -30,15 +30,6 @@ export class LayoutController {
     this.fitCanvasToWindow();
   }
 
-  private _setZoomScaleTruncated(zoomScale: number): void {
-    // Multiply by 100 and truncate number to two decimal places for nicer UI
-    const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
-
-    runInAction(() => {
-      this.zoomScale = zoomScaleTruncated;
-    });
-  }
-
   public fitCanvasToWindow(): void {
     const width = window.innerWidth - SIDEBAR_WIDTH;
     const height = window.innerHeight;
@@ -119,5 +110,14 @@ export class LayoutController {
     this._setZoomScaleTruncated(scale);
 
     this._renderer.update(this._layout, this._world); // make this lazy
+  }
+
+  private _setZoomScaleTruncated(zoomScale: number): void {
+    // Multiply by 100 and truncate number to two decimal places for nicer UI
+    const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
+
+    runInAction(() => {
+      this.zoomScale = zoomScaleTruncated;
+    });
   }
 }

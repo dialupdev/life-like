@@ -21,6 +21,7 @@ export enum ZoomDirection {
 
 export class Layout {
   private _canvas: HTMLCanvasElement;
+
   public pixelRatio: number; // window.devicePixelRatio
   public naturalCellSize: number; // Cell size at 100% zoom
   public offsetX: number; // Not including pixel ratio

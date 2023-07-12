@@ -1,17 +1,17 @@
 import { makeObservable, action } from "mobx";
 import { LayoutController } from "./LayoutController";
-import { PlaybackController } from "./PlaybackController";
+import { Playback } from "../core/Playback";
 import { World } from "../core/World";
 
 export class AppController {
   private _world: World;
   private _layoutController: LayoutController;
-  private _playbackController: PlaybackController;
+  private _playback: Playback;
 
-  constructor(world: World, layoutController: LayoutController, playbackController: PlaybackController) {
+  constructor(world: World, layoutController: LayoutController, playback: Playback) {
     this._world = world;
     this._layoutController = layoutController;
-    this._playbackController = playbackController;
+    this._playback = playback;
 
     this.reset = this.reset.bind(this);
 
@@ -23,7 +23,7 @@ export class AppController {
   }
 
   public reset(): void {
-    this._playbackController.pause();
+    this._playback.pause();
     this._world.randomize();
     this._layoutController.zoomToFit();
   }

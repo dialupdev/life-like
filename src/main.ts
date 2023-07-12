@@ -6,6 +6,7 @@ import { LayoutController } from "./controllers/LayoutController";
 import { PlaybackController } from "./controllers/PlaybackController";
 import { Config } from "./core/Config";
 import { Layout } from "./core/Layout";
+import { Playback } from "./core/Playback";
 import { Renderer } from "./core/Renderer";
 import { World } from "./core/World";
 import { PluginBuilder } from "./plugins/PluginBuilder";
@@ -25,11 +26,12 @@ const world = new World();
 const config = new Config();
 const layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
 const renderer = new Renderer(context, "#A76FDE");
+const playback = new Playback(world, config, layout, renderer);
 
 const configController = new ConfigController(config);
 const layoutController = new LayoutController(canvas, world, layout, renderer);
-const playbackController = new PlaybackController(world, config, layout, renderer);
-const appController = new AppController(world, layoutController, playbackController);
+const playbackController = new PlaybackController(playback);
+const appController = new AppController(world, layoutController, playback);
 
 const pluginBuilder = new PluginBuilder(canvas);
 const pluginManager = new PluginManager(pluginBuilder, layoutController, playbackController, appController);
