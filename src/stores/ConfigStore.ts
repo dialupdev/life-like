@@ -20,7 +20,11 @@ export class ConfigStore {
       setFrameRate: action,
     });
 
-    this.setFrameRate(24);
+    const rule = localStorage.getItem("rule");
+    if (rule) this.setRule(rule as Rule);
+
+    const frameRate = localStorage.getItem("frameRate");
+    if (frameRate) this.setFrameRate(parseInt(frameRate, 10));
   }
 
   public getAllRules(): [string, string][] {
@@ -34,12 +38,16 @@ export class ConfigStore {
   }
 
   public setRule(rule: Rule): void {
+    localStorage.setItem("rule", rule);
+
     this._config.setRule(rule);
 
     this.rule = rule;
   }
 
   public setFrameRate(frameRate: number): void {
+    localStorage.setItem("frameRate", frameRate.toString());
+
     this._playback.setFrameRate(frameRate);
 
     this.frameRate = frameRate;
