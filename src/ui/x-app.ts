@@ -5,6 +5,7 @@ import { SIDEBAR_WIDTH } from "../Constants";
 import { AppController } from "../controllers/AppController";
 import { ConfigController } from "../controllers/ConfigController";
 import { LayoutController } from "../controllers/LayoutController";
+import { PlaybackController } from "../controllers/PlaybackController";
 import { Rule } from "../core/Config";
 import { ZoomDirection } from "../core/Layout";
 import "@shoelace-style/shoelace/dist/themes/light.css";
@@ -15,6 +16,7 @@ import "@shoelace-style/shoelace/dist/components/icon/icon.js";
 import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
 import "@shoelace-style/shoelace/dist/components/menu/menu.js";
 import "@shoelace-style/shoelace/dist/components/option/option.js";
+import "@shoelace-style/shoelace/dist/components/range/range.js";
 import "@shoelace-style/shoelace/dist/components/select/select.js";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import "./x-control-group";
@@ -56,6 +58,9 @@ class App extends MobxLitElement {
   public layoutController!: LayoutController;
 
   @property({ attribute: false })
+  public playbackController!: PlaybackController;
+
+  @property({ attribute: false })
   public appController!: AppController;
 
   private _changeRule(e: Event): void {
@@ -63,16 +68,12 @@ class App extends MobxLitElement {
     this.configController.setRule(rule);
   }
 
+  private _togglePlaying(): void {
+    this.playbackController.togglePlaying();
+  }
+
   private _tick(): void {
-    this.appController.tickLazy();
-  }
-
-  private _play(): void {
-    this.appController.play();
-  }
-
-  private _pause(): void {
-    this.appController.pause();
+    this.playbackController.tickLazy();
   }
 
   private _zoomToScale(e: CustomEvent): void {
@@ -108,14 +109,12 @@ class App extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <x-control-group label="Playback">
-        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
-          this.appController.playing
-        }>Tick (T)</sl-button>
-        <sl-button size="small" variant="primary" outline @click="${
-          this.appController.playing ? this._pause : this._play
-        }">
-          ${this.appController.playing ? "Pause" : "Play"} (Space)
+        <sl-button size="small" variant="primary" outline @click="${this._togglePlaying}">
+          ${this.playbackController.playing ? "Pause" : "Play"} (Space)
         </sl-button>
+        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
+          this.playbackController.playing
+        }>Tick (T)</sl-button>
       </x-control-group>
 
       <x-control-group label="Zoom">

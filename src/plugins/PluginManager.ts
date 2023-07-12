@@ -1,6 +1,7 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { AppController } from "../controllers/AppController";
 import { LayoutController } from "../controllers/LayoutController";
+import { PlaybackController } from "../controllers/PlaybackController";
 import { PanDirection, ZoomDirection } from "../core/Layout";
 
 export enum PluginGroup {
@@ -11,12 +12,19 @@ export enum PluginGroup {
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
   private _layoutController: LayoutController;
+  private _playbackController: PlaybackController;
   private _appController: AppController;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
-  constructor(pluginBuilder: PluginBuilder, layoutController: LayoutController, appController: AppController) {
+  constructor(
+    pluginBuilder: PluginBuilder,
+    layoutController: LayoutController,
+    playbackController: PlaybackController,
+    appController: AppController
+  ) {
     this._pluginBuilder = pluginBuilder;
     this._layoutController = layoutController;
+    this._playbackController = playbackController;
     this._appController = appController;
 
     this._pluginGroups.set(PluginGroup.Default, [
@@ -37,8 +45,8 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutController.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin("t", this._appController.tickLazy),
-      new KeyboardPlugin(" ", this._appController.togglePlaying),
+      new KeyboardPlugin(" ", this._playbackController.togglePlaying),
+      new KeyboardPlugin("t", this._playbackController.tickLazy),
       new KeyboardPlugin("f", this._layoutController.zoomToFit),
       new KeyboardPlugin("r", this._appController.reset),
     ]);

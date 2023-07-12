@@ -12,10 +12,10 @@ export class LayoutController {
 
   public zoomScale = 1;
 
-  constructor(canvas: HTMLCanvasElement, layout: Layout, world: World, renderer: Renderer) {
+  constructor(canvas: HTMLCanvasElement, world: World, layout: Layout, renderer: Renderer) {
     this._canvas = canvas;
-    this._layout = layout;
     this._world = world;
+    this._layout = layout;
     this._renderer = renderer;
 
     this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
