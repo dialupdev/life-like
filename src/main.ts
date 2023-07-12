@@ -1,9 +1,5 @@
 import { configure } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "./Constants";
-import { AppController } from "./controllers/AppController";
-import { ConfigController } from "./controllers/ConfigController";
-import { LayoutController } from "./controllers/LayoutController";
-import { PlaybackController } from "./controllers/PlaybackController";
 import { Config } from "./core/Config";
 import { Layout } from "./core/Layout";
 import { Playback } from "./core/Playback";
@@ -11,6 +7,10 @@ import { Renderer } from "./core/Renderer";
 import { World } from "./core/World";
 import { PluginBuilder } from "./plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "./plugins/PluginManager";
+import { AppStore } from "./stores/AppStore";
+import { ConfigStore } from "./stores/ConfigStore";
+import { LayoutStore } from "./stores/LayoutStore";
+import { PlaybackStore } from "./stores/PlaybackStore";
 import "./ui/x-app";
 
 configure({
@@ -28,22 +28,22 @@ const layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
 const renderer = new Renderer(context, "#A76FDE");
 const playback = new Playback(world, config, layout, renderer);
 
-const configController = new ConfigController(config);
-const layoutController = new LayoutController(canvas, world, layout, renderer);
-const playbackController = new PlaybackController(playback);
-const appController = new AppController(world, layoutController, playback);
+const configStore = new ConfigStore(config);
+const layoutStore = new LayoutStore(canvas, world, layout, renderer);
+const playbackStore = new PlaybackStore(playback);
+const appStore = new AppStore(world, layoutStore, playback);
 
 const pluginBuilder = new PluginBuilder(canvas);
-const pluginManager = new PluginManager(pluginBuilder, layoutController, playbackController, appController);
+const pluginManager = new PluginManager(pluginBuilder, layoutStore, playbackStore, appStore);
 
 pluginManager.activateGroup(PluginGroup.Default);
 pluginManager.activateGroup(PluginGroup.Playback);
 
 const app = document.createElement("x-app");
 
-app.configController = configController;
-app.layoutController = layoutController;
-app.playbackController = playbackController;
-app.appController = appController;
+app.configStore = configStore;
+app.layoutStore = layoutStore;
+app.playbackStore = playbackStore;
+app.appStore = appStore;
 
 document.body.appendChild(app);

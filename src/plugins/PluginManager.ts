@@ -1,8 +1,8 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
-import { AppController } from "../controllers/AppController";
-import { LayoutController } from "../controllers/LayoutController";
-import { PlaybackController } from "../controllers/PlaybackController";
 import { PanDirection, ZoomDirection } from "../core/Layout";
+import { AppStore } from "../stores/AppStore";
+import { LayoutStore } from "../stores/LayoutStore";
+import { PlaybackStore } from "../stores/PlaybackStore";
 
 export enum PluginGroup {
   Default = "Default",
@@ -11,44 +11,44 @@ export enum PluginGroup {
 
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
-  private _layoutController: LayoutController;
-  private _playbackController: PlaybackController;
-  private _appController: AppController;
+  private _layoutStore: LayoutStore;
+  private _playbackStore: PlaybackStore;
+  private _appStore: AppStore;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
   constructor(
     pluginBuilder: PluginBuilder,
-    layoutController: LayoutController,
-    playbackController: PlaybackController,
-    appController: AppController
+    layoutStore: LayoutStore,
+    playbackStore: PlaybackStore,
+    appStore: AppStore
   ) {
     this._pluginBuilder = pluginBuilder;
-    this._layoutController = layoutController;
-    this._playbackController = playbackController;
-    this._appController = appController;
+    this._layoutStore = layoutStore;
+    this._playbackStore = playbackStore;
+    this._appStore = appStore;
 
     this._pluginGroups.set(PluginGroup.Default, [
-      new ResizePlugin(this._layoutController.fitCanvasToWindow),
-      new WheelPlugin(this._layoutController.zoomAt),
-      new KeyboardPlugin("mod+=", () => this._layoutController.zoomByStep(ZoomDirection.In)),
-      new KeyboardPlugin("mod+-", () => this._layoutController.zoomByStep(ZoomDirection.Out)),
-      new KeyboardPlugin("mod+1", () => this._layoutController.zoomToScale(1)),
-      new KeyboardPlugin("mod+2", () => this._layoutController.zoomToScale(2)),
-      new KeyboardPlugin("mod+0", () => this._layoutController.zoomToFit()),
-      new KeyboardPlugin("ArrowUp", () => this._layoutController.panInDirection(PanDirection.Up)),
-      new KeyboardPlugin("ArrowRight", () => this._layoutController.panInDirection(PanDirection.Right)),
-      new KeyboardPlugin("ArrowDown", () => this._layoutController.panInDirection(PanDirection.Down)),
-      new KeyboardPlugin("ArrowLeft", () => this._layoutController.panInDirection(PanDirection.Left)),
+      new ResizePlugin(this._layoutStore.fitCanvasToWindow),
+      new WheelPlugin(this._layoutStore.zoomAt),
+      new KeyboardPlugin("mod+=", () => this._layoutStore.zoomByStep(ZoomDirection.In)),
+      new KeyboardPlugin("mod+-", () => this._layoutStore.zoomByStep(ZoomDirection.Out)),
+      new KeyboardPlugin("mod+1", () => this._layoutStore.zoomToScale(1)),
+      new KeyboardPlugin("mod+2", () => this._layoutStore.zoomToScale(2)),
+      new KeyboardPlugin("mod+0", () => this._layoutStore.zoomToFit()),
+      new KeyboardPlugin("ArrowUp", () => this._layoutStore.panInDirection(PanDirection.Up)),
+      new KeyboardPlugin("ArrowRight", () => this._layoutStore.panInDirection(PanDirection.Right)),
+      new KeyboardPlugin("ArrowDown", () => this._layoutStore.panInDirection(PanDirection.Down)),
+      new KeyboardPlugin("ArrowLeft", () => this._layoutStore.panInDirection(PanDirection.Left)),
     ]);
 
     this._pluginGroups.set(PluginGroup.Playback, [
-      new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutController.translateOffset(deltaX, deltaY), {
+      new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutStore.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin(" ", this._playbackController.togglePlaying),
-      new KeyboardPlugin("t", this._playbackController.tickLazy),
-      new KeyboardPlugin("f", this._layoutController.zoomToFit),
-      new KeyboardPlugin("r", this._appController.reset),
+      new KeyboardPlugin(" ", this._playbackStore.togglePlaying),
+      new KeyboardPlugin("t", this._playbackStore.tickLazy),
+      new KeyboardPlugin("f", this._layoutStore.zoomToFit),
+      new KeyboardPlugin("r", this._appStore.reset),
     ]);
   }
 

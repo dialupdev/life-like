@@ -4,12 +4,12 @@ import { TemplateResult, html, css } from "lit";
 import { query } from "lit/decorators/query.js";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import { AppController } from "../controllers/AppController";
-import { ConfigController } from "../controllers/ConfigController";
-import { LayoutController } from "../controllers/LayoutController";
-import { PlaybackController } from "../controllers/PlaybackController";
 import { Rule } from "../core/Config";
 import { ZoomDirection } from "../core/Layout";
+import { AppStore } from "../stores/AppStore";
+import { ConfigStore } from "../stores/ConfigStore";
+import { LayoutStore } from "../stores/LayoutStore";
+import { PlaybackStore } from "../stores/PlaybackStore";
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
@@ -54,66 +54,66 @@ class App extends MobxLitElement {
   `;
 
   @property({ attribute: false })
-  public configController!: ConfigController;
+  public configStore!: ConfigStore;
 
   @property({ attribute: false })
-  public layoutController!: LayoutController;
+  public layoutStore!: LayoutStore;
 
   @property({ attribute: false })
-  public playbackController!: PlaybackController;
+  public playbackStore!: PlaybackStore;
 
   @property({ attribute: false })
-  public appController!: AppController;
+  public appStore!: AppStore;
 
   @query(".range-with-custom-formatter")
   private speedRange!: SlRange;
 
   private _changeRule(e: Event): void {
     const rule = (e.target as SlSelect).value as Rule;
-    this.configController.setRule(rule);
+    this.configStore.setRule(rule);
   }
 
   private _togglePlaying(): void {
-    this.playbackController.togglePlaying();
+    this.playbackStore.togglePlaying();
   }
 
   private _tick(): void {
-    this.playbackController.tickLazy();
+    this.playbackStore.tickLazy();
   }
 
   private _setFrameRate(e: SlChangeEvent): void {
     const frameRate = (e.target as SlRange).value;
-    this.playbackController.setFrameRate(frameRate);
+    this.playbackStore.setFrameRate(frameRate);
   }
 
   private _zoomToScale(e: CustomEvent): void {
     const value = e.detail.item.value;
 
     if (value === "in") {
-      this.layoutController.zoomByStep(ZoomDirection.In);
+      this.layoutStore.zoomByStep(ZoomDirection.In);
       return;
     }
 
     if (value === "out") {
-      this.layoutController.zoomByStep(ZoomDirection.Out);
+      this.layoutStore.zoomByStep(ZoomDirection.Out);
       return;
     }
 
     if (value === "fit") {
-      this.layoutController.zoomToFit();
+      this.layoutStore.zoomToFit();
       return;
     }
 
     const scale = parseFloat(value);
-    this.layoutController.zoomToScale(scale);
+    this.layoutStore.zoomToScale(scale);
   }
 
   private _fit(): void {
-    this.layoutController.zoomToFit();
+    this.layoutStore.zoomToFit();
   }
 
   private _reset(): void {
-    this.appController.reset();
+    this.appStore.reset();
   }
 
   public firstUpdated(): void {
@@ -124,22 +124,22 @@ class App extends MobxLitElement {
     return html`
       <x-control-group label="Playback">
         <sl-button size="small" variant="primary" outline @click="${this._togglePlaying}">
-          ${this.playbackController.playing ? "Pause" : "Play"} (Space)
+          ${this.playbackStore.playing ? "Pause" : "Play"} (Space)
         </sl-button>
         <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
-          this.playbackController.playing
+          this.playbackStore.playing
         }>Tick (T)</sl-button>
       </x-control-group>
 
       <x-control-group label="Frame rate">
-        <sl-range min="1" max="30" step="1" value=${this.playbackController.frameRate} @sl-input="${
+        <sl-range min="1" max="30" step="1" value=${this.playbackStore.frameRate} @sl-input="${
           this._setFrameRate
         }" tooltip="bottom" class="range-with-custom-formatter" style="--tooltip-offset: 20px;"></sl-range>
       </x-control-group>
 
       <x-control-group label="Zoom">
         <sl-dropdown stay-open-on-select>
-          <sl-button size="small" slot="trigger" caret>${this.layoutController.zoomScale}%</sl-button>
+          <sl-button size="small" slot="trigger" caret>${this.layoutStore.zoomScale}%</sl-button>
           <sl-menu class="zoom-menu" @sl-select=${this._zoomToScale}>
             <sl-menu-item value="in">Zoom in <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">=</span></span></sl-menu-item>
             <sl-menu-item value="out">Zoom out <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">-</span></span></sl-menu-item>
@@ -163,8 +163,8 @@ class App extends MobxLitElement {
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">
-        <sl-select size="small" label="Rule" value=${this.configController.getRule()} @sl-change=${this._changeRule}>
-          ${this.configController.getAllRules().map(([name, value]) => {
+        <sl-select size="small" label="Rule" value=${this.configStore.getRule()} @sl-change=${this._changeRule}>
+          ${this.configStore.getAllRules().map(([name, value]) => {
             return html`<sl-option value=${value}>${name}</sl-option>`;
           })}
         </sl-select>

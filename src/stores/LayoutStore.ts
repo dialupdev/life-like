@@ -4,7 +4,7 @@ import { Layout, PanDirection, ZoomDirection } from "../core/Layout";
 import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
 
-export class LayoutController {
+export class LayoutStore {
   private _canvas: HTMLCanvasElement;
   private _layout: Layout;
   private _world: World;

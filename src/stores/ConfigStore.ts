@@ -1,6 +1,6 @@
 import { Config, Rule } from "../core/Config";
 
-export class ConfigController {
+export class ConfigStore {
   private _config: Config;
 
   constructor(config: Config) {

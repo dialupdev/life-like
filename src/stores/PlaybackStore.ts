@@ -1,7 +1,7 @@
 import { makeObservable, observable, action } from "mobx";
 import { Playback } from "../core/Playback";
 
-export class PlaybackController {
+export class PlaybackStore {
   private _playback: Playback;
 
   public frameRate = 24;
