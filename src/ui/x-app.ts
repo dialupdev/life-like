@@ -132,7 +132,7 @@ class App extends MobxLitElement {
       </x-control-group>
 
       <x-control-group label="Frame rate">
-        <sl-range min="1" max="30" step="1" value=${this.configStore.frameRate} @sl-input="${
+        <sl-range min="1" max="60" step="1" value=${this.configStore.frameRate} @sl-input="${
           this._setFrameRate
         }" tooltip="bottom" class="range-with-custom-formatter" style="--tooltip-offset: 20px;"></sl-range>
       </x-control-group>
