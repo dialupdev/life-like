@@ -83,7 +83,7 @@ class App extends MobxLitElement {
 
   private _setFrameRate(e: SlChangeEvent): void {
     const frameRate = (e.target as SlRange).value;
-    this.playbackStore.setFrameRate(frameRate);
+    this.configStore.setFrameRate(frameRate);
   }
 
   private _zoomToScale(e: CustomEvent): void {
@@ -132,7 +132,7 @@ class App extends MobxLitElement {
       </x-control-group>
 
       <x-control-group label="Frame rate">
-        <sl-range min="1" max="30" step="1" value=${this.playbackStore.frameRate} @sl-input="${
+        <sl-range min="1" max="30" step="1" value=${this.configStore.frameRate} @sl-input="${
           this._setFrameRate
         }" tooltip="bottom" class="range-with-custom-formatter" style="--tooltip-offset: 20px;"></sl-range>
       </x-control-group>
@@ -163,7 +163,7 @@ class App extends MobxLitElement {
       </x-control-group></x-control-group>
 
       <x-control-group label="Config">
-        <sl-select size="small" label="Rule" value=${this.configStore.getRule()} @sl-change=${this._changeRule}>
+        <sl-select size="small" label="Rule" value=${this.configStore.rule} @sl-change=${this._changeRule}>
           ${this.configStore.getAllRules().map(([name, value]) => {
             return html`<sl-option value=${value}>${name}</sl-option>`;
           })}

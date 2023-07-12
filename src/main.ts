@@ -28,7 +28,7 @@ const layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
 const renderer = new Renderer(context, "#A76FDE");
 const playback = new Playback(world, config, layout, renderer);
 
-const configStore = new ConfigStore(config);
+const configStore = new ConfigStore(config, playback);
 const layoutStore = new LayoutStore(canvas, world, layout, renderer);
 const playbackStore = new PlaybackStore(playback);
 const appStore = new AppStore(world, layoutStore, playback);

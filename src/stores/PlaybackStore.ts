@@ -4,7 +4,6 @@ import { Playback } from "../core/Playback";
 export class PlaybackStore {
   private _playback: Playback;
 
-  public frameRate = 24;
   public playing = false;
 
   constructor(playback: Playback) {
@@ -14,13 +13,9 @@ export class PlaybackStore {
     this.tickLazy = this.tickLazy.bind(this);
 
     makeObservable(this, {
-      frameRate: observable,
       playing: observable,
       togglePlaying: action,
-      setFrameRate: action,
     });
-
-    this.setFrameRate(24);
   }
 
   public togglePlaying(): void {
@@ -31,15 +26,5 @@ export class PlaybackStore {
 
   public tickLazy(): void {
     this._playback.tickLazy();
-  }
-
-  public getFrameRate(): number {
-    return this._playback.getFrameRate();
-  }
-
-  public setFrameRate(frameRate: number): void {
-    this._playback.setFrameRate(frameRate);
-
-    this.frameRate = frameRate;
   }
 }

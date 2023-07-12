@@ -46,10 +46,6 @@ export class Playback {
     this._tick();
   }
 
-  public getFrameRate(): number {
-    return this._frameRate;
-  }
-
   public setFrameRate(frameRate: number): void {
     this._frameRate = frameRate;
     this._frameInterval = 1000 / frameRate;
