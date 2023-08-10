@@ -126,33 +126,65 @@ class App extends MobxLitElement {
         <sl-button size="small" variant="primary" outline @click="${this._togglePlaying}">
           ${this.playbackStore.playing ? "Pause" : "Play"} (Space)
         </sl-button>
-        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${
-          this.playbackStore.playing
-        }>Tick (T)</sl-button>
+        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${this.playbackStore.playing}
+          >Tick (T)</sl-button
+        >
       </x-control-group>
 
       <x-control-group label="Frame rate">
-        <sl-range min="1" max="60" step="1" value=${this.configStore.frameRate} @sl-input="${
-          this._setFrameRate
-        }" tooltip="bottom" class="range-with-custom-formatter" style="--tooltip-offset: 20px;"></sl-range>
+        <sl-range
+          min="1"
+          max="60"
+          step="1"
+          value=${this.configStore.frameRate}
+          @sl-input="${this._setFrameRate}"
+          tooltip="bottom"
+          class="range-with-custom-formatter"
+          style="--tooltip-offset: 20px;"
+        ></sl-range>
       </x-control-group>
 
       <x-control-group label="Zoom">
         <sl-dropdown stay-open-on-select>
           <sl-button size="small" slot="trigger" caret>${this.layoutStore.zoomScale}%</sl-button>
           <sl-menu class="zoom-menu" @sl-select=${this._zoomToScale}>
-            <sl-menu-item value="in">Zoom in <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">=</span></span></sl-menu-item>
-            <sl-menu-item value="out">Zoom out <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">-</span></span></sl-menu-item>
+            <sl-menu-item value="in"
+              >Zoom in
+              <span class="shortcut" slot="suffix"
+                ><span class="char">⌘</span><span class="char">=</span></span
+              ></sl-menu-item
+            >
+            <sl-menu-item value="out"
+              >Zoom out
+              <span class="shortcut" slot="suffix"
+                ><span class="char">⌘</span><span class="char">-</span></span
+              ></sl-menu-item
+            >
             <sl-divider></sl-divider>
             <sl-menu-item value=".1">10%</sl-menu-item>
             <sl-menu-item value=".25">25%</sl-menu-item>
             <sl-menu-item value=".5">50%</sl-menu-item>
-            <sl-menu-item value="1">100% <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">1</span></span></sl-menu-item>
+            <sl-menu-item value="1"
+              >100%
+              <span class="shortcut" slot="suffix"
+                ><span class="char">⌘</span><span class="char">1</span></span
+              ></sl-menu-item
+            >
             <sl-menu-item value="1.5">150%</sl-menu-item>
-            <sl-menu-item value="2">200% <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">2</span></span></sl-menu-item>
+            <sl-menu-item value="2"
+              >200%
+              <span class="shortcut" slot="suffix"
+                ><span class="char">⌘</span><span class="char">2</span></span
+              ></sl-menu-item
+            >
             <sl-menu-item value="4">400%</sl-menu-item>
             <sl-divider></sl-divider>
-            <sl-menu-item value="fit">Zoom to fit <span class="shortcut" slot="suffix"><span class="char">⌘</span><span class="char">0</span></span></sl-menu-item>
+            <sl-menu-item value="fit"
+              >Zoom to fit
+              <span class="shortcut" slot="suffix"
+                ><span class="char">⌘</span><span class="char">0</span></span
+              ></sl-menu-item
+            >
           </sl-menu>
         </sl-dropdown>
       </x-control-group>
@@ -160,7 +192,7 @@ class App extends MobxLitElement {
       <x-control-group label="Reset">
         <sl-button size="small" variant="success" outline @click="${this._fit}">Fit (F)</sl-button>
         <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset (R)</sl-button>
-      </x-control-group></x-control-group>
+      </x-control-group>
 
       <x-control-group label="Config">
         <sl-select size="small" label="Rule" value=${this.configStore.rule} @sl-change=${this._changeRule}>
