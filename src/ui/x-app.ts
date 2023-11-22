@@ -1,7 +1,8 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { SlRange, SlSelect, SlChangeEvent } from "@shoelace-style/shoelace";
+import { Menu } from "@spectrum-web-components/menu";
+import { Picker } from "@spectrum-web-components/picker";
+import { Slider } from "@spectrum-web-components/slider";
 import { TemplateResult, html, css } from "lit";
-import { query } from "lit/decorators/query.js";
 import { customElement, property } from "lit/decorators.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { Rule } from "../core/Config";
@@ -10,17 +11,19 @@ import { AppStore } from "../stores/AppStore";
 import { ConfigStore } from "../stores/ConfigStore";
 import { LayoutStore } from "../stores/LayoutStore";
 import { PlaybackStore } from "../stores/PlaybackStore";
-import "@shoelace-style/shoelace/dist/themes/light.css";
-import "@shoelace-style/shoelace/dist/components/button-group/button-group.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "@shoelace-style/shoelace/dist/components/dropdown/dropdown.js";
-import "@shoelace-style/shoelace/dist/components/icon/icon.js";
-import "@shoelace-style/shoelace/dist/components/menu-item/menu-item.js";
-import "@shoelace-style/shoelace/dist/components/menu/menu.js";
-import "@shoelace-style/shoelace/dist/components/option/option.js";
-import "@shoelace-style/shoelace/dist/components/range/range.js";
-import "@shoelace-style/shoelace/dist/components/select/select.js";
-import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
+import "@spectrum-web-components/action-button/sp-action-button.js";
+import "@spectrum-web-components/action-group/sp-action-group.js";
+import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/menu/sp-menu-divider.js";
+import "@spectrum-web-components/menu/sp-menu-item.js";
+import "@spectrum-web-components/menu/sp-menu.js";
+import "@spectrum-web-components/overlay/overlay-trigger.js";
+import "@spectrum-web-components/picker/sp-picker.js";
+import "@spectrum-web-components/popover/sp-popover.js";
+import "@spectrum-web-components/slider/sp-slider.js";
+import "@spectrum-web-components/theme/scale-medium.js";
+import "@spectrum-web-components/theme/sp-theme.js";
+import "@spectrum-web-components/theme/theme-light.js";
 import "./x-control-group";
 
 @customElement("x-app")
@@ -31,7 +34,6 @@ class App extends MobxLitElement {
       border-right: 2px solid #ddd;
       box-sizing: border-box;
       display: block;
-      font-family: var(--sl-font-sans);
       height: 100vh;
       left: 0;
       padding: 20px;
@@ -45,9 +47,7 @@ class App extends MobxLitElement {
     }
 
     .shortcut .char {
-      color: var(--sl-color-neutral-400);
       display: inline-block;
-      font-size: var(--sl-font-size-small);
       text-align: center;
       width: 1.1em;
     }
@@ -65,14 +65,6 @@ class App extends MobxLitElement {
   @property({ attribute: false })
   public appStore!: AppStore;
 
-  @query(".range-with-custom-formatter")
-  private speedRange!: SlRange;
-
-  private _changeRule(e: Event): void {
-    const rule = (e.target as SlSelect).value as Rule;
-    this.configStore.setRule(rule);
-  }
-
   private _togglePlaying(): void {
     this.playbackStore.togglePlaying();
   }
@@ -81,13 +73,18 @@ class App extends MobxLitElement {
     this.playbackStore.tickLazy();
   }
 
-  private _setFrameRate(e: SlChangeEvent): void {
-    const frameRate = (e.target as SlRange).value;
+  private _changeRule(e: Event): void {
+    const rule = (e.target as Picker).value as Rule;
+    this.configStore.setRule(rule);
+  }
+
+  private _setFrameRate(e: Event): void {
+    const frameRate = (e.target as Slider).value;
     this.configStore.setFrameRate(frameRate);
   }
 
-  private _zoomToScale(e: CustomEvent): void {
-    const value = e.detail.item.value;
+  private _zoomToScale(e: Event): void {
+    const value = (e.target as Menu).value;
 
     if (value === "in") {
       this.layoutStore.zoomByStep(ZoomDirection.In);
@@ -116,91 +113,92 @@ class App extends MobxLitElement {
     this.appStore.reset();
   }
 
-  public firstUpdated(): void {
-    this.speedRange.tooltipFormatter = value => `${value} FPS`;
-  }
-
   protected render(): TemplateResult {
     return html`
-      <x-control-group label="Playback">
-        <sl-button size="small" variant="primary" outline @click="${this._togglePlaying}">
-          ${this.playbackStore.playing ? "Pause" : "Play"} (Space)
-        </sl-button>
-        <sl-button size="small" variant="primary" outline @click="${this._tick}" ?disabled=${this.playbackStore.playing}
-          >Tick (T)</sl-button
-        >
-      </x-control-group>
+      <sp-theme color="light" scale="medium">
+        <x-control-group label="Playback">
+          <sp-action-group size="m">
+            <sp-action-button @click="${this._togglePlaying}"
+              >${this.playbackStore.playing ? "Pause" : "Play"} (Space)</sp-action-button
+            >
+            <sp-action-button @click="${this._tick}" ?disabled=${this.playbackStore.playing}>Tick (T)</sp-action-button>
+          </sp-action-group>
+        </x-control-group>
 
-      <x-control-group label="Frame rate">
-        <sl-range
-          min="1"
-          max="60"
-          step="1"
-          value=${this.configStore.frameRate}
-          @sl-input="${this._setFrameRate}"
-          tooltip="bottom"
-          class="range-with-custom-formatter"
-          style="--tooltip-offset: 20px;"
-        ></sl-range>
-      </x-control-group>
+        <x-control-group label="Frame rate">
+          <sp-slider
+            min="1"
+            max="60"
+            step="1"
+            variant="filled"
+            value=${this.configStore.frameRate}
+            @input="${this._setFrameRate}"
+          ></sp-slider>
+        </x-control-group>
 
-      <x-control-group label="Zoom">
-        <sl-dropdown stay-open-on-select>
-          <sl-button size="small" slot="trigger" caret>${this.layoutStore.zoomScale}%</sl-button>
-          <sl-menu class="zoom-menu" @sl-select=${this._zoomToScale}>
-            <sl-menu-item value="in"
-              >Zoom in
-              <span class="shortcut" slot="suffix"
-                ><span class="char">⌘</span><span class="char">=</span></span
-              ></sl-menu-item
-            >
-            <sl-menu-item value="out"
-              >Zoom out
-              <span class="shortcut" slot="suffix"
-                ><span class="char">⌘</span><span class="char">-</span></span
-              ></sl-menu-item
-            >
-            <sl-divider></sl-divider>
-            <sl-menu-item value=".1">10%</sl-menu-item>
-            <sl-menu-item value=".25">25%</sl-menu-item>
-            <sl-menu-item value=".5">50%</sl-menu-item>
-            <sl-menu-item value="1"
-              >100%
-              <span class="shortcut" slot="suffix"
-                ><span class="char">⌘</span><span class="char">1</span></span
-              ></sl-menu-item
-            >
-            <sl-menu-item value="1.5">150%</sl-menu-item>
-            <sl-menu-item value="2"
-              >200%
-              <span class="shortcut" slot="suffix"
-                ><span class="char">⌘</span><span class="char">2</span></span
-              ></sl-menu-item
-            >
-            <sl-menu-item value="4">400%</sl-menu-item>
-            <sl-divider></sl-divider>
-            <sl-menu-item value="fit"
-              >Zoom to fit
-              <span class="shortcut" slot="suffix"
-                ><span class="char">⌘</span><span class="char">0</span></span
-              ></sl-menu-item
-            >
-          </sl-menu>
-        </sl-dropdown>
-      </x-control-group>
+        <x-control-group label="Zoom">
+          <overlay-trigger>
+            <sp-action-button slot="trigger" caret>${this.layoutStore.zoomScale}%</sp-action-button>
+            <sp-popover open slot="click-content" class="zoom-menu">
+              <sp-menu @change=${this._zoomToScale}>
+                <sp-menu-item value="in"
+                  >Zoom in
+                  <span class="shortcut" slot="value"
+                    ><span class="char">⌘</span><span class="char">=</span></span
+                  ></sp-menu-item
+                >
+                <sp-menu-item value="out"
+                  >Zoom out
+                  <span class="shortcut" slot="value"
+                    ><span class="char">⌘</span><span class="char">-</span></span
+                  ></sp-menu-item
+                >
+                <sp-menu-divider size="s"></sp-menu-divider>
+                <sp-menu-item value=".1">10%</sp-menu-item>
+                <sp-menu-item value=".25">25%</sp-menu-item>
+                <sp-menu-item value=".5">50%</sp-menu-item>
+                <sp-menu-item value="1"
+                  >100%
+                  <span class="shortcut" slot="value"
+                    ><span class="char">⌘</span><span class="char">1</span></span
+                  ></sp-menu-item
+                >
+                <sp-menu-item value="1.5">150%</sp-menu-item>
+                <sp-menu-item value="2"
+                  >200%
+                  <span class="shortcut" slot="value"
+                    ><span class="char">⌘</span><span class="char">2</span></span
+                  ></sp-menu-item
+                >
+                <sp-menu-item value="4">400%</sp-menu-item>
+                <sp-menu-divider size="s"></sp-menu-divider>
+                <sp-menu-item value="fit"
+                  >Zoom to fit
+                  <span class="shortcut" slot="value"
+                    ><span class="char">⌘</span><span class="char">0</span></span
+                  ></sp-menu-item
+                >
+              </sp-menu>
+            </sp-popover>
+          </overlay-trigger>
+        </x-control-group>
 
-      <x-control-group label="Reset">
-        <sl-button size="small" variant="success" outline @click="${this._fit}">Fit (F)</sl-button>
-        <sl-button size="small" variant="danger" outline @click="${this._reset}">Reset (R)</sl-button>
-      </x-control-group>
+        <x-control-group label="Reset">
+          <sp-action-group size="m">
+            <sp-action-button @click="${this._fit}">Fit (F)</sp-action-button>
+            <sp-action-button @click="${this._reset}">Reset (R)</sp-action-button>
+          </sp-action-group>
+        </x-control-group>
 
-      <x-control-group label="Config">
-        <sl-select size="small" label="Rule" value=${this.configStore.rule} @sl-change=${this._changeRule}>
-          ${this.configStore.getAllRules().map(([name, value]) => {
-            return html`<sl-option value=${value}>${name}</sl-option>`;
-          })}
-        </sl-select>
-      </x-control-group>
+        <x-control-group label="Config">
+          <sp-field-label for="rule">Rule</sp-field-label>
+          <sp-picker id="rule" value=${this.configStore.rule} @change=${this._changeRule}>
+            ${this.configStore.getAllRules().map(([name, value]) => {
+              return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
+            })}
+          </sp-picker>
+        </x-control-group>
+      </sp-theme>
     `;
   }
 }

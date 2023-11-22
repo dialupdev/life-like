@@ -1,7 +1,7 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
-import "@shoelace-style/shoelace/dist/components/divider/divider.js";
+import "@spectrum-web-components/divider/sp-divider.js";
 
 @customElement("x-control-group")
 class ControlGroup extends LitElement {
@@ -10,8 +10,8 @@ class ControlGroup extends LitElement {
       display: block;
       margin: 10px 0;
     }
-    .label {
-      font-size: var(--sl-font-size-x-small);
+    sp-divider {
+      margin: 1em 0;
     }
   `;
 
@@ -20,9 +20,9 @@ class ControlGroup extends LitElement {
 
   protected render(): TemplateResult {
     return html`
-      ${when(this.label, () => html`<p class="label">${this.label}</p>`)}
+      ${when(this.label, () => html`<p>${this.label}</p>`)}
       <slot></slot>
-      <sl-divider></sl-divider>
+      <sp-divider size="s"></sp-divider>
     `;
   }
 }
