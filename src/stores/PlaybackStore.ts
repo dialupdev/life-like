@@ -18,9 +18,13 @@ export class PlaybackStore {
     });
   }
 
+  public pause(): void {
+    this._playback.pause();
+    this.playing = false;
+  }
+
   public togglePlaying(): void {
     this._playback.playing ? this._playback.pause() : this._playback.play();
-
     this.playing = !this.playing;
   }
 

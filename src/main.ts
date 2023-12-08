@@ -31,7 +31,7 @@ const playback = new Playback(world, config, layout, renderer);
 const configStore = new ConfigStore(config, playback);
 const layoutStore = new LayoutStore(canvas, world, layout, renderer);
 const playbackStore = new PlaybackStore(playback);
-const appStore = new AppStore(world, layoutStore, playback);
+const appStore = new AppStore(world, layoutStore, playbackStore);
 
 const pluginBuilder = new PluginBuilder(canvas);
 const pluginManager = new PluginManager(pluginBuilder, layoutStore, playbackStore, appStore);
