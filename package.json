@@ -5,6 +5,7 @@
   "private": true,
   "author": "Steve Davis <steve@celery.club>",
   "license": "MIT",
+  "type": "module",
   "engines": {
     "node": "^20",
     "npm": "^10"
