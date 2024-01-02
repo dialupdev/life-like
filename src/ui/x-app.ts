@@ -54,16 +54,16 @@ class App extends MobxLitElement {
   `;
 
   @property({ attribute: false })
-  public configStore!: ConfigStore;
+  public accessor configStore!: ConfigStore;
 
   @property({ attribute: false })
-  public layoutStore!: LayoutStore;
+  public accessor layoutStore!: LayoutStore;
 
   @property({ attribute: false })
-  public playbackStore!: PlaybackStore;
+  public accessor playbackStore!: PlaybackStore;
 
   @property({ attribute: false })
-  public appStore!: AppStore;
+  public accessor appStore!: AppStore;
 
   private _togglePlaying(): void {
     this.playbackStore.togglePlaying();
