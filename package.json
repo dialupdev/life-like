@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "webpack --mode=development",
+    "build:production": "webpack --mode=production",
     "watch": "webpack serve --mode=development",
     "tsc": "tsc --noEmit",
     "prettier": "prettier --check .",
