@@ -27,8 +27,8 @@ canvas.style.left = `${SIDEBAR_WIDTH}px`;
 const config = new Config();
 const world = new World();
 const layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
-const renderer = new Renderer(context, "#A76FDE");
-const playback = new Playback(config, world, layout, renderer);
+const renderer = new Renderer(layout, context, "#A76FDE");
+const playback = new Playback(config, world, renderer);
 const library = new Library(world);
 
 const configStore = new ConfigStore(config, playback);

@@ -41,12 +41,12 @@ export class LayoutStore {
     this._canvas.style.width = `${width}px`;
     this._canvas.style.height = `${height}px`;
 
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   public translateOffset(deltaX: number, deltaY: number): void {
     this._layout.translateOffset(deltaX, deltaY);
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   public panInDirection(direction: PanDirection): void {
@@ -79,7 +79,7 @@ export class LayoutStore {
 
     this._setZoomScaleTruncated(scale);
 
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   public zoomByStep(direction: ZoomDirection): void {
@@ -87,7 +87,7 @@ export class LayoutStore {
 
     this._setZoomScaleTruncated(scale);
 
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   public zoomAt(delta: number, windowX: number, windowY: number): void {
@@ -101,7 +101,7 @@ export class LayoutStore {
 
     this._setZoomScaleTruncated(scale);
 
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   public zoomToFit(): void {
@@ -109,7 +109,7 @@ export class LayoutStore {
 
     this._setZoomScaleTruncated(scale);
 
-    this._renderer.update(this._layout, this._world); // make this lazy
+    this._renderer.update(this._world); // make this lazy
   }
 
   private _setZoomScaleTruncated(zoomScale: number): void {

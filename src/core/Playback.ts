@@ -1,12 +1,10 @@
 import { Config } from "../core/Config";
-import { Layout } from "../core/Layout";
 import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
 
 export class Playback {
   private _config: Config;
   private _world: World;
-  private _layout: Layout;
   private _renderer: Renderer;
   private _lastFrameTime!: number;
   private _currentTime!: number;
@@ -15,10 +13,9 @@ export class Playback {
 
   public playing = false;
 
-  constructor(config: Config, world: World, layout: Layout, renderer: Renderer) {
+  constructor(config: Config, world: World, renderer: Renderer) {
     this._config = config;
     this._world = world;
-    this._layout = layout;
     this._renderer = renderer;
 
     this.tickLazy = this.tickLazy.bind(this);
@@ -51,7 +48,7 @@ export class Playback {
 
   private _tick(): void {
     this._world.tick(this._config);
-    this._renderer.update(this._layout, this._world);
+    this._renderer.update(this._world);
   }
 
   private _tickRecursive(): void {

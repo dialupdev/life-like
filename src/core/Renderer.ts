@@ -2,39 +2,41 @@ import { Layout } from "./Layout";
 import { World } from "./World";
 
 export class Renderer {
+  private _layout: Layout;
   private _context: CanvasRenderingContext2D;
   private _color: string;
 
-  constructor(context: CanvasRenderingContext2D, color: string) {
+  constructor(layout: Layout, context: CanvasRenderingContext2D, color: string) {
+    this._layout = layout;
     this._context = context;
     this._color = color;
   }
 
-  public update(layout: Layout, world: World): void {
-    this._clear(layout);
+  public update(world: World): void {
+    this._clear();
     this._context.fillStyle = this._color;
 
     world.cells.forEach(cell => {
-      this._drawCell(layout, cell.x, cell.y);
+      this._drawCell(cell.x, cell.y);
     });
   }
 
-  private _drawCell(layout: Layout, world_x: number, world_y: number): void {
-    const pixelRatio = layout.pixelRatio;
-    const actualCellSize = layout.naturalCellSize * layout.zoomScale;
+  private _drawCell(world_x: number, world_y: number): void {
+    const pixelRatio = this._layout.pixelRatio;
+    const actualCellSize = this._layout.naturalCellSize * this._layout.zoomScale;
 
     this._context.fillRect(
-      pixelRatio * actualCellSize * world_x + pixelRatio * layout.offsetX,
-      pixelRatio * actualCellSize * world_y + pixelRatio * layout.offsetY,
+      pixelRatio * actualCellSize * world_x + pixelRatio * this._layout.offsetX,
+      pixelRatio * actualCellSize * world_y + pixelRatio * this._layout.offsetY,
       pixelRatio * actualCellSize,
       pixelRatio * actualCellSize
     );
   }
 
-  private _clear(layout: Layout): void {
-    const [canvasWidth, canvasHeight] = layout.getCanvasSize();
+  private _clear(): void {
+    const [canvasWidth, canvasHeight] = this._layout.getCanvasSize();
 
     this._context.fillStyle = "#fff";
-    this._context.fillRect(0.0, 0.0, canvasWidth * layout.pixelRatio, canvasHeight * layout.pixelRatio);
+    this._context.fillRect(0.0, 0.0, canvasWidth * this._layout.pixelRatio, canvasHeight * this._layout.pixelRatio);
   }
 }
