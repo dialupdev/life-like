@@ -9,11 +9,13 @@ export class PlaybackStore {
   constructor(playback: Playback) {
     this._playback = playback;
 
+    this.pause = this.pause.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
     this.tickLazy = this.tickLazy.bind(this);
 
     makeObservable(this, {
       playing: observable,
+      pause: action,
       togglePlaying: action,
     });
   }
