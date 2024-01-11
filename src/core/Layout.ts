@@ -1,5 +1,5 @@
 import { World } from "./World";
-import { MathUtils } from "../utils/MathUtils";
+import { clamp } from "../utils/MathUtils";
 
 const ZOOM_INTENSITY = 0.01;
 const MIN_ZOOM_SCALE = 0.1; // 10%
@@ -60,7 +60,7 @@ export class Layout {
 
   public zoomToScale(scale: number): void {
     // Clamp zoom scale within valid range
-    const newZoomScale = MathUtils.clamp(scale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
+    const newZoomScale = clamp(scale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
 
     const [canvasX, canvasY] = this._getCanvasCenterOffset();
 
@@ -112,7 +112,7 @@ export class Layout {
     let newZoomScale = this.zoomScale * Math.exp(delta * ZOOM_INTENSITY);
 
     // Clamp zoom scale within valid range
-    newZoomScale = MathUtils.clamp(newZoomScale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
+    newZoomScale = clamp(newZoomScale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
 
     const [tx, ty] = this._computeZoomTranslation(canvasX, canvasY, newZoomScale);
 
@@ -141,7 +141,7 @@ export class Layout {
     let newZoomScale = Math.min(horizontalFitScale, verticalFitScale);
 
     // Clamp zoom scale within valid range
-    newZoomScale = MathUtils.clamp(newZoomScale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
+    newZoomScale = clamp(newZoomScale, MIN_ZOOM_SCALE, MAX_ZOOM_SCALE);
 
     // After the new zoom scale is computed, we can use it to compute the new offset
     const actualCellSize = naturalCellSize * newZoomScale;
