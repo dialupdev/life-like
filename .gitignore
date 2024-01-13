@@ -2,3 +2,5 @@
 node_modules
 dist
 screenshots
+public/patterns
+public/patterns.json

@@ -1,9 +1,16 @@
 # Life-like
 
-https://github.com/copy/life
-https://github.com/raganwald/cafeaulife
-https://github.com/raganwald/hashlife
-https://en.wikipedia.org/wiki/Hashlife
+## Install patterns from source file
+
+```sh
+npm run patterns:install
+```
+
+## Update patterns from server (conwaylife.com)
+
+```sh
+npm run patterns:update
+```
 
 ## Architecture
 
@@ -59,5 +66,9 @@ Favorites
 - move
 - dayAndNight
 
-// hm = "B2/S278",
-// hm = "B34/S34678",
+## References
+
+- https://github.com/copy/life
+- https://github.com/raganwald/cafeaulife
+- https://github.com/raganwald/hashlife
+- https://en.wikipedia.org/wiki/Hashlife
