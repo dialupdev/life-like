@@ -20,6 +20,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
       - run: npm run build:production
+      - run: npm run patterns:install
       - name: Copy static files
         run: cp -r ./public/. ./dist
       - uses: actions/configure-pages@v4
