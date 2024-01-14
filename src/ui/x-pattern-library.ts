@@ -6,8 +6,8 @@ import { LibraryStore } from "../stores/LibraryStore";
 import "@spectrum-web-components/dialog/sp-dialog.js";
 import "@spectrum-web-components/progress-circle/sp-progress-circle.js";
 
-@customElement("x-pattern-browser")
-class PatternBrowser extends MobxLitElement {
+@customElement("x-pattern-library")
+class PatternLibrary extends MobxLitElement {
   public static styles = css`
     :host {
       display: block;
@@ -32,7 +32,7 @@ class PatternBrowser extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <sp-dialog>
-        <h2 slot="heading">Browse patterns</h2>
+        <h2 slot="heading">Pattern library</h2>
         ${when(
           this.libraryStore.patterns.length > 0,
           () =>
@@ -50,6 +50,6 @@ class PatternBrowser extends MobxLitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "x-pattern-browser": PatternBrowser;
+    "x-pattern-library": PatternLibrary;
   }
 }

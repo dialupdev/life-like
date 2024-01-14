@@ -27,7 +27,7 @@ import "@spectrum-web-components/theme/scale-medium.js";
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/theme-light.js";
 import "./x-control-group";
-import "./x-pattern-browser";
+import "./x-pattern-library";
 
 @customElement("x-app")
 class App extends MobxLitElement {
@@ -204,9 +204,9 @@ class App extends MobxLitElement {
         <x-control-group label="Library">
           <sp-action-group size="m">
             <overlay-trigger type="modal">
-              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Browse patterns</sp-action-button>
+              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Pattern library</sp-action-button>
               <sp-dialog-base slot="click-content" responsive underlay dismissable>
-                <x-pattern-browser .libraryStore=${this.libraryStore}></x-pattern-browser>
+                <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
               </sp-dialog-base>
             </overlay-trigger>
           </sp-action-group>
