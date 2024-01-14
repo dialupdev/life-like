@@ -10,9 +10,11 @@ import { ZoomDirection } from "../core/Layout";
 import { AppStore } from "../stores/AppStore";
 import { ConfigStore } from "../stores/ConfigStore";
 import { LayoutStore } from "../stores/LayoutStore";
+import { LibraryStore } from "../stores/LibraryStore";
 import { PlaybackStore } from "../stores/PlaybackStore";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
+import "@spectrum-web-components/dialog/sp-dialog-base.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
 import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
@@ -25,6 +27,7 @@ import "@spectrum-web-components/theme/scale-medium.js";
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/theme-light.js";
 import "./x-control-group";
+import "./x-pattern-browser";
 
 @customElement("x-app")
 class App extends MobxLitElement {
@@ -55,6 +58,9 @@ class App extends MobxLitElement {
 
   @property({ attribute: false })
   public accessor configStore!: ConfigStore;
+
+  @property({ attribute: false })
+  public accessor libraryStore!: LibraryStore;
 
   @property({ attribute: false })
   public accessor layoutStore!: LayoutStore;
@@ -109,8 +115,9 @@ class App extends MobxLitElement {
     this.layoutStore.zoomToFit();
   }
 
-  private _loadPattern(): void {
-    void this.appStore.loadPattern("gosperglidergun.rle");
+  private _loadPatterns(): void {
+    this.playbackStore.pause();
+    this.libraryStore.loadPatterns();
   }
 
   private _reset(): void {
@@ -196,7 +203,12 @@ class App extends MobxLitElement {
 
         <x-control-group label="Library">
           <sp-action-group size="m">
-            <sp-action-button @click="${this._loadPattern}">Load pattern</sp-action-button>
+            <overlay-trigger type="modal">
+              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Browse patterns</sp-action-button>
+              <sp-dialog-base slot="click-content" responsive underlay dismissable>
+                <x-pattern-browser .libraryStore=${this.libraryStore}></x-pattern-browser>
+              </sp-dialog-base>
+            </overlay-trigger>
           </sp-action-group>
         </x-control-group>
 

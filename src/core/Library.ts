@@ -1,16 +1,27 @@
 import { World } from "./World";
 
+export interface Pattern {
+  name: string;
+  path: string;
+}
+
 export class Library {
+  private _world: World;
+
+  constructor(world: World) {
+    this._world = world;
+  }
+
   // Only supports RLE format for now
-  public loadPattern(patternString: string, world: World): void {
-    world.clear();
+  public loadPattern(patternString: string): void {
+    this._world.clear();
 
     patternString = patternString.replace(/\r/g, "");
-    this._parseRle(patternString, world);
+    this._parseRle(patternString);
   }
 
   // https://conwaylife.com/wiki/Run_Length_Encoded
-  private _parseRle(patternString: string, world: World): void {
+  private _parseRle(patternString: string): void {
     // We compile these outside of the loop for better performance
     const commentRe = /^#/;
     const headerRe = /^x = (\d+), y = (\d+)/;
@@ -74,7 +85,7 @@ export class Library {
         } else if ((charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode < 122)) {
           // A-Za-z
           while (count--) {
-            world.addCell(x++, y);
+            this._world.addCell(x++, y);
           }
         } else if (charCode === 36) {
           // $
