@@ -20,6 +20,18 @@ export class LibraryStore {
     makeAutoObservable(this);
   }
 
+  private async _fetchPatternList(): Promise<Maybe<Pattern[]>> {
+    try {
+      const response = await fetch("/patterns.json");
+      const responseJson = await response.json();
+
+      return responseJson.patterns;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  }
+
   public loadPatterns(): void {
     if (this.patterns.length === 0) {
       this._fetchPatternList().then(patternList => {
@@ -40,18 +52,6 @@ export class LibraryStore {
       this._library.loadPattern(patternString);
 
       this._layoutStore.zoomToFit();
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    }
-  }
-
-  private async _fetchPatternList(): Promise<Maybe<Pattern[]>> {
-    try {
-      const response = await fetch("/patterns.json");
-      const responseJson = await response.json();
-
-      return responseJson.patterns;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

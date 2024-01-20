@@ -22,30 +22,6 @@ export class Playback {
     this._tickRecursive = this._tickRecursive.bind(this);
   }
 
-  public play(): void {
-    this.playing = true;
-
-    this._lastFrameTime = window.performance.now();
-
-    this._tickRecursive();
-  }
-
-  public pause(): void {
-    this.playing = false;
-  }
-
-  public tickLazy(): void {
-    if (this.playing) {
-      return;
-    }
-
-    this._tick();
-  }
-
-  public setFrameRate(frameRate: number): void {
-    this._frameInterval = 1000 / frameRate;
-  }
-
   private _tick(): void {
     this._world.tick(this._config);
     this._renderer.update(this._world);
@@ -69,5 +45,29 @@ export class Playback {
 
       this._tick();
     }
+  }
+
+  public play(): void {
+    this.playing = true;
+
+    this._lastFrameTime = window.performance.now();
+
+    this._tickRecursive();
+  }
+
+  public pause(): void {
+    this.playing = false;
+  }
+
+  public tickLazy(): void {
+    if (this.playing) {
+      return;
+    }
+
+    this._tick();
+  }
+
+  public setFrameRate(frameRate: number): void {
+    this._frameInterval = 1000 / frameRate;
   }
 }

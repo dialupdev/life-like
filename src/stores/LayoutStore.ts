@@ -30,48 +30,13 @@ export class LayoutStore {
     this.fitCanvasToWindow();
   }
 
-  public fitCanvasToWindow(): void {
-    const width = window.innerWidth - SIDEBAR_WIDTH;
-    const height = window.innerHeight;
+  private _setZoomScaleTruncated(zoomScale: number): void {
+    // Multiply by 100 and truncate number to two decimal places for nicer UI
+    const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
 
-    // Increase pixel density of canvas to match device
-    this._layout.setCanvasSize(Math.round(PIXEL_RATIO * width), Math.round(PIXEL_RATIO * height));
-
-    // Scale canvas back down to its actual size
-    this._canvas.style.width = `${width}px`;
-    this._canvas.style.height = `${height}px`;
-
-    this._renderer.update(this._world); // make this lazy
-  }
-
-  public translateOffset(deltaX: number, deltaY: number): void {
-    this._layout.translateOffset(deltaX, deltaY);
-    this._renderer.update(this._world); // make this lazy
-  }
-
-  public panInDirection(direction: PanDirection): void {
-    const cellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
-    const panIncrement = cellSize * 10;
-
-    let deltaX = 0;
-    let deltaY = 0;
-
-    switch (direction) {
-      case PanDirection.Up:
-        deltaY += panIncrement;
-        break;
-      case PanDirection.Right:
-        deltaX -= panIncrement;
-        break;
-      case PanDirection.Down:
-        deltaY -= panIncrement;
-        break;
-      case PanDirection.Left:
-        deltaX += panIncrement;
-        break;
-    }
-
-    this.translateOffset(deltaX, deltaY);
+    runInAction(() => {
+      this.zoomScale = zoomScaleTruncated;
+    });
   }
 
   public zoomToScale(scale: number): void {
@@ -112,12 +77,47 @@ export class LayoutStore {
     this._renderer.update(this._world); // make this lazy
   }
 
-  private _setZoomScaleTruncated(zoomScale: number): void {
-    // Multiply by 100 and truncate number to two decimal places for nicer UI
-    const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
+  public translateOffset(deltaX: number, deltaY: number): void {
+    this._layout.translateOffset(deltaX, deltaY);
+    this._renderer.update(this._world); // make this lazy
+  }
 
-    runInAction(() => {
-      this.zoomScale = zoomScaleTruncated;
-    });
+  public panInDirection(direction: PanDirection): void {
+    const cellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
+    const panIncrement = cellSize * 10;
+
+    let deltaX = 0;
+    let deltaY = 0;
+
+    switch (direction) {
+      case PanDirection.Up:
+        deltaY += panIncrement;
+        break;
+      case PanDirection.Right:
+        deltaX -= panIncrement;
+        break;
+      case PanDirection.Down:
+        deltaY -= panIncrement;
+        break;
+      case PanDirection.Left:
+        deltaX += panIncrement;
+        break;
+    }
+
+    this.translateOffset(deltaX, deltaY);
+  }
+
+  public fitCanvasToWindow(): void {
+    const width = window.innerWidth - SIDEBAR_WIDTH;
+    const height = window.innerHeight;
+
+    // Increase pixel density of canvas to match device
+    this._layout.setCanvasSize(Math.round(PIXEL_RATIO * width), Math.round(PIXEL_RATIO * height));
+
+    // Scale canvas back down to its actual size
+    this._canvas.style.width = `${width}px`;
+    this._canvas.style.height = `${height}px`;
+
+    this._renderer.update(this._world); // make this lazy
   }
 }

@@ -26,6 +26,7 @@ export enum Rule {
 
 export class Config {
   private _rule: Rule;
+
   public birthSet: Set<number>;
   public survivalSet: Set<number>;
 
@@ -36,16 +37,6 @@ export class Config {
     this._rule = rule;
     this.birthSet = birthSet;
     this.survivalSet = survivalSet;
-  }
-
-  public getRule(): Rule {
-    return this._rule;
-  }
-
-  public setRule(rule: Rule): void {
-    [this.birthSet, this.survivalSet] = this._parseRule(rule);
-
-    this._rule = rule;
   }
 
   private _parseRule(rule: Rule): [Set<number>, Set<number>] {
@@ -65,5 +56,15 @@ export class Config {
     );
 
     return [birthSet, survivalSet];
+  }
+
+  public getRule(): Rule {
+    return this._rule;
+  }
+
+  public setRule(rule: Rule): void {
+    [this.birthSet, this.survivalSet] = this._parseRule(rule);
+
+    this._rule = rule;
   }
 }

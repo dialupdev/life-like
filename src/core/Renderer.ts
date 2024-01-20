@@ -12,15 +12,6 @@ export class Renderer {
     this._color = color;
   }
 
-  public update(world: World): void {
-    this._clear();
-    this._context.fillStyle = this._color;
-
-    world.cells.forEach(cell => {
-      this._drawCell(cell.x, cell.y);
-    });
-  }
-
   private _drawCell(world_x: number, world_y: number): void {
     const pixelRatio = this._layout.pixelRatio;
     const actualCellSize = this._layout.naturalCellSize * this._layout.zoomScale;
@@ -38,5 +29,14 @@ export class Renderer {
 
     this._context.fillStyle = "#fff";
     this._context.fillRect(0.0, 0.0, canvasWidth * this._layout.pixelRatio, canvasHeight * this._layout.pixelRatio);
+  }
+
+  public update(world: World): void {
+    this._clear();
+    this._context.fillStyle = this._color;
+
+    world.cells.forEach(cell => {
+      this._drawCell(cell.x, cell.y);
+    });
   }
 }

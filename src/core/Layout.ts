@@ -37,6 +37,27 @@ export class Layout {
     this.zoomScale = 1.0; // 100%
   }
 
+  private _getCanvasCenterOffset(): [number, number] {
+    const [canvasWidth, canvasHeight] = this.getCanvasSize();
+
+    const canvasCenterX = canvasWidth / 2.0 - this.offsetX;
+    const canvasCenterY = canvasHeight / 2.0 - this.offsetY;
+
+    return [canvasCenterX, canvasCenterY];
+  }
+
+  private _computeZoomTranslation(zoomPointX: number, zoomPointY: number, newZoomScale: number): [number, number] {
+    const oldZoomScale = this.zoomScale;
+    const zoomScaleRatio = newZoomScale / oldZoomScale;
+
+    // Get the canvas position of the mouse after scaling
+    const newX = zoomPointX * zoomScaleRatio;
+    const newY = zoomPointY * zoomScaleRatio;
+
+    // Reverse the translation caused by scaling
+    return [zoomPointX - newX, zoomPointY - newY];
+  }
+
   public getCanvasSize(): [number, number] {
     const pixelRatio = this.pixelRatio;
 
@@ -162,26 +183,5 @@ export class Layout {
     this.zoomScale = newZoomScale;
 
     return newZoomScale;
-  }
-
-  private _getCanvasCenterOffset(): [number, number] {
-    const [canvasWidth, canvasHeight] = this.getCanvasSize();
-
-    const canvasCenterX = canvasWidth / 2.0 - this.offsetX;
-    const canvasCenterY = canvasHeight / 2.0 - this.offsetY;
-
-    return [canvasCenterX, canvasCenterY];
-  }
-
-  private _computeZoomTranslation(zoomPointX: number, zoomPointY: number, newZoomScale: number): [number, number] {
-    const oldZoomScale = this.zoomScale;
-    const zoomScaleRatio = newZoomScale / oldZoomScale;
-
-    // Get the canvas position of the mouse after scaling
-    const newX = zoomPointX * zoomScaleRatio;
-    const newY = zoomPointY * zoomScaleRatio;
-
-    // Reverse the translation caused by scaling
-    return [zoomPointX - newX, zoomPointY - newY];
   }
 }

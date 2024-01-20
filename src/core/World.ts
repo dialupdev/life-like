@@ -2,32 +2,43 @@ import { Cell } from "./Cell";
 import { Config } from "./Config";
 
 export class World {
-  // If JS had a way to hash entities for comparison within a Set,
-  // we could use a Set for cells instead of a Map.
-  public cells = new Map<string, Cell>();
   // Same here - if we could, we would use Cell as the Map key,
   // which would remove the need for Cell.fromHash().
   private _neighborCounts = new Map<string, number>();
 
-  public getBounds(): [number, number, number, number] {
-    let min_x = Number.MAX_VALUE;
-    let max_x = Number.MAX_VALUE * -1;
-    let min_y = Number.MAX_VALUE;
-    let max_y = Number.MAX_VALUE * -1;
+  // If JS had a way to hash entities for comparison within a Set,
+  // we could use a Set for cells instead of a Map.
+  public cells = new Map<string, Cell>();
 
-    this.cells.forEach(cell => {
-      min_x = Math.min(min_x, cell.x);
-      max_x = Math.max(max_x, cell.x);
-      min_y = Math.min(min_y, cell.y);
-      max_y = Math.max(max_y, cell.y);
-    });
+  private _spawn(cell: Cell): void {
+    for (const neighbor of cell.generateNeighbors()) {
+      this._incrementNeighborCount(neighbor);
+    }
 
-    // Add 1 to each of these to account for the size of the final cell in the row or column
-    const width = max_x - min_x + 1;
-    const height = max_y - min_y + 1;
+    this.cells.set(cell.hash(), cell);
+  }
 
-    // x, y, width, height
-    return [min_x, min_y, width, height];
+  private _kill(cell: Cell): void {
+    for (const neighbor of cell.generateNeighbors()) {
+      this._decrementNeighborCount(neighbor);
+    }
+
+    this.cells.delete(cell.hash());
+  }
+
+  private _incrementNeighborCount(cell: Cell): void {
+    const neighborCount = this._neighborCounts.get(cell.hash());
+    this._neighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
+  }
+
+  private _decrementNeighborCount(cell: Cell): void {
+    const neighborCountMinusOne = this._neighborCounts.get(cell.hash())! - 1;
+
+    if (neighborCountMinusOne === 0) {
+      this._neighborCounts.delete(cell.hash());
+    } else {
+      this._neighborCounts.set(cell.hash(), neighborCountMinusOne);
+    }
   }
 
   public addCell(worldX: number, worldY: number): void {
@@ -89,34 +100,24 @@ export class World {
     }
   }
 
-  private _spawn(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._incrementNeighborCount(neighbor);
-    }
+  public getBounds(): [number, number, number, number] {
+    let min_x = Number.MAX_VALUE;
+    let max_x = Number.MAX_VALUE * -1;
+    let min_y = Number.MAX_VALUE;
+    let max_y = Number.MAX_VALUE * -1;
 
-    this.cells.set(cell.hash(), cell);
-  }
+    this.cells.forEach(cell => {
+      min_x = Math.min(min_x, cell.x);
+      max_x = Math.max(max_x, cell.x);
+      min_y = Math.min(min_y, cell.y);
+      max_y = Math.max(max_y, cell.y);
+    });
 
-  private _kill(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._decrementNeighborCount(neighbor);
-    }
+    // Add 1 to each of these to account for the size of the final cell in the row or column
+    const width = max_x - min_x + 1;
+    const height = max_y - min_y + 1;
 
-    this.cells.delete(cell.hash());
-  }
-
-  private _incrementNeighborCount(cell: Cell): void {
-    const neighborCount = this._neighborCounts.get(cell.hash());
-    this._neighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
-  }
-
-  private _decrementNeighborCount(cell: Cell): void {
-    const neighborCountMinusOne = this._neighborCounts.get(cell.hash())! - 1;
-
-    if (neighborCountMinusOne === 0) {
-      this._neighborCounts.delete(cell.hash());
-    } else {
-      this._neighborCounts.set(cell.hash(), neighborCountMinusOne);
-    }
+    // x, y, width, height
+    return [min_x, min_y, width, height];
   }
 }
