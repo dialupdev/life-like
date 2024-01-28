@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-GOLLY_PATTERNS_DIR="./golly/Patterns"
+GOLLY_PATTERNS_DIR="./golly/Patterns/Life"
 PATTERNS_DIR="./public/patterns"
 
 if ! [ -d "$GOLLY_PATTERNS_DIR" ]; then
@@ -9,6 +9,7 @@ if ! [ -d "$GOLLY_PATTERNS_DIR" ]; then
   exit 1
 fi
 
+rm -rf "$PATTERNS_DIR"
 mkdir -p "$PATTERNS_DIR"
 cp -a "$GOLLY_PATTERNS_DIR/." "$PATTERNS_DIR"
 
