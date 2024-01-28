@@ -5,13 +5,13 @@ const PUBLIC_DIR = "./public";
 const PATTERNS_DIR = "./public/patterns";
 const PATTERNS_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
 
-const SUPPORTED_FILE_EXTENSIONS = [".rle", ".gz"];
+const SUPPORTED_FILE_EXTENSIONS = [".rle"];
 
 const patternFiles = fs
   .readdirSync(PATTERNS_DIR, { withFileTypes: true, recursive: true })
   .filter(entry => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(path.extname(entry.name)));
 
-console.log(`Importing ${patternFiles.length} patterns...`);
+console.log(`Installing ${patternFiles.length} patterns...`);
 
 const patterns = [];
 
