@@ -11,8 +11,8 @@
     "npm": "^10"
   },
   "scripts": {
+    "patterns:download": "bash ./scripts/download-patterns.sh",
     "patterns:install": "bash ./scripts/install-patterns.sh",
-    "patterns:update": "bash ./scripts/update-patterns.sh",
     "build": "webpack --mode=development",
     "build:production": "webpack --mode=production",
     "watch": "webpack serve --mode=development",

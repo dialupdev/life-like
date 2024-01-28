@@ -1,51 +1,43 @@
-import fs from "node:fs/promises";
+import fs from "fs";
 import path from "path";
 
-const PUBLIC_DIR = process.argv[2];
-const PATTERNS_DIR = process.argv[3];
-const PATTERNS_LIBRARY_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
+const PUBLIC_DIR = "./public";
+const PATTERNS_DIR = "./public/patterns";
+const PATTERNS_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
 
-const nameRe = /^#[N|C] (.*)$/;
+const SUPPORTED_FILE_EXTENSIONS = [".rle", ".gz"];
 
-async function getName(filePath) {
-  const file = await fs.open(filePath);
+const patternFiles = fs
+  .readdirSync(PATTERNS_DIR, { withFileTypes: true, recursive: true })
+  .filter(entry => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(path.extname(entry.name)));
 
-  for await (const line of file.readLines()) {
-    const nameMatch = line.match(nameRe);
-
-    file.close();
-
-    return nameMatch ? nameMatch[1] : undefined;
-  }
-}
-
-const allFileNames = await fs.readdir(PATTERNS_DIR);
-const fileNames = allFileNames.filter(file => path.extname(file) === ".rle");
-
-console.log(`Importing ${fileNames.length} RLE patterns...`);
+console.log(`Importing ${patternFiles.length} patterns...`);
 
 const patterns = [];
 
-for (let i = 0; i < fileNames.length; i++) {
-  const fileName = fileNames[i];
-  const filePath = path.join(PATTERNS_DIR, fileName);
+for (const file of patternFiles) {
+  const categoryName = file.path.split(path.sep).slice(-1)[0];
 
-  fs.copyFile(filePath, path.join(PATTERNS_DIR, fileName));
+  let category = patterns.find(category => category.name === categoryName);
 
-  const name = await getName(filePath);
+  if (!category) {
+    category = {
+      name: categoryName,
+      patterns: [],
+    };
 
-  patterns.push({
-    name,
-    path: `/patterns/${fileName}`,
+    patterns.push(category);
+  }
+
+  category.patterns.push({
+    name: file.name,
+    path: path.join("/patterns", categoryName, file.name),
   });
 }
 
-const jsonData = {
-  patterns,
-};
-
 try {
-  await fs.writeFile(PATTERNS_LIBRARY_FILENAME, JSON.stringify(jsonData));
+  fs.writeFileSync(PATTERNS_FILENAME, JSON.stringify(patterns));
+
   console.log("Done!");
 } catch (e) {
   console.log("Error writing JSON file", e);

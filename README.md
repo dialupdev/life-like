@@ -1,15 +1,15 @@
 # Life-like
 
-## Install patterns from source file
+## Download patterns from Golly source code
+
+```sh
+npm run patterns:download
+```
+
+## Install patterns
 
 ```sh
 npm run patterns:install
-```
-
-## Update patterns from server (conwaylife.com)
-
-```sh
-npm run patterns:update
 ```
 
 ## Architecture

@@ -1,16 +1,15 @@
 #!/bin/bash
 set -eo pipefail
 
-PATTERNS_SOURCE_FILENAME="./library/patterns.zip"
-PUBLIC_DIR="./public"
+GOLLY_PATTERNS_DIR="./golly/Patterns"
 PATTERNS_DIR="./public/patterns"
 
-if ! [ -f $PATTERNS_SOURCE_FILENAME ]; then
-  echo "Patterns source file does not exist. Please run \"npm run patterns:update\" first."
+if ! [ -d "$GOLLY_PATTERNS_DIR" ]; then
+  echo "Golly patterns directory does not exist. Please run \"npm run patterns:download\" first."
   exit 1
 fi
 
-mkdir -p $PATTERNS_DIR
-unzip -n -q $PATTERNS_SOURCE_FILENAME -d $PATTERNS_DIR
+mkdir -p "$PATTERNS_DIR"
+cp -a "$GOLLY_PATTERNS_DIR/." "$PATTERNS_DIR"
 
-node ./scripts/build-pattern-library.js $PUBLIC_DIR $PATTERNS_DIR
+node ./scripts/build-pattern-library.js
