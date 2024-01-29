@@ -5,6 +5,11 @@ export interface Pattern {
   path: string;
 }
 
+export interface Category {
+  name: string;
+  patterns: Pattern[];
+}
+
 export class Library {
   private _world: World;
 

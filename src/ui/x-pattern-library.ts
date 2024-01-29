@@ -3,6 +3,9 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import { LibraryStore } from "../stores/LibraryStore";
+import "@spectrum-web-components/accordion/sp-accordion.js";
+import "@spectrum-web-components/accordion/sp-accordion-item.js";
+import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/dialog/sp-dialog.js";
 import "@spectrum-web-components/progress-circle/sp-progress-circle.js";
 
@@ -15,6 +18,10 @@ class PatternLibrary extends MobxLitElement {
 
     sp-dialog {
       max-height: 80vh;
+    }
+
+    sp-action-button {
+      display: block;
     }
   `;
 
@@ -34,13 +41,21 @@ class PatternLibrary extends MobxLitElement {
       <sp-dialog>
         <h2 slot="heading">Pattern library</h2>
         ${when(
-          this.libraryStore.patterns.length > 0,
+          this.libraryStore.categories.length > 0,
           () =>
-            html`<ul style="columns: 3; cursor: pointer;">
-              ${this.libraryStore.patterns.map(
-                pattern => html`<li @click=${this._loadPattern} data-path=${pattern.path}>${pattern.name}</li>`
+            html`<sp-accordion>
+              ${this.libraryStore.categories.map(
+                category =>
+                  html`<sp-accordion-item label=${category.name}>
+                    ${category.patterns.map(
+                      pattern =>
+                        html`<sp-action-button quiet size="s" @click=${this._loadPattern} data-path=${pattern.path}
+                          >${pattern.name}</sp-action-button
+                        >`
+                    )}
+                  </sp-accordion-item>`
               )}
-            </ul>`,
+            </sp-accordion>`,
           () => html`<sp-progress-circle label="Patterns loading..." indeterminate size="l"></sp-progress-circle>`
         )}
       </sp-dialog>

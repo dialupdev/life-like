@@ -1,14 +1,14 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { LayoutStore } from "./LayoutStore";
 import { PlaybackStore } from "./PlaybackStore";
-import { Library, Pattern } from "../core/Library";
+import { Library, Category } from "../core/Library";
 
 export class LibraryStore {
   private _library: Library;
   private _layoutStore: LayoutStore;
   private _playbackStore: PlaybackStore;
 
-  public patterns = observable.array<Pattern>([]);
+  public categories = observable.array<Category>([]);
 
   constructor(library: Library, layoutStore: LayoutStore, playbackStore: PlaybackStore) {
     this._library = library;
@@ -20,12 +20,11 @@ export class LibraryStore {
     makeAutoObservable(this);
   }
 
-  private async _fetchPatternList(): Promise<Maybe<Pattern[]>> {
+  private async _fetchPatternLibrary(): Promise<Maybe<Category[]>> {
     try {
       const response = await fetch("/patterns.json");
-      const responseJson = await response.json();
 
-      return responseJson.patterns;
+      return response.json();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -33,10 +32,10 @@ export class LibraryStore {
   }
 
   public loadPatterns(): void {
-    if (this.patterns.length === 0) {
-      this._fetchPatternList().then(patternList => {
+    if (this.categories.length === 0) {
+      this._fetchPatternLibrary().then(categories => {
         runInAction(() => {
-          this.patterns.replace(patternList!);
+          this.categories.replace(categories!);
         });
       });
     }

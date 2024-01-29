@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.2",
+    "@spectrum-web-components/accordion": "^0.40.3",
     "@spectrum-web-components/action-button": "^0.40.3",
     "@spectrum-web-components/action-group": "^0.40.3",
     "@spectrum-web-components/dialog": "^0.40.3",

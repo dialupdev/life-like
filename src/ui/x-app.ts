@@ -60,13 +60,13 @@ class App extends MobxLitElement {
   public accessor configStore!: ConfigStore;
 
   @property({ attribute: false })
-  public accessor libraryStore!: LibraryStore;
-
-  @property({ attribute: false })
   public accessor layoutStore!: LayoutStore;
 
   @property({ attribute: false })
   public accessor playbackStore!: PlaybackStore;
+
+  @property({ attribute: false })
+  public accessor libraryStore!: LibraryStore;
 
   @property({ attribute: false })
   public accessor appStore!: AppStore;
@@ -204,7 +204,7 @@ class App extends MobxLitElement {
         <x-control-group label="Library">
           <sp-action-group size="m">
             <overlay-trigger type="modal">
-              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Pattern library</sp-action-button>
+              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Browse patterns</sp-action-button>
               <sp-dialog-base slot="click-content" responsive underlay dismissable>
                 <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
               </sp-dialog-base>
