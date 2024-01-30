@@ -14,7 +14,6 @@ import { LibraryStore } from "../stores/LibraryStore";
 import { PlaybackStore } from "../stores/PlaybackStore";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
-import "@spectrum-web-components/dialog/sp-dialog-base.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
 import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
@@ -115,13 +114,14 @@ class App extends MobxLitElement {
     this.layoutStore.zoomToFit();
   }
 
-  private _loadPatterns(): void {
-    this.playbackStore.pause();
-    this.libraryStore.loadPatterns();
-  }
-
   private _reset(): void {
     this.appStore.reset();
+  }
+
+  public connectedCallback(): void {
+    super.connectedCallback();
+
+    this.libraryStore.loadPatterns();
   }
 
   protected render(): TemplateResult {
@@ -202,14 +202,7 @@ class App extends MobxLitElement {
         </x-control-group>
 
         <x-control-group label="Library">
-          <sp-action-group size="m">
-            <overlay-trigger type="modal">
-              <sp-action-button slot="trigger" @click=${this._loadPatterns}>Browse patterns</sp-action-button>
-              <sp-dialog-base slot="click-content" responsive underlay dismissable>
-                <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
-              </sp-dialog-base>
-            </overlay-trigger>
-          </sp-action-group>
+          <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
         </x-control-group>
 
         <x-control-group label="Config">
