@@ -38,10 +38,15 @@ class App extends MobxLitElement {
       display: block;
       height: 100vh;
       left: 0;
-      padding: 20px;
       position: absolute;
       top: 0;
       width: ${SIDEBAR_WIDTH}px;
+    }
+
+    aside {
+      height: 100vh;
+      padding: 20px;
+      overflow-y: auto;
     }
 
     .zoom-menu {
@@ -127,92 +132,96 @@ class App extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <sp-theme color="light" scale="medium">
-        <x-control-group label="Playback">
-          <sp-action-group size="m">
-            <sp-action-button @click="${this._togglePlaying}"
-              >${this.playbackStore.playing ? "Pause" : "Play"} (Space)</sp-action-button
-            >
-            <sp-action-button @click="${this._tick}" ?disabled=${this.playbackStore.playing}>Tick (T)</sp-action-button>
-          </sp-action-group>
-        </x-control-group>
+        <aside>
+          <x-control-group label="Playback">
+            <sp-action-group size="m">
+              <sp-action-button @click="${this._togglePlaying}"
+                >${this.playbackStore.playing ? "Pause" : "Play"} (Space)</sp-action-button
+              >
+              <sp-action-button @click="${this._tick}" ?disabled=${this.playbackStore.playing}
+                >Tick (T)</sp-action-button
+              >
+            </sp-action-group>
+          </x-control-group>
 
-        <x-control-group label="Frame rate">
-          <sp-slider
-            min="1"
-            max="60"
-            step="1"
-            variant="filled"
-            value=${this.configStore.frameRate}
-            @input="${this._setFrameRate}"
-          ></sp-slider>
-        </x-control-group>
+          <x-control-group label="Frame rate">
+            <sp-slider
+              min="1"
+              max="60"
+              step="1"
+              variant="filled"
+              value=${this.configStore.frameRate}
+              @input="${this._setFrameRate}"
+            ></sp-slider>
+          </x-control-group>
 
-        <x-control-group label="Zoom">
-          <overlay-trigger>
-            <sp-action-button slot="trigger" caret>${this.layoutStore.zoomScale}%</sp-action-button>
-            <sp-popover open slot="click-content" class="zoom-menu">
-              <sp-menu @change=${this._zoomToScale}>
-                <sp-menu-item value="in"
-                  >Zoom in
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">=</span></span
-                  ></sp-menu-item
-                >
-                <sp-menu-item value="out"
-                  >Zoom out
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">-</span></span
-                  ></sp-menu-item
-                >
-                <sp-menu-divider size="s"></sp-menu-divider>
-                <sp-menu-item value=".1">10%</sp-menu-item>
-                <sp-menu-item value=".25">25%</sp-menu-item>
-                <sp-menu-item value=".5">50%</sp-menu-item>
-                <sp-menu-item value="1"
-                  >100%
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">1</span></span
-                  ></sp-menu-item
-                >
-                <sp-menu-item value="1.5">150%</sp-menu-item>
-                <sp-menu-item value="2"
-                  >200%
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">2</span></span
-                  ></sp-menu-item
-                >
-                <sp-menu-item value="4">400%</sp-menu-item>
-                <sp-menu-divider size="s"></sp-menu-divider>
-                <sp-menu-item value="fit"
-                  >Zoom to fit
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">0</span></span
-                  ></sp-menu-item
-                >
-              </sp-menu>
-            </sp-popover>
-          </overlay-trigger>
-        </x-control-group>
+          <x-control-group label="Zoom">
+            <overlay-trigger>
+              <sp-action-button slot="trigger" caret>${this.layoutStore.zoomScale}%</sp-action-button>
+              <sp-popover open slot="click-content" class="zoom-menu">
+                <sp-menu @change=${this._zoomToScale}>
+                  <sp-menu-item value="in"
+                    >Zoom in
+                    <span class="shortcut" slot="value"
+                      ><span class="char">⌘</span><span class="char">=</span></span
+                    ></sp-menu-item
+                  >
+                  <sp-menu-item value="out"
+                    >Zoom out
+                    <span class="shortcut" slot="value"
+                      ><span class="char">⌘</span><span class="char">-</span></span
+                    ></sp-menu-item
+                  >
+                  <sp-menu-divider size="s"></sp-menu-divider>
+                  <sp-menu-item value=".1">10%</sp-menu-item>
+                  <sp-menu-item value=".25">25%</sp-menu-item>
+                  <sp-menu-item value=".5">50%</sp-menu-item>
+                  <sp-menu-item value="1"
+                    >100%
+                    <span class="shortcut" slot="value"
+                      ><span class="char">⌘</span><span class="char">1</span></span
+                    ></sp-menu-item
+                  >
+                  <sp-menu-item value="1.5">150%</sp-menu-item>
+                  <sp-menu-item value="2"
+                    >200%
+                    <span class="shortcut" slot="value"
+                      ><span class="char">⌘</span><span class="char">2</span></span
+                    ></sp-menu-item
+                  >
+                  <sp-menu-item value="4">400%</sp-menu-item>
+                  <sp-menu-divider size="s"></sp-menu-divider>
+                  <sp-menu-item value="fit"
+                    >Zoom to fit
+                    <span class="shortcut" slot="value"
+                      ><span class="char">⌘</span><span class="char">0</span></span
+                    ></sp-menu-item
+                  >
+                </sp-menu>
+              </sp-popover>
+            </overlay-trigger>
+          </x-control-group>
 
-        <x-control-group label="Reset">
-          <sp-action-group size="m">
-            <sp-action-button @click="${this._fit}">Fit (F)</sp-action-button>
-            <sp-action-button @click="${this._reset}">Reset (R)</sp-action-button>
-          </sp-action-group>
-        </x-control-group>
+          <x-control-group label="Reset">
+            <sp-action-group size="m">
+              <sp-action-button @click="${this._fit}">Fit (F)</sp-action-button>
+              <sp-action-button @click="${this._reset}">Reset (R)</sp-action-button>
+            </sp-action-group>
+          </x-control-group>
 
-        <x-control-group label="Library">
-          <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
-        </x-control-group>
+          <x-control-group label="Library">
+            <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
+          </x-control-group>
 
-        <x-control-group label="Config">
-          <sp-field-label for="rule">Rule</sp-field-label>
-          <sp-picker id="rule" value=${this.configStore.rule} @change=${this._changeRule}>
-            ${this.configStore.getAllRules().map(([name, value]) => {
-              return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
-            })}
-          </sp-picker>
-        </x-control-group>
+          <x-control-group label="Config">
+            <sp-field-label for="rule">Rule</sp-field-label>
+            <sp-picker id="rule" value=${this.configStore.rule} @change=${this._changeRule}>
+              ${this.configStore.getAllRules().map(([name, value]) => {
+                return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
+              })}
+            </sp-picker>
+          </x-control-group>
+        </aside>
       </sp-theme>
     `;
   }
