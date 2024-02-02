@@ -7,9 +7,19 @@ const PATTERNS_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
 
 const SUPPORTED_FILE_EXTENSIONS = [".rle"];
 
+function getFileExtension(filename) {
+  let extension = path.extname(filename);
+
+  if (extension === ".gz") {
+    extension = path.extname(filename.slice(0, -3));
+  }
+
+  return extension;
+}
+
 const patternFiles = fs
   .readdirSync(PATTERNS_DIR, { withFileTypes: true, recursive: true })
-  .filter(entry => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(path.extname(entry.name)));
+  .filter(entry => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(getFileExtension(entry.name)));
 
 console.log(`Installing ${patternFiles.length} patterns...`);
 

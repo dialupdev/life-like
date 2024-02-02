@@ -3,6 +3,10 @@ import { LayoutStore } from "./LayoutStore";
 import { PlaybackStore } from "./PlaybackStore";
 import { Library, Category } from "../core/Library";
 
+interface GetResponseTextOptions {
+  isGzipped: boolean;
+}
+
 export class LibraryStore {
   private _library: Library;
   private _layoutStore: LayoutStore;
@@ -31,6 +35,18 @@ export class LibraryStore {
     }
   }
 
+  private async _getResponseText(response: Response, options: GetResponseTextOptions): Promise<string> {
+    if (options?.isGzipped) {
+      const blob = await response.blob();
+      const compressedReadableStream = blob.stream().pipeThrough(new DecompressionStream("gzip"));
+      const decompressedResponse = await new Response(compressedReadableStream);
+
+      return decompressedResponse.text();
+    } else {
+      return response.text();
+    }
+  }
+
   public loadPatterns(): void {
     if (this.categories.length === 0) {
       this._fetchPatternLibrary().then(categories => {
@@ -45,8 +61,9 @@ export class LibraryStore {
     this._playbackStore.pause();
 
     try {
+      const isGzipped = path.endsWith(".gz");
       const response = await fetch(path);
-      const patternString = await response.text();
+      const patternString = await this._getResponseText(response, { isGzipped });
 
       this._library.loadPattern(patternString);
 
