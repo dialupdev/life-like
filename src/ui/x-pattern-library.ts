@@ -34,7 +34,7 @@ class PatternLibrary extends MobxLitElement {
       ${when(
         this.libraryStore.categories.length > 0,
         () =>
-          html`<sp-accordion>
+          html`<sp-accordion size="s">
             ${this.libraryStore.categories.map(
               category =>
                 html`<sp-accordion-item label=${category.name}>
