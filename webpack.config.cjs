@@ -25,9 +25,6 @@ module.exports = {
       template: "./src/index.html",
     }),
   ],
-  experiments: {
-    asyncWebAssembly: true,
-  },
   devServer: {
     compress: true,
     historyApiFallback: true,
