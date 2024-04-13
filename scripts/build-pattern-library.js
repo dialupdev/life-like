@@ -5,7 +5,7 @@ const PUBLIC_DIR = "./public";
 const PATTERNS_DIR = "./public/patterns";
 const PATTERNS_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
 
-const SUPPORTED_FILE_EXTENSIONS = [".rle"];
+const SUPPORTED_FILE_EXTENSIONS = [".lif"];
 
 function getFileExtension(filename) {
   let extension = path.extname(filename);

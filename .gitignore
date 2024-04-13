@@ -1,8 +1,7 @@
 .DS_Store
 node_modules
 dist
-golly
-public/patterns
-public/patterns.json
 screenshots
 notes
+public/patterns
+public/patterns.json

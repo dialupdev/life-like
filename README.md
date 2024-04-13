@@ -1,12 +1,12 @@
 # Life-like
 
-## Download patterns from Golly source code
+## Download pattern file from server (entropymine.com)
 
 ```sh
 npm run patterns:download
 ```
 
-## Install patterns
+## Install patterns from source file
 
 ```sh
 npm run patterns:install

@@ -1,13 +1,10 @@
+# https://entropymine.com/jason/life/
+
 #!/bin/bash
 set -eo pipefail
 
-GOLLY_DIR="./golly"
+LIBRARY_DIR="./library"
+PATTERNS_SOURCE_FILE="$LIBRARY_DIR/jslife.zip"
 
-if ! [ -d "$GOLLY_DIR" ]; then
-  git clone --no-checkout --depth=1 https://git.code.sf.net/p/golly/code "$GOLLY_DIR"
-fi
-
-cd "$GOLLY_DIR"
-git pull
-git sparse-checkout set --no-cone Patterns
-git checkout
+mkdir -p $LIBRARY_DIR
+curl -o $PATTERNS_SOURCE_FILE https://entropymine.com/jason/life/p/jslife-20121230.zip
