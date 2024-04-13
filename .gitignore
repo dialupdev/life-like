@@ -3,5 +3,6 @@ node_modules
 dist
 screenshots
 notes
+library
 public/patterns
 public/patterns.json
