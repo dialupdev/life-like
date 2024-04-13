@@ -209,10 +209,6 @@ class App extends MobxLitElement {
             </sp-action-group>
           </x-control-group>
 
-          <x-control-group label="Library">
-            <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
-          </x-control-group>
-
           <x-control-group label="Config">
             <sp-field-label for="rule">Rule</sp-field-label>
             <sp-picker id="rule" value=${this.configStore.rule} @change=${this._changeRule}>
@@ -220,6 +216,10 @@ class App extends MobxLitElement {
                 return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
               })}
             </sp-picker>
+          </x-control-group>
+
+          <x-control-group label="Library">
+            <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
           </x-control-group>
         </aside>
       </sp-theme>
