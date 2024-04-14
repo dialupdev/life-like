@@ -11,10 +11,12 @@ import "@spectrum-web-components/progress-bar/sp-progress-bar.js";
 @customElement("x-pattern-library")
 class PatternLibrary extends MobxLitElement {
   public static styles = css`
+    * {
+      box-sizing: border-box;
+    }
     :host {
       display: block;
     }
-
     sp-action-button {
       display: block;
     }

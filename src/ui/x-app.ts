@@ -31,10 +31,12 @@ import "./x-pattern-library";
 @customElement("x-app")
 class App extends MobxLitElement {
   public static styles = css`
+    * {
+      box-sizing: border-box;
+    }
     :host {
       background: #f4f5f7;
       border-right: 2px solid #ddd;
-      box-sizing: border-box;
       display: block;
       height: 100vh;
       left: 0;
@@ -42,17 +44,14 @@ class App extends MobxLitElement {
       top: 0;
       width: ${SIDEBAR_WIDTH}px;
     }
-
     aside {
       height: 100vh;
       padding: 20px;
       overflow-y: auto;
     }
-
     .zoom-menu {
       width: 240px;
     }
-
     .shortcut .char {
       display: inline-block;
       text-align: center;

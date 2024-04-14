@@ -6,6 +6,9 @@ import "@spectrum-web-components/divider/sp-divider.js";
 @customElement("x-control-group")
 class ControlGroup extends LitElement {
   public static styles = css`
+    * {
+      box-sizing: border-box;
+    }
     :host {
       display: block;
       margin: 10px 0;
