@@ -217,7 +217,7 @@ class App extends MobxLitElement {
             </sp-picker>
           </x-control-group>
 
-          <x-control-group label="Library">
+          <x-control-group label="Library" noDivider>
             <x-pattern-library .libraryStore=${this.libraryStore}></x-pattern-library>
           </x-control-group>
         </aside>

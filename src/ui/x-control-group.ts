@@ -21,11 +21,14 @@ class ControlGroup extends LitElement {
   @property()
   public accessor label!: string;
 
+  @property({ type: Boolean })
+  public accessor noDivider = false;
+
   protected render(): TemplateResult {
     return html`
       ${when(this.label, () => html`<p>${this.label}</p>`)}
       <slot></slot>
-      <sp-divider size="s"></sp-divider>
+      ${when(!this.noDivider, () => html`<sp-divider size="s"></sp-divider>`)}
     `;
   }
 }
