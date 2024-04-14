@@ -4,6 +4,10 @@ interface DragPluginOptions {
   cursor: string;
 }
 
+interface KeyboardPluginOptions {
+  stopPropagation: boolean;
+}
+
 export class ResizePlugin {
   constructor(public run: (width: number, height: number) => void) {}
 }
@@ -22,7 +26,8 @@ export class DragPlugin {
 export class KeyboardPlugin {
   constructor(
     public keyBindings: string,
-    public run: (key: string) => void
+    public run: (key: string) => void,
+    public options?: KeyboardPluginOptions
   ) {}
 }
 
@@ -112,6 +117,11 @@ export class PluginBuilder {
 
     if (plugin) {
       e.preventDefault();
+
+      if (plugin.options?.stopPropagation) {
+        e.stopPropagation();
+      }
+
       plugin.run(keyBindings);
     }
   }
@@ -121,7 +131,7 @@ export class PluginBuilder {
     canvas.addEventListener("wheel", this._runWheelPlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
-    window.addEventListener("keydown", this._runKeyboardPlugin);
+    window.addEventListener("keydown", this._runKeyboardPlugin, true);
   }
 
   public activate(plugin: Plugin): void {

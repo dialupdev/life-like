@@ -45,7 +45,7 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutStore.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin(" ", this._playbackStore.togglePlaying),
+      new KeyboardPlugin(" ", this._playbackStore.togglePlaying, { stopPropagation: true }), // So that the space bar doesn't click buttons
       new KeyboardPlugin("t", this._playbackStore.tickLazy),
       new KeyboardPlugin("f", this._layoutStore.zoomToFit),
       new KeyboardPlugin("r", this._appStore.reset),
