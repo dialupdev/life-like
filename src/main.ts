@@ -34,7 +34,7 @@ const library = new Library(world);
 const configStore = new ConfigStore(config, playback);
 const layoutStore = new LayoutStore(canvas, world, layout, renderer);
 const playbackStore = new PlaybackStore(playback);
-const libraryStore = new LibraryStore(library, layoutStore, playbackStore);
+const libraryStore = new LibraryStore(library, configStore, layoutStore, playbackStore);
 const appStore = new AppStore(world, layoutStore, playbackStore);
 
 const pluginBuilder = new PluginBuilder(canvas);
