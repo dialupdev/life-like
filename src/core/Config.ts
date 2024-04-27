@@ -1,5 +1,7 @@
 // https://en.wikipedia.org/wiki/Life-like_cellular_automaton
+// https://conwaylife.com/wiki/List_of_Life-like_cellular_automata
 // http://www.mirekw.com/ca/rullex_life.html
+
 export enum Rule {
   amoeba = "B357/S1358",
   assimilation = "B345/S4567",
@@ -23,6 +25,16 @@ export enum Rule {
   twoByTwo = "B36/S125",
   walledCities = "B45678/S2345",
 }
+
+export type RuleKey = keyof typeof Rule;
+
+const stylizedRuleNames: Partial<Record<Rule, string>> = {
+  [Rule.dayAndNight]: "Day & Night",
+  [Rule.dryLife]: "DryLife",
+  [Rule.highLife]: "HighLife",
+  [Rule.threeFourLife]: "34 Life",
+  [Rule.twoByTwo]: "2x2",
+};
 
 export class Config {
   private _rule: Rule;
@@ -56,6 +68,22 @@ export class Config {
     );
 
     return [birthSet, survivalSet];
+  }
+
+  private _convertToTitlecase(key: RuleKey): string {
+    const splitWords = key.replace(/([A-Z])/g, " $1");
+
+    return splitWords.charAt(0).toUpperCase() + splitWords.slice(1);
+  }
+
+  public ruleNameByKey(key: RuleKey): string {
+    const ruleValue = Rule[key];
+
+    if (stylizedRuleNames[ruleValue]) {
+      return stylizedRuleNames[ruleValue]!;
+    } else {
+      return this._convertToTitlecase(key);
+    }
   }
 
   public getRule(): Rule {

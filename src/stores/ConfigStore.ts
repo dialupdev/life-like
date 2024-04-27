@@ -1,5 +1,5 @@
 import { makeObservable, observable, action } from "mobx";
-import { Config, Rule } from "../core/Config";
+import { Config, Rule, RuleKey } from "../core/Config";
 import { Playback } from "../core/Playback";
 
 export class ConfigStore {
@@ -28,10 +28,11 @@ export class ConfigStore {
   }
 
   public getAllRules(): [string, string][] {
-    const ruleNames = Object.keys(Rule);
+    const ruleKeys = Object.keys(Rule) as RuleKey[];
 
-    return ruleNames.map(ruleName => {
-      const ruleValue = Rule[ruleName as keyof typeof Rule];
+    return ruleKeys.map(ruleKey => {
+      const ruleName = this._config.ruleNameByKey(ruleKey);
+      const ruleValue = Rule[ruleKey];
 
       return [ruleName, ruleValue];
     });
