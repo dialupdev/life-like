@@ -8,21 +8,23 @@ export enum Rule {
   coral = "B3/S45678",
   dayAndNight = "B3678/S34678",
   diamoeba = "B35678/S5678",
+  dotLife = "B3/S023",
   dryLife = "B37/S23",
-  flakes = "B3/S012345678",
-  gnarl = "B1/S1",
+  flock = "B3/S12",
+  geology = "B3578/S24678",
   highLife = "B36/S23",
+  holstein = "B35678/S4678",
   life = "B3/S23",
-  longLife = "B345/S5",
+  lifeWithoutDeath = "B3/S012345678",
   maze = "B3/S12345",
-  mazeAlt1 = "B3/S1234",
-  mazeAlt2 = "B37/S12345",
+  mazectric = "B3/S1234",
+  mazeWithMice = "B37/S12345",
   move = "B368/S245",
-  seeds = "B2/S",
   serviettes = "B234/S",
   stains = "B3678/S235678",
-  threeFourLife = "B34/S34",
   twoByTwo = "B36/S125",
+  voteFourFive = "B4678/S35678",
+  vote = "B5678/S45678",
   walledCities = "B45678/S2345",
 }
 
@@ -30,10 +32,11 @@ export type RuleKey = keyof typeof Rule;
 
 const stylizedRuleNames: Partial<Record<Rule, string>> = {
   [Rule.dayAndNight]: "Day & Night",
+  [Rule.dotLife]: "DotLife",
   [Rule.dryLife]: "DryLife",
   [Rule.highLife]: "HighLife",
-  [Rule.threeFourLife]: "34 Life",
   [Rule.twoByTwo]: "2x2",
+  [Rule.voteFourFive]: "Vote 4/5",
 };
 
 export class Config {
