@@ -8,15 +8,15 @@ const ZOOM_SCALE_STEPS = [0.1, 0.15, 0.25, 0.33, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 
 const ZOOM_TO_FIT_PADDING = 0.15; // 15%
 
 export enum PanDirection {
-  Up = "Up",
-  Right = "Right",
-  Down = "Down",
-  Left = "Left",
+  up,
+  right,
+  down,
+  left,
 }
 
 export enum ZoomDirection {
-  In,
-  Out,
+  in,
+  out,
 }
 
 export class Layout {
@@ -94,7 +94,7 @@ export class Layout {
   }
 
   public zoomByStep(direction: ZoomDirection): number {
-    const isZoomOut = direction === ZoomDirection.Out;
+    const isZoomOut = direction === ZoomDirection.out;
     const increment = isZoomOut ? -1 : 1;
     const lastStepIndex = ZOOM_SCALE_STEPS.length - 1;
 

@@ -90,16 +90,16 @@ export class LayoutStore {
     let deltaY = 0;
 
     switch (direction) {
-      case PanDirection.Up:
+      case PanDirection.up:
         deltaY += panIncrement;
         break;
-      case PanDirection.Right:
+      case PanDirection.right:
         deltaX -= panIncrement;
         break;
-      case PanDirection.Down:
+      case PanDirection.down:
         deltaY -= panIncrement;
         break;
-      case PanDirection.Left:
+      case PanDirection.left:
         deltaX += panIncrement;
         break;
     }

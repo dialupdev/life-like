@@ -40,8 +40,8 @@ const appStore = new AppStore(world, layoutStore, playbackStore);
 const pluginBuilder = new PluginBuilder(canvas);
 const pluginManager = new PluginManager(pluginBuilder, layoutStore, playbackStore, appStore);
 
-pluginManager.activateGroup(PluginGroup.Default);
-pluginManager.activateGroup(PluginGroup.Playback);
+pluginManager.activateGroup(PluginGroup.default);
+pluginManager.activateGroup(PluginGroup.playback);
 
 const app = document.createElement("x-app");
 

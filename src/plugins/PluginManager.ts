@@ -5,8 +5,8 @@ import { LayoutStore } from "../stores/LayoutStore";
 import { PlaybackStore } from "../stores/PlaybackStore";
 
 export enum PluginGroup {
-  Default = "Default",
-  Playback = "Playback",
+  default,
+  playback,
 }
 
 export class PluginManager {
@@ -27,21 +27,21 @@ export class PluginManager {
     this._playbackStore = playbackStore;
     this._appStore = appStore;
 
-    this._pluginGroups.set(PluginGroup.Default, [
+    this._pluginGroups.set(PluginGroup.default, [
       new ResizePlugin(this._layoutStore.fitCanvasToWindow),
       new WheelPlugin(this._layoutStore.zoomAt),
-      new KeyboardPlugin("mod+=", () => this._layoutStore.zoomByStep(ZoomDirection.In)),
-      new KeyboardPlugin("mod+-", () => this._layoutStore.zoomByStep(ZoomDirection.Out)),
+      new KeyboardPlugin("mod+=", () => this._layoutStore.zoomByStep(ZoomDirection.in)),
+      new KeyboardPlugin("mod+-", () => this._layoutStore.zoomByStep(ZoomDirection.out)),
       new KeyboardPlugin("mod+1", () => this._layoutStore.zoomToScale(1)),
       new KeyboardPlugin("mod+2", () => this._layoutStore.zoomToScale(2)),
       new KeyboardPlugin("mod+0", () => this._layoutStore.zoomToFit()),
-      new KeyboardPlugin("ArrowUp", () => this._layoutStore.panInDirection(PanDirection.Up)),
-      new KeyboardPlugin("ArrowRight", () => this._layoutStore.panInDirection(PanDirection.Right)),
-      new KeyboardPlugin("ArrowDown", () => this._layoutStore.panInDirection(PanDirection.Down)),
-      new KeyboardPlugin("ArrowLeft", () => this._layoutStore.panInDirection(PanDirection.Left)),
+      new KeyboardPlugin("ArrowUp", () => this._layoutStore.panInDirection(PanDirection.up)),
+      new KeyboardPlugin("ArrowRight", () => this._layoutStore.panInDirection(PanDirection.right)),
+      new KeyboardPlugin("ArrowDown", () => this._layoutStore.panInDirection(PanDirection.down)),
+      new KeyboardPlugin("ArrowLeft", () => this._layoutStore.panInDirection(PanDirection.left)),
     ]);
 
-    this._pluginGroups.set(PluginGroup.Playback, [
+    this._pluginGroups.set(PluginGroup.playback, [
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutStore.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),

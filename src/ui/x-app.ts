@@ -96,12 +96,12 @@ class App extends MobxLitElement {
     const value = (e.target as Menu).value;
 
     if (value === "in") {
-      this.layoutStore.zoomByStep(ZoomDirection.In);
+      this.layoutStore.zoomByStep(ZoomDirection.in);
       return;
     }
 
     if (value === "out") {
-      this.layoutStore.zoomByStep(ZoomDirection.Out);
+      this.layoutStore.zoomByStep(ZoomDirection.out);
       return;
     }
 
