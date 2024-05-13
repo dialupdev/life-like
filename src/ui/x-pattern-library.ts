@@ -2,7 +2,7 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
-import { LibraryStore } from "../stores/LibraryStore";
+import { Locator } from "../Locator";
 import "@spectrum-web-components/accordion/sp-accordion.js";
 import "@spectrum-web-components/accordion/sp-accordion-item.js";
 import "@spectrum-web-components/action-button/sp-action-button.js";
@@ -23,21 +23,21 @@ class PatternLibrary extends MobxLitElement {
   `;
 
   @property()
-  public accessor libraryStore!: LibraryStore;
+  public accessor locator!: Locator;
 
   private _loadPattern(e: Event): void {
     const path = (e.target! as HTMLElement).getAttribute("data-path");
 
-    void this.libraryStore.loadPattern(path!);
+    void this.locator.libraryStore.loadPattern(path!);
   }
 
   protected render(): TemplateResult {
     return html`
       ${when(
-        this.libraryStore.categories.length > 0,
+        this.locator.libraryStore.categories.length > 0,
         () =>
           html`<sp-accordion size="s">
-            ${this.libraryStore.categories.map(
+            ${this.locator.libraryStore.categories.map(
               category =>
                 html`<sp-accordion-item label=${category.name}>
                   ${category.patterns.map(
