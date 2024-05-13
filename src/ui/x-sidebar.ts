@@ -93,6 +93,10 @@ class Sidebar extends MobxLitElement {
     this.locator.appStore.reset();
   }
 
+  private _loadPattern(e: CustomEvent): void {
+    void this.locator.libraryStore.loadPattern(e.detail);
+  }
+
   protected render(): TemplateResult {
     return html`
       <x-control-group label="Playback">
@@ -181,7 +185,10 @@ class Sidebar extends MobxLitElement {
       </x-control-group>
 
       <x-control-group label="Library" noDivider>
-        <x-pattern-library .locator=${this.locator}></x-pattern-library>
+        <x-pattern-library
+          .categories=${this.locator.libraryStore.categories}
+          @select-pattern=${this._loadPattern}
+        ></x-pattern-library>
       </x-control-group>
     `;
   }

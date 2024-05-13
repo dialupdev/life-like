@@ -1,6 +1,6 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, nothing, css } from "lit";
-import { customElement, queryAsync, state } from "lit/decorators.js";
+import { customElement, state, queryAsync } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { Locator } from "../Locator";
@@ -35,10 +35,8 @@ class App extends MobxLitElement {
     }
   `;
 
-  private _locator!: Locator;
-
   @state()
-  private accessor _loading = true;
+  private accessor _locator!: Locator;
 
   @queryAsync("canvas")
   private accessor _canvasPromise!: Promise<HTMLCanvasElement>;
@@ -60,8 +58,6 @@ class App extends MobxLitElement {
       pluginManager.activateGroup(PluginGroup.default);
       pluginManager.activateGroup(PluginGroup.playback);
 
-      this._loading = false;
-
       this._locator.libraryStore.loadPatterns();
     });
   }
@@ -71,7 +67,7 @@ class App extends MobxLitElement {
       <sp-theme color="light" scale="medium">
         <canvas></canvas>
 
-        ${when(!this._loading, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}
+        ${when(this._locator, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}
       </sp-theme>
     `;
   }
