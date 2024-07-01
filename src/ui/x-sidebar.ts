@@ -1,12 +1,12 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { TemplateResult, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import { Menu } from "@spectrum-web-components/menu";
 import { Picker } from "@spectrum-web-components/picker";
 import { Slider } from "@spectrum-web-components/slider";
-import { Locator } from "../Locator";
+import { TemplateResult, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../core/Config";
 import { ZoomDirection } from "../core/Layout";
+import { Locator } from "../Locator";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
