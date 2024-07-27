@@ -10,6 +10,13 @@ import { Locator } from "../Locator";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-pause-circle.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-play-circle.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-rewind-circle.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-step-forward-circle.js";
 import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
 import "@spectrum-web-components/menu/sp-menu.js";
@@ -28,9 +35,11 @@ class Sidebar extends MobxLitElement {
     }
     :host {
       display: block;
-      height: 100vh;
-      padding: 20px;
+      padding: 4px 20px;
       overflow-y: auto;
+    }
+    .zoom-button {
+      flex-direction: row-reverse;
     }
     .zoom-menu {
       width: 240px;
@@ -101,13 +110,18 @@ class Sidebar extends MobxLitElement {
     return html`
       <x-control-group label="Playback">
         <sp-action-group size="m">
-          <sp-action-button @click="${this._togglePlaying}"
-            >${this.locator.playbackStore.playing ? "Pause" : "Play"} (Space)</sp-action-button
-          >
-          <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playbackStore.playing}
-            >Tick (T)</sp-action-button
-          >
-          <sp-action-button @click="${this._reset}">Reset (R)</sp-action-button>
+          <sp-action-button @click="${this._togglePlaying}">
+            ${this.locator.playbackStore.playing
+              ? html`<sp-icon-pause-circle slot="icon"></sp-icon-pause-circle>`
+              : html`<sp-icon-play-circle slot="icon"></sp-icon-play-circle>`}
+          </sp-action-button>
+          <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playbackStore.playing} label="Step forward">
+            <sp-icon-step-forward-circle slot="icon"></sp-icon-step-forward-circle>
+          </sp-action-button>
+          <sp-action-button @click="${this._reset}">
+            <sp-icon-rewind-circle slot="icon"></sp-icon-rewind-circle>
+            Reset
+          </sp-action-button>
         </sp-action-group>
       </x-control-group>
 
@@ -119,56 +133,53 @@ class Sidebar extends MobxLitElement {
           variant="filled"
           value=${this.locator.configStore.frameRate}
           @input="${this._setFrameRate}"
-        ></sp-slider>
+        >
+        </sp-slider>
       </x-control-group>
 
       <x-control-group label="Zoom">
         <sp-action-group size="m">
           <overlay-trigger>
-            <sp-action-button slot="trigger" caret>${this.locator.layoutStore.zoomScale}%</sp-action-button>
+            <sp-action-button class="zoom-button" slot="trigger">
+              <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
+              ${this.locator.layoutStore.zoomScale}%
+            </sp-action-button>
             <sp-popover open slot="click-content" class="zoom-menu">
               <sp-menu @change=${this._zoomToScale}>
-                <sp-menu-item value="in"
-                  >Zoom in
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">=</span></span
-                  ></sp-menu-item
-                >
-                <sp-menu-item value="out"
-                  >Zoom out
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">-</span></span
-                  ></sp-menu-item
-                >
+                <sp-menu-item value="in">
+                  Zoom in
+                  <span class="shortcut" slot="value"> <span class="char">⌘</span><span class="char">=</span></span>
+                </sp-menu-item>
+                <sp-menu-item value="out">
+                  Zoom out
+                  <span class="shortcut" slot="value"><span class="char">⌘</span><span class="char">-</span></span>
+                </sp-menu-item>
                 <sp-menu-divider size="s"></sp-menu-divider>
                 <sp-menu-item value=".1">10%</sp-menu-item>
                 <sp-menu-item value=".25">25%</sp-menu-item>
                 <sp-menu-item value=".5">50%</sp-menu-item>
-                <sp-menu-item value="1"
-                  >100%
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">1</span></span
-                  ></sp-menu-item
-                >
+                <sp-menu-item value="1">
+                  100%
+                  <span class="shortcut" slot="value"><span class="char">⌘</span><span class="char">1</span></span>
+                </sp-menu-item>
                 <sp-menu-item value="1.5">150%</sp-menu-item>
-                <sp-menu-item value="2"
-                  >200%
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">2</span></span
-                  ></sp-menu-item
-                >
+                <sp-menu-item value="2">
+                  200%
+                  <span class="shortcut" slot="value"><span class="char">⌘</span><span class="char">2</span></span>
+                </sp-menu-item>
                 <sp-menu-item value="4">400%</sp-menu-item>
                 <sp-menu-divider size="s"></sp-menu-divider>
-                <sp-menu-item value="fit"
-                  >Zoom to fit
-                  <span class="shortcut" slot="value"
-                    ><span class="char">⌘</span><span class="char">0</span></span
-                  ></sp-menu-item
-                >
+                <sp-menu-item value="fit">
+                  Zoom to fit
+                  <span class="shortcut" slot="value"><span class="char">⌘</span><span class="char">0</span></span>
+                </sp-menu-item>
               </sp-menu>
             </sp-popover>
           </overlay-trigger>
-          <sp-action-button @click="${this._fit}">Fit (F)</sp-action-button>
+          <sp-action-button @click="${this._fit}">
+            <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
+            Fit
+          </sp-action-button>
         </sp-action-group>
       </x-control-group>
 
