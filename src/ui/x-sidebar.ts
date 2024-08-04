@@ -140,11 +140,11 @@ class Sidebar extends MobxLitElement {
       <x-control-group label="Zoom">
         <sp-action-group size="m">
           <overlay-trigger>
-            <sp-action-button class="zoom-button" slot="trigger">
+            <sp-action-button slot="trigger" class="zoom-button">
               <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
               ${this.locator.layoutStore.zoomScale}%
             </sp-action-button>
-            <sp-popover open slot="click-content" class="zoom-menu">
+            <sp-popover slot="click-content" direction="bottom" class="zoom-menu">
               <sp-menu @change=${this._zoomToScale}>
                 <sp-menu-item value="in">
                   Zoom in
