@@ -1,8 +1,8 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { TemplateResult, html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
 import { Picker } from "@spectrum-web-components/picker";
 import { Slider } from "@spectrum-web-components/slider";
+import { TemplateResult, html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { Rule } from "../core/Config";
 import { Locator } from "../Locator";
 import "@spectrum-web-components/action-button/sp-action-button.js";

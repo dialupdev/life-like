@@ -7,9 +7,9 @@ import { Renderer } from "./core/Renderer";
 import { World } from "./core/World";
 import { AppStore } from "./stores/AppStore";
 import { ConfigStore } from "./stores/ConfigStore";
+import { DialogStore } from "./stores/DialogStore";
 import { LayoutStore } from "./stores/LayoutStore";
 import { LibraryStore } from "./stores/LibraryStore";
-import { DialogStore } from "./stores/DialogStore";
 import { PlaybackStore } from "./stores/PlaybackStore";
 
 export class Locator {
