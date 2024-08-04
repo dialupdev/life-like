@@ -42,6 +42,6 @@ export class Locator {
     this.layoutStore = new LayoutStore(canvas, this.world, this.layout, this.renderer);
     this.playbackStore = new PlaybackStore(this.playback);
     this.libraryStore = new LibraryStore(this.library, this.configStore, this.layoutStore, this.playbackStore);
-    this.appStore = new AppStore(this.world, this.layoutStore, this.playbackStore);
+    this.appStore = new AppStore(this.world, this.configStore, this.layoutStore, this.playbackStore);
   }
 }
