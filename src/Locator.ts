@@ -9,6 +9,7 @@ import { AppStore } from "./stores/AppStore";
 import { ConfigStore } from "./stores/ConfigStore";
 import { LayoutStore } from "./stores/LayoutStore";
 import { LibraryStore } from "./stores/LibraryStore";
+import { DialogStore } from "./stores/DialogStore";
 import { PlaybackStore } from "./stores/PlaybackStore";
 
 export class Locator {
@@ -19,6 +20,7 @@ export class Locator {
   public playback: Playback;
   public library: Library;
 
+  public dialogStore: DialogStore;
   public configStore: ConfigStore;
   public layoutStore: LayoutStore;
   public playbackStore: PlaybackStore;
@@ -35,6 +37,7 @@ export class Locator {
     this.playback = new Playback(this.config, this.world, this.renderer);
     this.library = new Library(this.world);
 
+    this.dialogStore = new DialogStore();
     this.configStore = new ConfigStore(this.config, this.playback);
     this.layoutStore = new LayoutStore(canvas, this.world, this.layout, this.renderer);
     this.playbackStore = new PlaybackStore(this.playback);

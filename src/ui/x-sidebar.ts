@@ -1,10 +1,8 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { Menu } from "@spectrum-web-components/menu";
-import { Picker } from "@spectrum-web-components/picker";
 import { Slider } from "@spectrum-web-components/slider";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Rule } from "../core/Config";
 import { ZoomDirection } from "../core/Layout";
 import { Locator } from "../Locator";
 import "@spectrum-web-components/action-button/sp-action-button.js";
@@ -21,11 +19,11 @@ import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
 import "@spectrum-web-components/menu/sp-menu.js";
 import "@spectrum-web-components/overlay/overlay-trigger.js";
-import "@spectrum-web-components/picker/sp-picker.js";
 import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
 import "./x-control-group";
 import "./x-pattern-library";
+import "./x-settings";
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
@@ -62,11 +60,6 @@ class Sidebar extends MobxLitElement {
     this.locator.playbackStore.tickLazy();
   }
 
-  private _changeRule(e: Event): void {
-    const rule = (e.target as Picker).value as Rule;
-    this.locator.configStore.setRule(rule);
-  }
-
   private _setFrameRate(e: Event): void {
     const frameRate = (e.target as Slider).value;
     this.locator.configStore.setFrameRate(frameRate);
@@ -100,6 +93,12 @@ class Sidebar extends MobxLitElement {
 
   private _reset(): void {
     this.locator.appStore.reset();
+  }
+
+  private _openSettings(): void {
+    const template = html`<x-settings .locator=${this.locator}></x-settings>`;
+
+    void this.locator.dialogStore.openDialog("Settings", template);
   }
 
   private _loadPattern(e: CustomEvent): void {
@@ -184,19 +183,17 @@ class Sidebar extends MobxLitElement {
       </x-control-group>
 
       <x-control-group label="Config">
-        <sp-field-label for="rule">Rule</sp-field-label>
-        <sp-picker id="rule" value=${this.locator.configStore.rule} @change=${this._changeRule}>
-          ${this.locator.configStore.getAllRules().map(([name, value]) => {
-            return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
-          })}
-        </sp-picker>
+        <sp-action-group size="m">
+          <sp-action-button @click="${this._openSettings}">
+            <sp-icon-settings slot="icon"></sp-icon-settings>
+            Settings
+          </sp-action-button>
+        </sp-action-group>
       </x-control-group>
 
       <x-control-group label="Library" noDivider>
-        <x-pattern-library
-          .categories=${this.locator.libraryStore.categories}
-          @select-pattern=${this._loadPattern}
-        ></x-pattern-library>
+        <x-pattern-library .categories=${this.locator.libraryStore.categories} @select-pattern=${this._loadPattern}>
+        </x-pattern-library>
       </x-control-group>
     `;
   }

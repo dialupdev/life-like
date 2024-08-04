@@ -9,6 +9,7 @@ import { PluginManager, PluginGroup } from "../plugins/PluginManager";
 import "@spectrum-web-components/theme/scale-medium.js";
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/theme-light.js";
+import "./x-dialog-container";
 import "./x-sidebar";
 
 @customElement("x-app")
@@ -68,6 +69,7 @@ class App extends MobxLitElement {
         <canvas></canvas>
 
         ${when(this._locator, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}
+        ${when(this._locator, () => html`<x-dialog-container .locator=${this._locator}></x-dialog-container>`)}
       </sp-theme>
     `;
   }
