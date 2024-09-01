@@ -1,7 +1,7 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint", "lit", "lit-a11y", "import"],
-  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier", "plugin:import/typescript"],
+  plugins: ["@typescript-eslint", "lit", "lit-a11y", "import-x"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier", "plugin:import-x/typescript"],
   parserOptions: {
     ecmaVersion: 2020,
     project: "./tsconfig.json",
@@ -30,8 +30,8 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
-    "import/no-default-export": "error",
-    "import/order": [
+    "import-x/no-default-export": "error",
+    "import-x/order": [
       "error",
       {
         groups: [["builtin", "external"], ["internal", "parent", "sibling", "index"], ["type"]],
