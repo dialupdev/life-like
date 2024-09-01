@@ -1,11 +1,11 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+import path from "path";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
-module.exports = {
+export default {
   devtool: "eval-source-map",
   entry: "./src/main.ts",
   output: {
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve("./dist"),
     publicPath: "/",
   },
   resolve: {
