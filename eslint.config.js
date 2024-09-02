@@ -9,7 +9,8 @@ export default tseslint.config(
   {
     extends: [
       eslint.configs.recommended,
-      ...tseslint.configs.recommended,
+      ...tseslint.configs.strict,
+      ...tseslint.configs.stylistic,
       eslintConfigPrettier,
       eslintPluginImportX.flatConfigs.recommended,
       eslintPluginImportX.flatConfigs.typescript,
@@ -23,7 +24,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      "@typescript-eslint/array-type": "error",
       "@typescript-eslint/explicit-function-return-type": [
         "error",
         {
@@ -31,19 +31,8 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/explicit-member-accessibility": ["error", { overrides: { constructors: "off" } }],
-      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-unused-expressions": ["error", { allowShortCircuit: true, allowTernary: true }],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          args: "after-used",
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-          ignoreRestSiblings: true,
-        },
-      ],
       "import-x/no-default-export": "error",
       "import-x/order": [
         "error",
