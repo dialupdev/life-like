@@ -2,7 +2,7 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
-import { Category } from "../core/Library";
+import { Locator } from "../Locator";
 import "@spectrum-web-components/accordion/sp-accordion.js";
 import "@spectrum-web-components/accordion/sp-accordion-item.js";
 import "@spectrum-web-components/action-button/sp-action-button.js";
@@ -23,26 +23,28 @@ class PatternLibrary extends MobxLitElement {
   `;
 
   @property()
-  public accessor categories!: Category[];
+  public accessor locator!: Locator;
 
-  private _selectPattern(e: Event): void {
-    const path = (e.target! as HTMLElement).getAttribute("data-path");
+  private _loadPattern(e: CustomEvent): void {
+    const path = (e.target! as HTMLElement).getAttribute("data-path")!;
 
-    this.dispatchEvent(new CustomEvent("select-pattern", { detail: path }));
+    void this.locator.libraryStore.loadPattern(path);
   }
 
   protected render(): TemplateResult {
+    const categories = this.locator.libraryStore.categories;
+
     return html`
       ${when(
-        this.categories.length > 0,
+        categories.length > 0,
         () =>
           html`<sp-accordion size="s">
-            ${this.categories.map(
+            ${categories.map(
               category =>
                 html`<sp-accordion-item label=${category.name}>
                   ${category.patterns.map(
                     pattern =>
-                      html`<sp-action-button quiet size="s" @click=${this._selectPattern} data-path=${pattern.path}
+                      html`<sp-action-button quiet size="s" @click=${this._loadPattern} data-path=${pattern.path}
                         >${pattern.name}</sp-action-button
                       >`
                   )}

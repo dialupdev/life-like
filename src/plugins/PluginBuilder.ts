@@ -5,7 +5,8 @@ interface DragPluginOptions {
 }
 
 interface KeyboardPluginOptions {
-  stopPropagation: boolean;
+  preventDefault?: boolean;
+  stopPropagation?: boolean;
 }
 
 export class ResizePlugin {
@@ -116,7 +117,9 @@ export class PluginBuilder {
     const plugin = this._keyboardPlugins.get(keyBindings);
 
     if (plugin) {
-      e.preventDefault();
+      if (plugin.options?.preventDefault) {
+        e.preventDefault();
+      }
 
       if (plugin.options?.stopPropagation) {
         e.stopPropagation();

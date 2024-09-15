@@ -19,14 +19,12 @@ class App extends MobxLitElement {
       box-sizing: border-box;
     }
     :host {
-      background: #f4f5f7;
-      border-right: 2px solid #ddd;
       display: block;
       height: 100vh;
       left: 0;
       position: absolute;
       top: 0;
-      width: ${SIDEBAR_WIDTH}px;
+      width: ${SIDEBAR_WIDTH * 2}px;
     }
     canvas {
       image-rendering: pixelated;
@@ -51,6 +49,7 @@ class App extends MobxLitElement {
       const pluginBuilder = new PluginBuilder(canvas);
       const pluginManager = new PluginManager(
         pluginBuilder,
+        this._locator.drawerStore,
         this._locator.layoutStore,
         this._locator.playbackStore,
         this._locator.appStore
