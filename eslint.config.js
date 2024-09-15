@@ -60,7 +60,7 @@ export default tseslint.config(
   {
     files: ["*.config.js"],
     rules: {
-      "import-x/no-unresolved": "off",
+      "import-x/no-named-as-default-member": "off",
     },
   },
   {
