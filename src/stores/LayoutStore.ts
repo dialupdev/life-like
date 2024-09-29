@@ -10,7 +10,7 @@ export class LayoutStore {
   private _world: World;
   private _renderer: Renderer;
 
-  public zoomScale = 1;
+  @observable public accessor zoomScale = 1;
 
   constructor(canvas: HTMLCanvasElement, world: World, layout: Layout, renderer: Renderer) {
     this._canvas = canvas;
@@ -23,9 +23,7 @@ export class LayoutStore {
     this.zoomAt = this.zoomAt.bind(this);
     this.zoomToFit = this.zoomToFit.bind(this);
 
-    makeObservable(this, {
-      zoomScale: observable,
-    });
+    makeObservable(this);
 
     this.fitCanvasToWindow();
   }

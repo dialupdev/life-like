@@ -6,22 +6,15 @@ export class ConfigStore {
   private _config: Config;
   private _playback: Playback;
 
-  public frameRate = 30;
-  public fieldSize = 50;
-  public rule = Rule.life;
+  @observable public accessor frameRate = 30;
+  @observable public accessor fieldSize = 50;
+  @observable public accessor rule = Rule.life;
 
   constructor(config: Config, playback: Playback) {
     this._config = config;
     this._playback = playback;
 
-    makeObservable(this, {
-      frameRate: observable,
-      fieldSize: observable,
-      rule: observable,
-      setFrameRate: action,
-      setFieldSize: action,
-      setRule: action,
-    });
+    makeObservable(this);
 
     const frameRate = localStorage.getItem("frameRate");
     if (frameRate) this.setFrameRate(parseInt(frameRate, 10));
@@ -33,6 +26,7 @@ export class ConfigStore {
     if (rule) this.setRule(rule as Rule);
   }
 
+  @action
   public setFrameRate(frameRate: number): void {
     localStorage.setItem("frameRate", frameRate.toString());
 
@@ -41,6 +35,7 @@ export class ConfigStore {
     this.frameRate = frameRate;
   }
 
+  @action
   public setFieldSize(fieldSize: number): void {
     localStorage.setItem("fieldSize", fieldSize.toString());
 
@@ -58,6 +53,7 @@ export class ConfigStore {
     });
   }
 
+  @action
   public setRule(rule: Rule): void {
     localStorage.setItem("rule", rule);
 

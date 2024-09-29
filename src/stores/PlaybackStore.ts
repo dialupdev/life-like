@@ -4,7 +4,7 @@ import { Playback } from "../core/Playback";
 export class PlaybackStore {
   private _playback: Playback;
 
-  public playing = false;
+  @observable public accessor playing = false;
 
   constructor(playback: Playback) {
     this._playback = playback;
@@ -13,18 +13,16 @@ export class PlaybackStore {
     this.togglePlaying = this.togglePlaying.bind(this);
     this.tickLazy = this.tickLazy.bind(this);
 
-    makeObservable(this, {
-      playing: observable,
-      pause: action,
-      togglePlaying: action,
-    });
+    makeObservable(this);
   }
 
+  @action
   public pause(): void {
     this._playback.pause();
     this.playing = false;
   }
 
+  @action
   public togglePlaying(): void {
     this._playback.playing ? this._playback.pause() : this._playback.play();
     this.playing = !this.playing;

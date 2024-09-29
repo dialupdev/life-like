@@ -6,34 +6,32 @@ export enum DrawerMode {
 }
 
 export class DrawerStore {
-  public drawerMode: DrawerMode | undefined = undefined;
+  @observable public accessor drawerMode: DrawerMode | undefined = undefined;
 
   constructor() {
     this.openDrawer = this.openDrawer.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
 
-    makeObservable(this, {
-      drawerMode: observable,
-      drawerOpen: computed,
-      openDrawer: action,
-      closeDrawer: action,
-      toggleDrawer: action,
-    });
+    makeObservable(this);
   }
 
+  @computed
   public get drawerOpen(): boolean {
     return this.drawerMode !== undefined;
   }
 
+  @action
   public openDrawer(drawerMode: DrawerMode): void {
     this.drawerMode = drawerMode;
   }
 
+  @action
   public closeDrawer(): void {
     this.drawerMode = undefined;
   }
 
+  @action
   public toggleDrawer(drawerMode: DrawerMode): void {
     if (this.drawerMode === drawerMode) {
       this.closeDrawer();

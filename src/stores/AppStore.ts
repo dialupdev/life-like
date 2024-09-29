@@ -18,13 +18,12 @@ export class AppStore {
 
     this.reset = this.reset.bind(this);
 
-    makeObservable(this, {
-      reset: action,
-    });
+    makeObservable(this);
 
     this.reset();
   }
 
+  @action
   public reset(): void {
     this._playbackStore.pause();
     this._world.randomize(this._configStore.fieldSize);
