@@ -1,7 +1,12 @@
-import { makeObservable, observable, action } from "mobx";
+import { makeObservable, observable, computed, action } from "mobx";
+
+export enum DrawerMode {
+  settings = "Settings",
+  patternLibrary = "Library",
+}
 
 export class DrawerStore {
-  public drawerOpen = false;
+  public drawerMode: DrawerMode | undefined = undefined;
 
   constructor() {
     this.openDrawer = this.openDrawer.bind(this);
@@ -9,22 +14,31 @@ export class DrawerStore {
     this.toggleDrawer = this.toggleDrawer.bind(this);
 
     makeObservable(this, {
-      drawerOpen: observable,
+      drawerMode: observable,
+      drawerOpen: computed,
       openDrawer: action,
       closeDrawer: action,
       toggleDrawer: action,
     });
   }
 
-  public openDrawer(): void {
-    this.drawerOpen = true;
+  public get drawerOpen(): boolean {
+    return this.drawerMode !== undefined;
+  }
+
+  public openDrawer(drawerMode: DrawerMode): void {
+    this.drawerMode = drawerMode;
   }
 
   public closeDrawer(): void {
-    this.drawerOpen = false;
+    this.drawerMode = undefined;
   }
 
-  public toggleDrawer(): void {
-    this.drawerOpen = !this.drawerOpen;
+  public toggleDrawer(drawerMode: DrawerMode): void {
+    if (this.drawerMode === drawerMode) {
+      this.closeDrawer();
+    } else {
+      this.openDrawer(drawerMode);
+    }
   }
 }

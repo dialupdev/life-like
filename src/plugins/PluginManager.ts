@@ -1,7 +1,7 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { PanDirection, ZoomDirection } from "../core/Layout";
 import { AppStore } from "../stores/AppStore";
-import { DrawerStore } from "../stores/DrawerStore";
+import { DrawerStore, DrawerMode } from "../stores/DrawerStore";
 import { LayoutStore } from "../stores/LayoutStore";
 import { PlaybackStore } from "../stores/PlaybackStore";
 
@@ -49,7 +49,8 @@ export class PluginManager {
       new KeyboardPlugin("ArrowLeft", () => this._layoutStore.panInDirection(PanDirection.left), {
         preventDefault: true,
       }),
-      new KeyboardPlugin("l", this._drawerStore.toggleDrawer),
+      new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
+      new KeyboardPlugin("l", () => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)),
       new KeyboardPlugin("Escape", this._drawerStore.closeDrawer),
     ]);
 

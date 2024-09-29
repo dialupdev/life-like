@@ -3,10 +3,12 @@ import { Menu } from "@spectrum-web-components/menu";
 import { Slider } from "@spectrum-web-components/slider";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ZoomDirection } from "../core/Layout";
 import { Locator } from "../Locator";
+import { DrawerMode } from "../stores/DrawerStore";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
@@ -28,6 +30,8 @@ import "@spectrum-web-components/slider/sp-slider.js";
 import "./x-control-group";
 import "./x-pattern-library";
 import "./x-settings";
+
+type DrawerCase = [DrawerMode, () => TemplateResult];
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
@@ -83,6 +87,13 @@ class Sidebar extends MobxLitElement {
   @property()
   public accessor locator!: Locator;
 
+  private get _drawerCases(): DrawerCase[] {
+    return [
+      [DrawerMode.settings, () => html`<x-settings .locator=${this.locator}></x-settings>`],
+      [DrawerMode.patternLibrary, () => html`<x-pattern-library .locator=${this.locator}></x-pattern-library>`],
+    ];
+  }
+
   private _togglePlaying(): void {
     this.locator.playbackStore.togglePlaying();
   }
@@ -126,17 +137,7 @@ class Sidebar extends MobxLitElement {
     this.locator.appStore.reset();
   }
 
-  private _openSettings(): void {
-    const template = html`<x-settings .locator=${this.locator}></x-settings>`;
-
-    void this.locator.dialogStore.openDialog("Settings", template);
-  }
-
-  private _togglePatternLibrary(): void {
-    this.locator.drawerStore.toggleDrawer();
-  }
-
-  private _closePatternLibrary(): void {
+  private _closeDrawer(): void {
     this.locator.drawerStore.closeDrawer();
   }
 
@@ -224,7 +225,10 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Config">
           <sp-action-group size="m">
-            <sp-action-button @click="${this._openSettings}">
+            <sp-action-button
+              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
+              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
+            >
               <sp-icon-settings slot="icon"></sp-icon-settings>
               Settings
             </sp-action-button>
@@ -233,7 +237,10 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Patterns" noDivider>
           <sp-action-group size="m">
-            <sp-action-button @click="${this._togglePatternLibrary}" ?selected=${this.locator.drawerStore.drawerOpen}>
+            <sp-action-button
+              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
+              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.patternLibrary}
+            >
               <sp-icon-data slot="icon"></sp-icon-data>
               Library
             </sp-action-button>
@@ -247,11 +254,11 @@ class Sidebar extends MobxLitElement {
           open: this.locator.drawerStore.drawerOpen,
         })}
       >
-        <x-control-group label="Library" noDivider>
-          <sp-action-button class="close-drawer-button" quiet @click="${this._closePatternLibrary}">
+        <x-control-group label=${this.locator.drawerStore.drawerMode} noDivider>
+          <sp-action-button class="close-drawer-button" quiet @click="${this._closeDrawer}">
             <sp-icon-close slot="icon"></sp-icon-close>
           </sp-action-button>
-          <x-pattern-library .locator=${this.locator}></x-pattern-library>
+          ${choose(this.locator.drawerStore.drawerMode, this._drawerCases)}
         </x-control-group>
       </div>
     `;

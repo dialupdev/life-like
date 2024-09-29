@@ -29,7 +29,6 @@
     "@spectrum-web-components/accordion": "^0.47.2",
     "@spectrum-web-components/action-button": "^0.47.2",
     "@spectrum-web-components/action-group": "^0.47.2",
-    "@spectrum-web-components/dialog": "^0.47.2",
     "@spectrum-web-components/divider": "^0.47.2",
     "@spectrum-web-components/field-label": "^0.47.2",
     "@spectrum-web-components/icons-workflow": "^0.47.2",
