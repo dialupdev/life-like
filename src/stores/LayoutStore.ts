@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, action } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE, SIDEBAR_WIDTH } from "../Constants";
 import { Layout, PanDirection, ZoomDirection } from "../core/Layout";
 import { Renderer } from "../core/Renderer";
@@ -28,13 +28,12 @@ export class LayoutStore {
     this.fitCanvasToWindow();
   }
 
+  @action
   private _setZoomScaleTruncated(zoomScale: number): void {
     // Multiply by 100 and truncate number to two decimal places for nicer UI
     const zoomScaleTruncated = Math.round((zoomScale + Number.EPSILON) * 100);
 
-    runInAction(() => {
-      this.zoomScale = zoomScaleTruncated;
-    });
+    this.zoomScale = zoomScaleTruncated;
   }
 
   public zoomToScale(scale: number): void {
