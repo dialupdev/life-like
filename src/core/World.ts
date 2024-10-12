@@ -56,14 +56,14 @@ export class World {
     this._neighborCounts.clear();
   }
 
-  public randomize(fieldSize: number): void {
+  public randomize(fieldSize: number, averageDensity: number): void {
     this.clear();
 
     const halfFieldSize = fieldSize / 2;
 
     for (let x = -halfFieldSize; x < halfFieldSize; x++) {
       for (let y = -halfFieldSize; y < halfFieldSize; y++) {
-        if (Math.random() < 0.5) {
+        if (Math.random() < averageDensity) {
           this.addCell(x, y);
         }
       }

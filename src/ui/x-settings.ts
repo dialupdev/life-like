@@ -28,6 +28,11 @@ class Settings extends MobxLitElement {
     this.locator.configStore.setFieldSize(fieldSize);
   }
 
+  private _setAverageDensity(e: Event): void {
+    const averageDensity = (e.target as Slider).value;
+    this.locator.configStore.setAverageDensity(averageDensity);
+  }
+
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value as Rule;
     this.locator.configStore.setRule(rule);
@@ -45,6 +50,19 @@ class Settings extends MobxLitElement {
         variant="filled"
         value=${this.locator.configStore.fieldSize}
         @input="${this._setFieldSize}"
+      >
+      </sp-slider>
+
+      <sp-field-label for="average-density">Average density (when randomized)</sp-field-label>
+      <sp-slider
+        id="average-density"
+        editable
+        min="0.1"
+        max="1"
+        step="0.1"
+        variant="filled"
+        value=${this.locator.configStore.averageDensity}
+        @input="${this._setAverageDensity}"
       >
       </sp-slider>
 

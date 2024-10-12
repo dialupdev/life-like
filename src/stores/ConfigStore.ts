@@ -8,6 +8,7 @@ export class ConfigStore {
 
   @observable public accessor frameRate = 30;
   @observable public accessor fieldSize = 50;
+  @observable public accessor averageDensity = 0.5;
   @observable public accessor rule = Rule.life;
 
   constructor(config: Config, playback: Playback) {
@@ -21,6 +22,9 @@ export class ConfigStore {
 
     const fieldSize = localStorage.getItem("fieldSize");
     if (fieldSize) this.setFieldSize(parseInt(fieldSize, 10));
+
+    const averageDensity = localStorage.getItem("averageDensity");
+    if (averageDensity) this.setAverageDensity(parseFloat(averageDensity));
 
     const rule = localStorage.getItem("rule");
     if (rule) this.setRule(rule as Rule);
@@ -40,6 +44,13 @@ export class ConfigStore {
     localStorage.setItem("fieldSize", fieldSize.toString());
 
     this.fieldSize = fieldSize;
+  }
+
+  @action
+  public setAverageDensity(averageDensity: number): void {
+    localStorage.setItem("averageDensity", averageDensity.toString());
+
+    this.averageDensity = averageDensity;
   }
 
   public getAllRules(): [string, string][] {

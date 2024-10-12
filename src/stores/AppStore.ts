@@ -26,7 +26,7 @@ export class AppStore {
   @action
   public reset(): void {
     this._playbackStore.pause();
-    this._world.randomize(this._configStore.fieldSize);
+    this._world.randomize(this._configStore.fieldSize, this._configStore.averageDensity);
     this._layoutStore.zoomToFit();
   }
 }
