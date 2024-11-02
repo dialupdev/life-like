@@ -63,7 +63,7 @@ class App extends MobxLitElement {
 
   protected render(): TemplateResult | typeof nothing {
     return html`
-      <sp-theme color="light" scale="medium">
+      <sp-theme system="spectrum" color="light" scale="medium">
         <canvas></canvas>
 
         ${when(this._locator, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}
