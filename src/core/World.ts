@@ -13,33 +13,34 @@ export class World {
   public cells = new Map<number, Cell>();
 
   private _spawn(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._incrementNeighborCount(neighbor);
+    for (const neighborHash of cell.generateNeighborHashes()) {
+      this._incrementNeighborCount(neighborHash);
     }
 
     this.cells.set(cell.hash(), cell);
   }
 
   private _kill(cell: Cell): void {
-    for (const neighbor of cell.generateNeighbors()) {
-      this._decrementNeighborCount(neighbor);
+    for (const neighborHash of cell.generateNeighborHashes()) {
+      this._decrementNeighborCount(neighborHash);
     }
 
     this.cells.delete(cell.hash());
   }
 
-  private _incrementNeighborCount(cell: Cell): void {
-    const neighborCount = this._neighborCounts.get(cell.hash());
-    this._neighborCounts.set(cell.hash(), neighborCount ? neighborCount + 1 : 1);
+  private _incrementNeighborCount(hash: number): void {
+    const neighborCount = this._neighborCounts.get(hash);
+
+    this._neighborCounts.set(hash, neighborCount ? neighborCount + 1 : 1);
   }
 
-  private _decrementNeighborCount(cell: Cell): void {
-    const neighborCountMinusOne = this._neighborCounts.get(cell.hash())! - 1;
+  private _decrementNeighborCount(hash: number): void {
+    const neighborCountMinusOne = this._neighborCounts.get(hash)! - 1;
 
     if (neighborCountMinusOne === 0) {
-      this._neighborCounts.delete(cell.hash());
+      this._neighborCounts.delete(hash);
     } else {
-      this._neighborCounts.set(cell.hash(), neighborCountMinusOne);
+      this._neighborCounts.set(hash, neighborCountMinusOne);
     }
   }
 
@@ -77,8 +78,8 @@ export class World {
     const cellsToSpawn = new Set<Cell>();
 
     // Mark cells to kill
-    for (const [cellHash, cell] of this.cells) {
-      const neighborCount = this._neighborCounts.get(cellHash);
+    for (const [hash, cell] of this.cells) {
+      const neighborCount = this._neighborCounts.get(hash);
 
       if (!neighborCount || !config.survivalSet.has(neighborCount)) {
         cellsToKill.add(cell);
@@ -86,9 +87,9 @@ export class World {
     }
 
     // Mark cells to spawn
-    for (const [cellHash, count] of this._neighborCounts) {
-      if (config.birthSet.has(count) && !this.cells.has(cellHash)) {
-        const cell = Cell.fromHash(cellHash);
+    for (const [hash, count] of this._neighborCounts) {
+      if (config.birthSet.has(count) && !this.cells.has(hash)) {
+        const cell = Cell.fromHash(hash);
         cellsToSpawn.add(cell);
       }
     }

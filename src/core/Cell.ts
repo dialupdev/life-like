@@ -19,16 +19,16 @@ export class Cell {
     return szudzikPairSigned(this.x, this.y);
   }
 
-  public generateNeighbors(): [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell] {
+  public generateNeighborHashes(): [number, number, number, number, number, number, number, number] {
     return [
-      new Cell(this.x - 1, this.y - 1),
-      new Cell(this.x - 1, this.y),
-      new Cell(this.x - 1, this.y + 1),
-      new Cell(this.x, this.y - 1),
-      new Cell(this.x, this.y + 1),
-      new Cell(this.x + 1, this.y - 1),
-      new Cell(this.x + 1, this.y),
-      new Cell(this.x + 1, this.y + 1),
+      szudzikPairSigned(this.x - 1, this.y - 1),
+      szudzikPairSigned(this.x - 1, this.y),
+      szudzikPairSigned(this.x - 1, this.y + 1),
+      szudzikPairSigned(this.x, this.y - 1),
+      szudzikPairSigned(this.x, this.y + 1),
+      szudzikPairSigned(this.x + 1, this.y - 1),
+      szudzikPairSigned(this.x + 1, this.y),
+      szudzikPairSigned(this.x + 1, this.y + 1),
     ];
   }
 }
