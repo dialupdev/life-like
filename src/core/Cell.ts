@@ -1,3 +1,5 @@
+import { szudzikPairSigned, szudzikUnpairSigned } from "../utils/MathUtils";
+
 export class Cell {
   public x: number;
   public y: number;
@@ -7,14 +9,14 @@ export class Cell {
     this.y = y;
   }
 
-  public static fromHash(hash: string): Cell {
-    const splitHash = hash.split(",");
+  public static fromHash(hash: number): Cell {
+    const [x, y] = szudzikUnpairSigned(hash);
 
-    return new Cell(parseInt(splitHash[0], 10), parseInt(splitHash[1], 10));
+    return new Cell(x, y);
   }
 
-  public hash(): string {
-    return `${this.x},${this.y}`;
+  public hash(): number {
+    return szudzikPairSigned(this.x, this.y);
   }
 
   public generateNeighbors(): [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell] {

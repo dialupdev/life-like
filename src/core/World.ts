@@ -2,13 +2,15 @@ import { Cell } from "./Cell";
 import { Config } from "./Config";
 
 export class World {
-  // Same here - if we could, we would use Cell as the Map key,
-  // which would remove the need for Cell.fromHash().
-  private _neighborCounts = new Map<string, number>();
+  // If JS had a way to hash entities for value comparison within a
+  // map/set (rather than using reference equality), we would use
+  // Cell as the Map key which would remove the need for Cell.fromHash().
+  // Instead, the map key is the Szudzik pair for each cell's (x, y).
+  private _neighborCounts = new Map<number, number>();
 
-  // If JS had a way to hash entities for comparison within a Set,
-  // we could use a Set for cells instead of a Map.
-  public cells = new Map<string, Cell>();
+  // Same here - ideally we would use a Set for cells instead of a Map.
+  // Instead, the map key is the Szudzik pair for each cell's (x ,y).
+  public cells = new Map<number, Cell>();
 
   private _spawn(cell: Cell): void {
     for (const neighbor of cell.generateNeighbors()) {
