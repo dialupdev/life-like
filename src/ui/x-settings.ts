@@ -57,9 +57,9 @@ class Settings extends MobxLitElement {
       <sp-slider
         id="average-density"
         editable
-        min="0.1"
+        min="0.01"
         max="1"
-        step="0.1"
+        step="0.01"
         variant="filled"
         value=${this.locator.configStore.averageDensity}
         @input="${this._setAverageDensity}"
