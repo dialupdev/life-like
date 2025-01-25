@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Life-like",
   "private": true,
-  "author": "Steve Davis <steve@celery.club>",
+  "author": "Steve Davis <steve@dialup.dev>",
   "license": "MIT",
   "type": "module",
   "engines": {
