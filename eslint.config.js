@@ -18,7 +18,7 @@ export default tseslint.config(
     ],
     ignores: ["dist/*"],
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2024,
       globals: {
         ...globals.browser,
       },
