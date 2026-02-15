@@ -60,6 +60,7 @@ export default tseslint.config(
   {
     files: ["*.config.js"],
     rules: {
+      "import-x/no-default-export": "off",
       "import-x/no-named-as-default-member": "off",
     },
   },
