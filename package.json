@@ -16,7 +16,7 @@
     "patterns": "npm run patterns:download && npm run patterns:install",
     "build": "webpack --mode=development",
     "build:production": "webpack --mode=production",
-    "watch": "webpack serve --mode=development",
+    "start": "webpack serve --mode=development",
     "tsc": "tsc --noEmit",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
