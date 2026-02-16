@@ -9,12 +9,12 @@ export default tseslint.config(
   {
     extends: [
       eslint.configs.recommended,
-      ...tseslint.configs.strict,
-      ...tseslint.configs.stylistic,
+      tseslint.configs.strict,
+      tseslint.configs.stylistic,
       eslintConfigPrettier,
+      eslintPluginLitConfigs["flat/recommended"],
       eslintPluginImportX.flatConfigs.recommended,
       eslintPluginImportX.flatConfigs.typescript,
-      eslintPluginLitConfigs["flat/recommended"],
     ],
     ignores: ["dist/*"],
     languageOptions: {
