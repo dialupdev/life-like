@@ -12,16 +12,20 @@ export class Renderer {
     this._color = color;
   }
 
-  private _drawCell(world_x: number, world_y: number): void {
+  private _drawCell(worldX: number, worldY: number): void {
     const pixelRatio = this._layout.pixelRatio;
     const actualCellSize = this._layout.naturalCellSize * this._layout.zoomScale;
+    const scaledCellSize = pixelRatio * actualCellSize;
 
-    this._context.fillRect(
-      pixelRatio * actualCellSize * world_x + pixelRatio * this._layout.offsetX,
-      pixelRatio * actualCellSize * world_y + pixelRatio * this._layout.offsetY,
-      pixelRatio * actualCellSize,
-      pixelRatio * actualCellSize
-    );
+    const baseX = pixelRatio * this._layout.offsetX;
+    const baseY = pixelRatio * this._layout.offsetY;
+
+    const left = Math.round(scaledCellSize * worldX + baseX);
+    const top = Math.round(scaledCellSize * worldY + baseY);
+    const right = Math.round(scaledCellSize * (worldX + 1) + baseX);
+    const bottom = Math.round(scaledCellSize * (worldY + 1) + baseY);
+
+    this._context.fillRect(left, top, right - left, bottom - top);
   }
 
   private _clear(): void {
