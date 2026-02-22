@@ -1,3 +1,4 @@
+import { makeObservable, observable, action } from "mobx";
 import { Config } from "../core/Config";
 import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
@@ -11,15 +12,19 @@ export class Playback {
   private _elapsedTime!: number;
   private _frameInterval = 1000 / 30;
 
-  public playing = false;
+  @observable public accessor playing = false;
 
   constructor(config: Config, world: World, renderer: Renderer) {
     this._config = config;
     this._world = world;
     this._renderer = renderer;
 
-    this.tickLazy = this.tickLazy.bind(this);
     this._tickRecursive = this._tickRecursive.bind(this);
+    this.pause = this.pause.bind(this);
+    this.togglePlaying = this.togglePlaying.bind(this);
+    this.tickLazy = this.tickLazy.bind(this);
+
+    makeObservable(this);
   }
 
   private _tick(): void {
@@ -47,7 +52,8 @@ export class Playback {
     }
   }
 
-  public play(): void {
+  @action
+  private _play(): void {
     this.playing = true;
 
     this._lastFrameTime = window.performance.now();
@@ -55,8 +61,14 @@ export class Playback {
     this._tickRecursive();
   }
 
+  @action
   public pause(): void {
     this.playing = false;
+  }
+
+  @action
+  public togglePlaying(): void {
+    this.playing ? this.pause() : this._play();
   }
 
   public tickLazy(): void {

@@ -1,9 +1,9 @@
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { PanDirection, ZoomDirection } from "../core/Layout";
+import { Playback } from "../core/Playback";
 import { AppStore } from "../stores/AppStore";
 import { DrawerStore, DrawerMode } from "../stores/DrawerStore";
 import { LayoutStore } from "../stores/LayoutStore";
-import { PlaybackStore } from "../stores/PlaybackStore";
 
 export enum PluginGroup {
   default,
@@ -12,23 +12,23 @@ export enum PluginGroup {
 
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
+  private _playback: Playback;
   private _drawerStore: DrawerStore;
   private _layoutStore: LayoutStore;
-  private _playbackStore: PlaybackStore;
   private _appStore: AppStore;
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
   constructor(
     pluginBuilder: PluginBuilder,
+    playback: Playback,
     drawerStore: DrawerStore,
     layoutStore: LayoutStore,
-    playbackStore: PlaybackStore,
     appStore: AppStore
   ) {
     this._pluginBuilder = pluginBuilder;
+    this._playback = playback;
     this._drawerStore = drawerStore;
     this._layoutStore = layoutStore;
-    this._playbackStore = playbackStore;
     this._appStore = appStore;
 
     this._pluginGroups.set(PluginGroup.default, [
@@ -58,8 +58,8 @@ export class PluginManager {
       new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutStore.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
-      new KeyboardPlugin(" ", this._playbackStore.togglePlaying, { preventDefault: true, stopPropagation: true }), // So that the space bar doesn't click buttons
-      new KeyboardPlugin("t", this._playbackStore.tickLazy),
+      new KeyboardPlugin(" ", this._playback.togglePlaying, { preventDefault: true, stopPropagation: true }), // So that the space bar doesn't click buttons
+      new KeyboardPlugin("t", this._playback.tickLazy),
       new KeyboardPlugin("f", this._layoutStore.zoomToFit),
       new KeyboardPlugin("r", this._appStore.reset),
     ]);

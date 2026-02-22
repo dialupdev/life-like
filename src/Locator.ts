@@ -10,7 +10,6 @@ import { ConfigStore } from "./stores/ConfigStore";
 import { DrawerStore } from "./stores/DrawerStore";
 import { LayoutStore } from "./stores/LayoutStore";
 import { LibraryStore } from "./stores/LibraryStore";
-import { PlaybackStore } from "./stores/PlaybackStore";
 
 export class Locator {
   public config: Config;
@@ -23,7 +22,6 @@ export class Locator {
   public drawerStore: DrawerStore;
   public configStore: ConfigStore;
   public layoutStore: LayoutStore;
-  public playbackStore: PlaybackStore;
   public libraryStore: LibraryStore;
   public appStore: AppStore;
 
@@ -40,8 +38,7 @@ export class Locator {
     this.drawerStore = new DrawerStore();
     this.configStore = new ConfigStore(this.config, this.playback);
     this.layoutStore = new LayoutStore(canvas, this.world, this.layout, this.renderer);
-    this.playbackStore = new PlaybackStore(this.playback);
-    this.libraryStore = new LibraryStore(this.library, this.configStore, this.layoutStore, this.playbackStore);
-    this.appStore = new AppStore(this.world, this.configStore, this.layoutStore, this.playbackStore);
+    this.libraryStore = new LibraryStore(this.playback, this.library, this.configStore, this.layoutStore);
+    this.appStore = new AppStore(this.world, this.playback, this.configStore, this.layoutStore);
   }
 }

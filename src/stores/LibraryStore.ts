@@ -1,27 +1,27 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { ConfigStore } from "./ConfigStore";
 import { LayoutStore } from "./LayoutStore";
-import { PlaybackStore } from "./PlaybackStore";
 import { Rule } from "../core/Config";
 import { Library, Category } from "../core/Library";
+import { Playback } from "../core/Playback";
 
 interface GetResponseTextOptions {
   isGzipped: boolean;
 }
 
 export class LibraryStore {
+  private _playback: Playback;
   private _library: Library;
   private _configStore: ConfigStore;
   private _layoutStore: LayoutStore;
-  private _playbackStore: PlaybackStore;
 
   public categories = observable.array<Category>([]);
 
-  constructor(library: Library, configStore: ConfigStore, layoutStore: LayoutStore, playbackStore: PlaybackStore) {
+  constructor(playback: Playback, library: Library, configStore: ConfigStore, layoutStore: LayoutStore) {
+    this._playback = playback;
     this._library = library;
     this._configStore = configStore;
     this._layoutStore = layoutStore;
-    this._playbackStore = playbackStore;
 
     this.loadPatterns = this.loadPatterns.bind(this);
 
@@ -62,7 +62,7 @@ export class LibraryStore {
   }
 
   public async loadPattern(path: string): Promise<void> {
-    this._playbackStore.pause();
+    this._playback.pause();
     this._configStore.setRule(Rule.life);
 
     try {
