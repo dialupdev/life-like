@@ -2,11 +2,13 @@ import { Layout } from "./Layout";
 import { World } from "./World";
 
 export class Renderer {
+  private _world: World;
   private _layout: Layout;
   private _context: CanvasRenderingContext2D;
   private _color: string;
 
-  constructor(layout: Layout, context: CanvasRenderingContext2D, color: string) {
+  constructor(world: World, layout: Layout, context: CanvasRenderingContext2D, color: string) {
+    this._world = world;
     this._layout = layout;
     this._context = context;
     this._color = color;
@@ -35,11 +37,11 @@ export class Renderer {
     this._context.fillRect(0.0, 0.0, canvasWidth * this._layout.pixelRatio, canvasHeight * this._layout.pixelRatio);
   }
 
-  public update(world: World): void {
+  public update(): void {
     this._clear();
     this._context.fillStyle = this._color;
 
-    world.cells.forEach(cell => {
+    this._world.cells.forEach(cell => {
       this._drawCell(cell.x, cell.y);
     });
   }

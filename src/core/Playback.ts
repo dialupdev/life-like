@@ -29,7 +29,7 @@ export class Playback {
 
   private _tick(): void {
     this._world.tick(this._config);
-    this._renderer.update(this._world);
+    this._renderer.update();
   }
 
   private _tickRecursive(): void {

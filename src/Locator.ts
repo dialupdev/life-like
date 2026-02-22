@@ -31,7 +31,7 @@ export class Locator {
     this.config = new Config();
     this.world = new World();
     this.layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
-    this.renderer = new Renderer(this.layout, context, "#A76FDE");
+    this.renderer = new Renderer(this.world, this.layout, context, "#A76FDE");
     this.playback = new Playback(this.config, this.world, this.renderer);
     this.library = new Library(this.world);
 
