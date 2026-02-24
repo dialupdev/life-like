@@ -1,27 +1,27 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
 import { ConfigStore } from "./ConfigStore";
-import { LayoutStore } from "./LayoutStore";
 import { Rule } from "../core/Config";
 import { Library, Category } from "../core/Library";
 import { Playback } from "../core/Playback";
+import { Renderer } from "../core/Renderer";
 
 interface GetResponseTextOptions {
   isGzipped: boolean;
 }
 
 export class LibraryStore {
+  private _renderer: Renderer;
   private _playback: Playback;
   private _library: Library;
   private _configStore: ConfigStore;
-  private _layoutStore: LayoutStore;
 
   public categories = observable.array<Category>([]);
 
-  constructor(playback: Playback, library: Library, configStore: ConfigStore, layoutStore: LayoutStore) {
+  constructor(renderer: Renderer, playback: Playback, library: Library, configStore: ConfigStore) {
+    this._renderer = renderer;
     this._playback = playback;
     this._library = library;
     this._configStore = configStore;
-    this._layoutStore = layoutStore;
 
     this.loadPatterns = this.loadPatterns.bind(this);
 
@@ -72,7 +72,7 @@ export class LibraryStore {
 
       this._library.loadPattern(patternString);
 
-      this._layoutStore.zoomToFit();
+      this._renderer.zoomToFit();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

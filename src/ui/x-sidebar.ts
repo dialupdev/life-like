@@ -6,7 +6,7 @@ import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
 import { SIDEBAR_WIDTH } from "../Constants";
-import { ZoomDirection } from "../core/Layout";
+import { ZoomDirection } from "../core/Renderer";
 import { Locator } from "../Locator";
 import { DrawerMode } from "../stores/DrawerStore";
 import "@spectrum-web-components/action-button/sp-action-button.js";
@@ -111,26 +111,31 @@ class Sidebar extends MobxLitElement {
     const value = (e.target as Menu).value;
 
     if (value === "in") {
-      this.locator.layoutStore.zoomByStep(ZoomDirection.in);
+      this.locator.renderer.zoomByStep(ZoomDirection.in);
       return;
     }
 
     if (value === "out") {
-      this.locator.layoutStore.zoomByStep(ZoomDirection.out);
+      this.locator.renderer.zoomByStep(ZoomDirection.out);
       return;
     }
 
     if (value === "fit") {
-      this.locator.layoutStore.zoomToFit();
+      this.locator.renderer.zoomToFit();
       return;
     }
 
     const scale = parseFloat(value);
-    this.locator.layoutStore.zoomToScale(scale);
+    this.locator.renderer.zoomToScale(scale);
+  }
+
+  private _truncateZoomScale(scale: number): number {
+    // Multiply by 100 and truncate number to two decimal places for nicer UI
+    return Math.round((scale + Number.EPSILON) * 100);
   }
 
   private _fit(): void {
-    this.locator.layoutStore.zoomToFit();
+    this.locator.renderer.zoomToFit();
   }
 
   private _reset(): void {
@@ -178,7 +183,7 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger>
               <sp-action-button slot="trigger" class="zoom-button">
                 <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
-                ${this.locator.layoutStore.zoomScale}%
+                ${this._truncateZoomScale(this.locator.renderer.zoomScale)}%
               </sp-action-button>
               <sp-popover slot="click-content" direction="bottom" class="zoom-menu">
                 <sp-menu @change=${this._zoomToScale}>

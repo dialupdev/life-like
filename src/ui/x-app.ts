@@ -48,6 +48,7 @@ class App extends MobxLitElement {
       const pluginBuilder = new PluginBuilder(canvas);
       const pluginManager = new PluginManager(
         pluginBuilder,
+        this._locator.renderer,
         this._locator.playback,
         this._locator.drawerStore,
         this._locator.layoutStore,

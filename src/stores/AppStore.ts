@@ -1,20 +1,20 @@
 import { makeObservable, action } from "mobx";
 import { ConfigStore } from "./ConfigStore";
-import { LayoutStore } from "./LayoutStore";
 import { Playback } from "../core/Playback";
+import { Renderer } from "../core/Renderer";
 import { World } from "../core/World";
 
 export class AppStore {
   private _world: World;
-  private _configStore: ConfigStore;
-  private _layoutStore: LayoutStore;
+  private _renderer: Renderer;
   private _playback: Playback;
+  private _configStore: ConfigStore;
 
-  constructor(world: World, playback: Playback, configStore: ConfigStore, layoutStore: LayoutStore) {
+  constructor(world: World, renderer: Renderer, playback: Playback, configStore: ConfigStore) {
     this._world = world;
+    this._renderer = renderer;
     this._playback = playback;
     this._configStore = configStore;
-    this._layoutStore = layoutStore;
 
     this.reset = this.reset.bind(this);
 
@@ -27,6 +27,6 @@ export class AppStore {
   public reset(): void {
     this._playback.pause();
     this._world.randomize(this._configStore.fieldSize, this._configStore.averageDensity);
-    this._layoutStore.zoomToFit();
+    this._renderer.zoomToFit();
   }
 }

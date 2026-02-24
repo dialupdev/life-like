@@ -1,6 +1,4 @@
-import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "./Constants";
 import { Config } from "./core/Config";
-import { Layout } from "./core/Layout";
 import { Library } from "./core/Library";
 import { Playback } from "./core/Playback";
 import { Renderer } from "./core/Renderer";
@@ -14,7 +12,6 @@ import { LibraryStore } from "./stores/LibraryStore";
 export class Locator {
   public config: Config;
   public world: World;
-  public layout: Layout;
   public renderer: Renderer;
   public playback: Playback;
   public library: Library;
@@ -30,15 +27,14 @@ export class Locator {
 
     this.config = new Config();
     this.world = new World();
-    this.layout = new Layout(canvas, PIXEL_RATIO, NATURAL_CELL_SIZE);
-    this.renderer = new Renderer(this.world, this.layout, context, "#A76FDE");
+    this.renderer = new Renderer(canvas, context, this.world, "#A76FDE");
     this.playback = new Playback(this.config, this.world, this.renderer);
     this.library = new Library(this.world);
 
     this.drawerStore = new DrawerStore();
     this.configStore = new ConfigStore(this.config, this.playback);
-    this.layoutStore = new LayoutStore(canvas, this.world, this.layout, this.renderer);
-    this.libraryStore = new LibraryStore(this.playback, this.library, this.configStore, this.layoutStore);
-    this.appStore = new AppStore(this.world, this.playback, this.configStore, this.layoutStore);
+    this.layoutStore = new LayoutStore(canvas, this.renderer);
+    this.libraryStore = new LibraryStore(this.renderer, this.playback, this.library, this.configStore);
+    this.appStore = new AppStore(this.world, this.renderer, this.playback, this.configStore);
   }
 }

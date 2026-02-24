@@ -1,6 +1,7 @@
+import { SIDEBAR_WIDTH } from "../Constants";
 import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
-import { PanDirection, ZoomDirection } from "../core/Layout";
 import { Playback } from "../core/Playback";
+import { Renderer, PanDirection, ZoomDirection } from "../core/Renderer";
 import { AppStore } from "../stores/AppStore";
 import { DrawerStore, DrawerMode } from "../stores/DrawerStore";
 import { LayoutStore } from "../stores/LayoutStore";
@@ -12,6 +13,7 @@ export enum PluginGroup {
 
 export class PluginManager {
   private _pluginBuilder: PluginBuilder;
+  private _renderer: Renderer;
   private _playback: Playback;
   private _drawerStore: DrawerStore;
   private _layoutStore: LayoutStore;
@@ -20,12 +22,14 @@ export class PluginManager {
 
   constructor(
     pluginBuilder: PluginBuilder,
+    renderer: Renderer,
     playback: Playback,
     drawerStore: DrawerStore,
     layoutStore: LayoutStore,
     appStore: AppStore
   ) {
     this._pluginBuilder = pluginBuilder;
+    this._renderer = renderer;
     this._playback = playback;
     this._drawerStore = drawerStore;
     this._layoutStore = layoutStore;
@@ -33,20 +37,28 @@ export class PluginManager {
 
     this._pluginGroups.set(PluginGroup.default, [
       new ResizePlugin(this._layoutStore.fitCanvasToWindow),
-      new WheelPlugin(this._layoutStore.zoomAt),
-      new KeyboardPlugin("mod+=", () => this._layoutStore.zoomByStep(ZoomDirection.in), { preventDefault: true }),
-      new KeyboardPlugin("mod+-", () => this._layoutStore.zoomByStep(ZoomDirection.out), { preventDefault: true }),
-      new KeyboardPlugin("mod+1", () => this._layoutStore.zoomToScale(1), { preventDefault: true }),
-      new KeyboardPlugin("mod+2", () => this._layoutStore.zoomToScale(2), { preventDefault: true }),
-      new KeyboardPlugin("mod+0", this._layoutStore.zoomToFit),
-      new KeyboardPlugin("ArrowUp", () => this._layoutStore.panInDirection(PanDirection.up), { preventDefault: true }),
-      new KeyboardPlugin("ArrowRight", () => this._layoutStore.panInDirection(PanDirection.right), {
+      new WheelPlugin((delta: number, windowX: number, windowY: number) => {
+        // Zoom point relative to world offset
+        const canvasX = windowX - SIDEBAR_WIDTH;
+        const canvasY = windowY;
+
+        const normalizedDelta = -delta;
+
+        this._renderer.zoomAt(normalizedDelta, canvasX, canvasY);
+      }),
+      new KeyboardPlugin("mod+=", () => this._renderer.zoomByStep(ZoomDirection.in), { preventDefault: true }),
+      new KeyboardPlugin("mod+-", () => this._renderer.zoomByStep(ZoomDirection.out), { preventDefault: true }),
+      new KeyboardPlugin("mod+1", () => this._renderer.zoomToScale(1), { preventDefault: true }),
+      new KeyboardPlugin("mod+2", () => this._renderer.zoomToScale(2), { preventDefault: true }),
+      new KeyboardPlugin("mod+0", this._renderer.zoomToFit),
+      new KeyboardPlugin("ArrowUp", () => this._renderer.panInDirection(PanDirection.up), { preventDefault: true }),
+      new KeyboardPlugin("ArrowRight", () => this._renderer.panInDirection(PanDirection.right), {
         preventDefault: true,
       }),
-      new KeyboardPlugin("ArrowDown", () => this._layoutStore.panInDirection(PanDirection.down), {
+      new KeyboardPlugin("ArrowDown", () => this._renderer.panInDirection(PanDirection.down), {
         preventDefault: true,
       }),
-      new KeyboardPlugin("ArrowLeft", () => this._layoutStore.panInDirection(PanDirection.left), {
+      new KeyboardPlugin("ArrowLeft", () => this._renderer.panInDirection(PanDirection.left), {
         preventDefault: true,
       }),
       new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
@@ -55,12 +67,12 @@ export class PluginManager {
     ]);
 
     this._pluginGroups.set(PluginGroup.playback, [
-      new DragPlugin((_x, _y, deltaX, deltaY) => this._layoutStore.translateOffset(deltaX, deltaY), {
+      new DragPlugin((_x, _y, deltaX, deltaY) => this._renderer.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
       new KeyboardPlugin(" ", this._playback.togglePlaying, { preventDefault: true, stopPropagation: true }), // So that the space bar doesn't click buttons
       new KeyboardPlugin("t", this._playback.tickLazy),
-      new KeyboardPlugin("f", this._layoutStore.zoomToFit),
+      new KeyboardPlugin("f", this._renderer.zoomToFit),
       new KeyboardPlugin("r", this._appStore.reset),
     ]);
   }
