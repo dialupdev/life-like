@@ -14,25 +14,17 @@ npm run patterns:install
 
 ## Architecture
 
-### Model
+### Core modules
 
-- Only stores data
+- Classes essential to building and rendering the world
+- May contain state for these purposes
 - May be reactive
 
-### System
+### Stores
 
-- Has access to Models
-- Defines a `tick()` method to operate on Models
-
-### Controller
-
-- Has access to Models and Systems
-
-### Plugin (?)
-
-- Has access to a single Model and Controller
-- Defines an `activate()` method to bind Controller behaviors
-- Optional: Defines a `deactivate()` method to unbind Controller behaviors
+- Contain state used to render the UI
+- May be reactive
+- May modify state in core modules using public APIs
 
 ## Versions
 
