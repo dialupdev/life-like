@@ -28,6 +28,7 @@ class PatternLibrary extends MobxLitElement {
   private _loadPattern(e: CustomEvent): void {
     const path = (e.target! as HTMLElement).getAttribute("data-path")!;
 
+    this.locator.playback.pause();
     void this.locator.libraryStore.loadPattern(path);
   }
 

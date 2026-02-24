@@ -1,26 +1,34 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { ConfigStore } from "./ConfigStore";
 import { Rule } from "../core/Config";
-import { Library, Category } from "../core/Library";
-import { Playback } from "../core/Playback";
 import { Renderer } from "../core/Renderer";
+import { World } from "../core/World";
+import { parseRlePattern } from "../utils/PatternUtils";
+
+export interface Pattern {
+  name: string;
+  path: string;
+}
+
+export interface Category {
+  name: string;
+  patterns: Pattern[];
+}
 
 interface GetResponseTextOptions {
   isGzipped: boolean;
 }
 
 export class LibraryStore {
+  private _world: World;
   private _renderer: Renderer;
-  private _playback: Playback;
-  private _library: Library;
   private _configStore: ConfigStore;
 
   public categories = observable.array<Category>([]);
 
-  constructor(renderer: Renderer, playback: Playback, library: Library, configStore: ConfigStore) {
+  constructor(world: World, renderer: Renderer, configStore: ConfigStore) {
+    this._world = world;
     this._renderer = renderer;
-    this._playback = playback;
-    this._library = library;
     this._configStore = configStore;
 
     this.loadPatterns = this.loadPatterns.bind(this);
@@ -61,16 +69,20 @@ export class LibraryStore {
     }
   }
 
+  // Only supports RLE format for now
   public async loadPattern(path: string): Promise<void> {
-    this._playback.pause();
     this._configStore.setRule(Rule.life);
 
     try {
       const isGzipped = path.endsWith(".gz");
       const response = await fetch(path);
-      const patternString = await this._getResponseText(response, { isGzipped });
 
-      this._library.loadPattern(patternString);
+      let patternString = await this._getResponseText(response, { isGzipped });
+      patternString = patternString.replace(/\r/g, "");
+
+      this._world.clear();
+
+      parseRlePattern(patternString, this._world.addCell.bind(this._world));
 
       this._renderer.zoomToFit();
     } catch (error) {

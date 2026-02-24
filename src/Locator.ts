@@ -1,5 +1,4 @@
 import { Config } from "./core/Config";
-import { Library } from "./core/Library";
 import { Playback } from "./core/Playback";
 import { Renderer } from "./core/Renderer";
 import { World } from "./core/World";
@@ -14,7 +13,6 @@ export class Locator {
   public world: World;
   public renderer: Renderer;
   public playback: Playback;
-  public library: Library;
 
   public drawerStore: DrawerStore;
   public configStore: ConfigStore;
@@ -29,12 +27,11 @@ export class Locator {
     this.world = new World();
     this.renderer = new Renderer(canvas, context, this.world, "#A76FDE");
     this.playback = new Playback(this.config, this.world, this.renderer);
-    this.library = new Library(this.world);
 
     this.drawerStore = new DrawerStore();
     this.configStore = new ConfigStore(this.config, this.playback);
     this.layoutStore = new LayoutStore(canvas, this.renderer);
-    this.libraryStore = new LibraryStore(this.renderer, this.playback, this.library, this.configStore);
+    this.libraryStore = new LibraryStore(this.world, this.renderer, this.configStore);
     this.appStore = new AppStore(this.world, this.renderer, this.playback, this.configStore);
   }
 }
