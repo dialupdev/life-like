@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { ConfigStore } from "./ConfigStore";
 import { Rule } from "../core/Config";
 import { Library, Category } from "../core/Library";
@@ -25,7 +25,7 @@ export class LibraryStore {
 
     this.loadPatterns = this.loadPatterns.bind(this);
 
-    makeAutoObservable(this);
+    makeObservable(this);
   }
 
   private async _fetchPatternLibrary(): Promise<Maybe<Category[]>> {
