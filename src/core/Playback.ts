@@ -1,7 +1,8 @@
 import { makeObservable, observable, action } from "mobx";
-import { Config } from "../core/Config";
-import { Renderer } from "../core/Renderer";
-import { World } from "../core/World";
+import { Config } from "./Config";
+import { Renderer } from "./Renderer";
+import { World } from "./World";
+import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 
 export class Playback {
   private _config: Config;
@@ -12,6 +13,7 @@ export class Playback {
   private _elapsedTime!: number;
   private _frameInterval = 1000 / 30;
 
+  @observable public accessor frameRate = 30;
   @observable public accessor playing = false;
 
   constructor(config: Config, world: World, renderer: Renderer) {
@@ -23,6 +25,8 @@ export class Playback {
     this.pause = this.pause.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
     this.tickLazy = this.tickLazy.bind(this);
+
+    getUserConfig("frameRate", (value: string) => this.setFrameRate(parseInt(value, 10)));
 
     makeObservable(this);
   }
@@ -81,5 +85,9 @@ export class Playback {
 
   public setFrameRate(frameRate: number): void {
     this._frameInterval = 1000 / frameRate;
+
+    this.frameRate = frameRate;
+
+    setUserConfig("frameRate", frameRate.toString());
   }
 }

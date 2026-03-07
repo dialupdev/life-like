@@ -29,7 +29,7 @@ export class Locator {
     this.playback = new Playback(this.config, this.world, this.renderer);
 
     this.drawerStore = new DrawerStore();
-    this.configStore = new ConfigStore(this.config, this.playback);
+    this.configStore = new ConfigStore(this.config);
     this.layoutStore = new LayoutStore(canvas, this.renderer);
     this.libraryStore = new LibraryStore(this.world, this.renderer, this.configStore);
     this.appStore = new AppStore(this.world, this.renderer, this.playback, this.configStore);

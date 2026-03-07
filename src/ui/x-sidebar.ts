@@ -104,7 +104,7 @@ class Sidebar extends MobxLitElement {
 
   private _setFrameRate(e: Event): void {
     const frameRate = (e.target as Slider).value;
-    this.locator.configStore.setFrameRate(frameRate);
+    this.locator.playback.setFrameRate(frameRate);
   }
 
   private _zoomToScale(e: Event): void {
@@ -172,7 +172,7 @@ class Sidebar extends MobxLitElement {
             max="60"
             step="1"
             variant="filled"
-            value=${this.locator.configStore.frameRate}
+            value=${this.locator.playback.frameRate}
             @input="${this._setFrameRate}"
           >
           </sp-slider>
