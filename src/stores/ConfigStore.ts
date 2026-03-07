@@ -1,5 +1,6 @@
 import { makeObservable, observable, action } from "mobx";
-import { Config, Rule, RuleKey } from "../core/Config";
+import { Config } from "../core/Config";
+import { Rule } from "../core/Rules";
 
 export class ConfigStore {
   private _config: Config;
@@ -35,17 +36,6 @@ export class ConfigStore {
     localStorage.setItem("averageDensity", averageDensity.toString());
 
     this.averageDensity = averageDensity;
-  }
-
-  public getAllRules(): [string, string][] {
-    const ruleKeys = Object.keys(Rule) as RuleKey[];
-
-    return ruleKeys.map(ruleKey => {
-      const ruleName = this._config.ruleNameByKey(ruleKey);
-      const ruleValue = Rule[ruleKey];
-
-      return [ruleName, ruleValue];
-    });
   }
 
   @action

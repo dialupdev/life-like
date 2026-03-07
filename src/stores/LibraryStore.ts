@@ -1,7 +1,7 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { ConfigStore } from "./ConfigStore";
-import { Rule } from "../core/Config";
 import { Renderer } from "../core/Renderer";
+import { Rule } from "../core/Rules";
 import { World } from "../core/World";
 import { parseRlePattern } from "../utils/PatternUtils";
 

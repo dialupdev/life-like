@@ -3,8 +3,9 @@ import { Picker } from "@spectrum-web-components/picker";
 import { Slider } from "@spectrum-web-components/slider";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Rule } from "../core/Config";
+import { Rule } from "../core/Rules";
 import { Locator } from "../Locator";
+import { getAllRules } from "../utils/RuleUtils";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
@@ -68,7 +69,7 @@ class Settings extends MobxLitElement {
 
       <sp-field-label for="rule">Rule</sp-field-label>
       <sp-picker id="rule" value=${this.locator.configStore.rule} @change=${this._setRule}>
-        ${this.locator.configStore.getAllRules().map(([name, value]) => {
+        ${getAllRules().map(([name, value]) => {
           return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
         })}
       </sp-picker>
