@@ -83,6 +83,7 @@ export class Playback {
     this._tick();
   }
 
+  @action
   public setFrameRate(frameRate: number): void {
     this._frameInterval = 1000 / frameRate;
 
