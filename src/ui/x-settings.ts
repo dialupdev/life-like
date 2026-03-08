@@ -36,7 +36,7 @@ class Settings extends MobxLitElement {
 
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value as Rule;
-    this.locator.configStore.setRule(rule);
+    this.locator.world.setRule(rule);
   }
 
   protected render(): TemplateResult {
@@ -68,7 +68,7 @@ class Settings extends MobxLitElement {
       </sp-slider>
 
       <sp-field-label for="rule">Rule</sp-field-label>
-      <sp-picker id="rule" value=${this.locator.configStore.rule} @change=${this._setRule}>
+      <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule}>
         ${getAllRules().map(([name, value]) => {
           return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
         })}

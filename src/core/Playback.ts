@@ -1,11 +1,9 @@
 import { makeObservable, observable, action } from "mobx";
-import { Config } from "./Config";
 import { Renderer } from "./Renderer";
 import { World } from "./World";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 
 export class Playback {
-  private _config: Config;
   private _world: World;
   private _renderer: Renderer;
   private _lastFrameTime!: number;
@@ -16,8 +14,7 @@ export class Playback {
   @observable public accessor frameRate = 30;
   @observable public accessor playing = false;
 
-  constructor(config: Config, world: World, renderer: Renderer) {
-    this._config = config;
+  constructor(world: World, renderer: Renderer) {
     this._world = world;
     this._renderer = renderer;
 
@@ -32,7 +29,7 @@ export class Playback {
   }
 
   private _tick(): void {
-    this._world.tick(this._config);
+    this._world.tick();
     this._renderer.update();
   }
 

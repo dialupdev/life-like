@@ -1,5 +1,4 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { ConfigStore } from "./ConfigStore";
 import { Renderer } from "../core/Renderer";
 import { Rule } from "../core/Rules";
 import { World } from "../core/World";
@@ -22,14 +21,12 @@ interface GetResponseTextOptions {
 export class LibraryStore {
   private _world: World;
   private _renderer: Renderer;
-  private _configStore: ConfigStore;
 
   public categories = observable.array<Category>([]);
 
-  constructor(world: World, renderer: Renderer, configStore: ConfigStore) {
+  constructor(world: World, renderer: Renderer) {
     this._world = world;
     this._renderer = renderer;
-    this._configStore = configStore;
 
     this.loadPatterns = this.loadPatterns.bind(this);
 
@@ -71,7 +68,7 @@ export class LibraryStore {
 
   // Only supports RLE format for now
   public async loadPattern(path: string): Promise<void> {
-    this._configStore.setRule(Rule.life);
+    this._world.setRule(Rule.life);
 
     try {
       const isGzipped = path.endsWith(".gz");

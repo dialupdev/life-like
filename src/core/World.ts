@@ -1,7 +1,13 @@
+import { makeObservable, observable, action } from "mobx";
 import { Cell } from "./Cell";
-import { Config } from "./Config";
+import { Rule } from "./Rules";
+import { parseRule } from "../utils/RuleUtils";
+import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 
 export class World {
+  private _birthSet!: Set<number>;
+  private _survivalSet!: Set<number>;
+
   // If JS had a way to hash entities for value comparison within a
   // map/set (rather than using reference equality), we would use
   // Cell as the Map key which would remove the need for Cell.fromHash().
@@ -11,6 +17,14 @@ export class World {
   // Same here - ideally we would use a Set for cells instead of a Map.
   // Instead, the map key is the Szudzik pair for each cell's (x ,y).
   public cells = new Map<number, Cell>();
+
+  @observable public accessor rule = Rule.life;
+
+  constructor() {
+    getUserConfig("rule", (value: string) => this.setRule(value as Rule));
+
+    makeObservable(this);
+  }
 
   private _spawn(cell: Cell): void {
     for (const neighborHash of cell.generateNeighborHashes()) {
@@ -44,6 +58,15 @@ export class World {
     }
   }
 
+  @action
+  public setRule(rule: Rule): void {
+    [this._birthSet, this._survivalSet] = parseRule(rule);
+
+    this.rule = rule;
+
+    setUserConfig("rule", rule);
+  }
+
   public addCell(worldX: number, worldY: number): void {
     const cell = new Cell(worldX, worldY);
     this._spawn(cell);
@@ -73,7 +96,7 @@ export class World {
     }
   }
 
-  public tick(config: Config): void {
+  public tick(): void {
     const cellsToKill = new Set<Cell>();
     const cellsToSpawn = new Set<Cell>();
 
@@ -81,14 +104,14 @@ export class World {
     for (const [hash, cell] of this.cells) {
       const neighborCount = this._neighborCounts.get(hash);
 
-      if (!neighborCount || !config.survivalSet.has(neighborCount)) {
+      if (!neighborCount || !this._survivalSet.has(neighborCount)) {
         cellsToKill.add(cell);
       }
     }
 
     // Mark cells to spawn
     for (const [hash, count] of this._neighborCounts) {
-      if (config.birthSet.has(count) && !this.cells.has(hash)) {
+      if (this._birthSet.has(count) && !this.cells.has(hash)) {
         const cell = Cell.fromHash(hash);
         cellsToSpawn.add(cell);
       }
