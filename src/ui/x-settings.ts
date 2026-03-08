@@ -24,14 +24,14 @@ class Settings extends MobxLitElement {
   @property()
   public accessor locator!: Locator;
 
-  private _setFieldSize(e: Event): void {
+  private _setRandomizeFieldSize(e: Event): void {
     const fieldSize = (e.target as Slider).value;
-    this.locator.configStore.setFieldSize(fieldSize);
+    this.locator.world.setRandomizeFieldSize(fieldSize);
   }
 
-  private _setAverageDensity(e: Event): void {
+  private _setRandomizeAverageDensity(e: Event): void {
     const averageDensity = (e.target as Slider).value;
-    this.locator.configStore.setAverageDensity(averageDensity);
+    this.locator.world.setRandomizeAverageDensity(averageDensity);
   }
 
   private _setRule(e: Event): void {
@@ -41,29 +41,29 @@ class Settings extends MobxLitElement {
 
   protected render(): TemplateResult {
     return html`
-      <sp-field-label for="field-size">Field size (when randomized)</sp-field-label>
+      <sp-field-label for="randomize-field-size">Field size (when randomized)</sp-field-label>
       <sp-slider
-        id="field-size"
+        id="randomize-field-size"
         editable
         min="4"
         max="400"
         step="1"
         variant="filled"
-        value=${this.locator.configStore.fieldSize}
-        @input="${this._setFieldSize}"
+        value=${this.locator.world.randomizeFieldSize}
+        @input="${this._setRandomizeFieldSize}"
       >
       </sp-slider>
 
-      <sp-field-label for="average-density">Average density (when randomized)</sp-field-label>
+      <sp-field-label for="randomize-average-density">Average density (when randomized)</sp-field-label>
       <sp-slider
-        id="average-density"
+        id="randomize-average-density"
         editable
         min="0.01"
         max="1"
         step="0.01"
         variant="filled"
-        value=${this.locator.configStore.averageDensity}
-        @input="${this._setAverageDensity}"
+        value=${this.locator.world.randomizeAverageDensity}
+        @input="${this._setRandomizeAverageDensity}"
       >
       </sp-slider>
 

@@ -19,9 +19,13 @@ export class World {
   public cells = new Map<number, Cell>();
 
   @observable public accessor rule = Rule.life;
+  @observable public accessor randomizeFieldSize = 50;
+  @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
     getUserConfig("rule", (value: string) => this.setRule(value as Rule));
+    getUserConfig("randomizeFieldSize", (value: string) => this.setRandomizeFieldSize(parseInt(value, 10)));
+    getUserConfig("randomizeAverageDensity", (value: string) => this.setRandomizeAverageDensity(parseFloat(value)));
 
     makeObservable(this);
   }
@@ -67,6 +71,20 @@ export class World {
     setUserConfig("rule", rule);
   }
 
+  @action
+  public setRandomizeFieldSize(randomizeFieldSize: number): void {
+    this.randomizeFieldSize = randomizeFieldSize;
+
+    setUserConfig("randomizeFieldSize", randomizeFieldSize.toString());
+  }
+
+  @action
+  public setRandomizeAverageDensity(randomizeAverageDensity: number): void {
+    this.randomizeAverageDensity = randomizeAverageDensity;
+
+    setUserConfig("randomizeAverageDensity", randomizeAverageDensity.toString());
+  }
+
   public addCell(worldX: number, worldY: number): void {
     const cell = new Cell(worldX, worldY);
     this._spawn(cell);
@@ -82,14 +100,14 @@ export class World {
     this._neighborCounts.clear();
   }
 
-  public randomize(fieldSize: number, averageDensity: number): void {
+  public randomize(): void {
     this.clear();
 
-    const halfFieldSize = fieldSize / 2;
+    const halfFieldSize = this.randomizeFieldSize / 2;
 
     for (let x = -halfFieldSize; x < halfFieldSize; x++) {
       for (let y = -halfFieldSize; y < halfFieldSize; y++) {
-        if (Math.random() < averageDensity) {
+        if (Math.random() < this.randomizeAverageDensity) {
           this.addCell(x, y);
         }
       }
