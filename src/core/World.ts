@@ -1,7 +1,7 @@
 import { makeObservable, observable, action } from "mobx";
 import { Cell } from "./Cell";
 import { Rule } from "./Rules";
-import { parseRule } from "../utils/RuleUtils";
+import { parseRule, getRuleKeyByValue, RuleKey } from "../utils/RuleUtils";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 
 export class World {
@@ -23,7 +23,7 @@ export class World {
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
-    getUserConfig("rule", (value: string) => this.setRule(value as Rule));
+    getUserConfig("rule", (value: string) => this.setRule(Rule[value as RuleKey]));
     getUserConfig("randomizeFieldSize", (value: string) => this.setRandomizeFieldSize(parseInt(value, 10)));
     getUserConfig("randomizeAverageDensity", (value: string) => this.setRandomizeAverageDensity(parseFloat(value)));
 
@@ -68,7 +68,7 @@ export class World {
 
     this.rule = rule;
 
-    setUserConfig("rule", rule);
+    setUserConfig("rule", getRuleKeyByValue(rule));
   }
 
   @action

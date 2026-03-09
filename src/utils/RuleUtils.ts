@@ -36,7 +36,13 @@ function _convertToTitlecase(key: RuleKey): string {
   return splitWords.charAt(0).toUpperCase() + splitWords.slice(1);
 }
 
-export function ruleNameByKey(key: RuleKey): string {
+export function getRuleKeyByValue(value: Rule): RuleKey {
+  const ruleKeys = Object.keys(Rule) as RuleKey[];
+
+  return ruleKeys.find(key => Rule[key] === value)!;
+}
+
+function getRuleNameByKey(key: RuleKey): string {
   const ruleValue = Rule[key];
 
   if (stylizedRuleNames[ruleValue]) {
@@ -50,7 +56,7 @@ export function getAllRules(): [string, string][] {
   const ruleKeys = Object.keys(Rule) as RuleKey[];
 
   return ruleKeys.map(ruleKey => {
-    const ruleName = ruleNameByKey(ruleKey);
+    const ruleName = getRuleNameByKey(ruleKey);
     const ruleValue = Rule[ruleKey];
 
     return [ruleName, ruleValue];
