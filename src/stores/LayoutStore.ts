@@ -26,6 +26,6 @@ export class LayoutStore {
     this._canvas.style.width = `${width}px`;
     this._canvas.style.height = `${height}px`;
 
-    this._renderer.update(); // make this lazy
+    this._renderer.update();
   }
 }

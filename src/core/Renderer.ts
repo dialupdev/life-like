@@ -21,6 +21,8 @@ export enum ZoomDirection {
   out,
 }
 
+type ShouldSkipUpdate = () => boolean;
+
 export class Renderer {
   private _canvas: HTMLCanvasElement;
   private _context: CanvasRenderingContext2D;
@@ -29,6 +31,8 @@ export class Renderer {
 
   public offsetX = 0.0; // Not including pixel ratio
   public offsetY = 0.0; // Not including pixel ratio
+
+  public shouldSkipUpdate: ShouldSkipUpdate | undefined;
 
   @observable public accessor zoomScale = 1.0; // 100%
 
@@ -99,7 +103,7 @@ export class Renderer {
     this.offsetX += deltaX;
     this.offsetY += deltaY;
 
-    this.update(); // make this lazy
+    this.update();
   }
 
   public panInDirection(direction: PanDirection): void {
@@ -141,7 +145,7 @@ export class Renderer {
 
     this.zoomScale = newZoomScale;
 
-    this.update(); // make this lazy
+    this.update();
   }
 
   @action
@@ -173,7 +177,7 @@ export class Renderer {
 
     this.zoomScale = scaleCandidate;
 
-    this.update(); // make this lazy
+    this.update();
   }
 
   @action
@@ -195,7 +199,7 @@ export class Renderer {
 
     this.zoomScale = newZoomScale;
 
-    this.update(); // make this lazy
+    this.update();
   }
 
   @action
@@ -234,15 +238,23 @@ export class Renderer {
 
     this.zoomScale = newZoomScale;
 
-    this.update(); // make this lazy
+    this.update();
   }
 
-  public update(): void {
+  public forceUpdate(): void {
     this._clear();
     this._context.fillStyle = this._color;
 
     this._world.cells.forEach(cell => {
       this._drawCell(cell.x, cell.y);
     });
+  }
+
+  public update(): void {
+    if (this.shouldSkipUpdate?.()) {
+      return;
+    }
+
+    this.forceUpdate();
   }
 }

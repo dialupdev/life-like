@@ -26,12 +26,14 @@ export class Playback {
 
     getUserConfig("frameRate", (value: string) => parseInt(value, 10), this.setFrameRate);
 
+    this._renderer.shouldSkipUpdate = () => this.playing;
+
     makeObservable(this);
   }
 
   private _tick(): void {
     this._world.tick();
-    this._renderer.update();
+    this._renderer.forceUpdate();
   }
 
   private _tickRecursive(): void {
