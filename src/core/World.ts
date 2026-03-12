@@ -23,6 +23,8 @@ export class World {
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
+    [this._birthSet, this._survivalSet] = parseRule(this.rule);
+
     this.setRule = this.setRule.bind(this);
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
     this.setRandomizeAverageDensity = this.setRandomizeAverageDensity.bind(this);
