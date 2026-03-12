@@ -22,8 +22,9 @@ export class Playback {
     this.pause = this.pause.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
     this.tickLazy = this.tickLazy.bind(this);
+    this.setFrameRate = this.setFrameRate.bind(this);
 
-    getUserConfig("frameRate", (value: string) => this.setFrameRate(parseInt(value, 10)));
+    getUserConfig("frameRate", (value: string) => parseInt(value, 10), this.setFrameRate);
 
     makeObservable(this);
   }

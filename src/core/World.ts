@@ -23,9 +23,13 @@ export class World {
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
-    getUserConfig("rule", (value: string) => this.setRule(Rule[value as RuleKey]));
-    getUserConfig("randomizeFieldSize", (value: string) => this.setRandomizeFieldSize(parseInt(value, 10)));
-    getUserConfig("randomizeAverageDensity", (value: string) => this.setRandomizeAverageDensity(parseFloat(value)));
+    this.setRule = this.setRule.bind(this);
+    this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
+    this.setRandomizeAverageDensity = this.setRandomizeAverageDensity.bind(this);
+
+    getUserConfig("rule", (value: string) => Rule[value as RuleKey], this.setRule);
+    getUserConfig("randomizeFieldSize", (value: string) => parseInt(value, 10), this.setRandomizeFieldSize);
+    getUserConfig("randomizeAverageDensity", (value: string) => parseFloat(value), this.setRandomizeAverageDensity);
 
     makeObservable(this);
   }
