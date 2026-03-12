@@ -19,7 +19,7 @@ export class World {
   public cells = new Map<number, Cell>();
 
   @observable public accessor rule = Rule.life;
-  @observable public accessor randomizeFieldSize = 50;
+  @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
