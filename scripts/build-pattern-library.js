@@ -26,7 +26,7 @@ console.log(`Installing ${patternFiles.length} patterns...`);
 const patterns = [];
 
 for (const file of patternFiles) {
-  const categoryName = file.path.split(path.sep).slice(-1)[0];
+  const categoryName = file.parentPath.split(path.sep).slice(-1)[0];
 
   let category = patterns.find(category => category.name === categoryName);
 
