@@ -26,7 +26,9 @@ export class Playback {
 
     getUserConfig("frameRate", (value: string) => parseInt(value, 10), this.setFrameRate);
 
-    this._renderer.shouldSkipUpdate = () => this.playing;
+    // Around 30 fps is when we can safely skip ad hoc renderer updates
+    // without the experience feeling laggy
+    this._renderer.shouldSkipUpdate = () => this.playing && this.frameRate > 30;
 
     makeObservable(this);
   }
