@@ -169,7 +169,7 @@ class Sidebar extends MobxLitElement {
         <x-control-group label="Frame rate">
           <sp-slider
             min="1"
-            max="60"
+            max="120"
             step="1"
             variant="filled"
             value=${this.locator.playback.frameRate}
