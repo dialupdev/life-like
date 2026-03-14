@@ -1,10 +1,10 @@
 import { SIDEBAR_WIDTH } from "../Constants";
-import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 import { Playback } from "../core/Playback";
 import { Renderer, PanDirection, ZoomDirection } from "../core/Renderer";
 import { AppStore } from "../stores/AppStore";
 import { DrawerStore, DrawerMode } from "../stores/DrawerStore";
 import { LayoutStore } from "../stores/LayoutStore";
+import { PluginBuilder, ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin, Plugin } from "./PluginBuilder";
 
 export enum PluginGroup {
   default,

@@ -2,7 +2,9 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
+
 import { Locator } from "../Locator";
+
 import "@spectrum-web-components/accordion/sp-accordion.js";
 import "@spectrum-web-components/accordion/sp-accordion-item.js";
 import "@spectrum-web-components/action-button/sp-action-button.js";

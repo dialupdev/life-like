@@ -1,6 +1,7 @@
 import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
+
 import "@spectrum-web-components/divider/sp-divider.js";
 
 @customElement("x-control-group")

@@ -1,7 +1,8 @@
 import { makeObservable, observable, action } from "mobx";
+
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../Constants";
-import { World } from "./World";
 import { clamp } from "../utils/MathUtils";
+import { World } from "./World";
 
 const ZOOM_INTENSITY = 0.01;
 const MIN_ZOOM_SCALE = 0.1; // 10%

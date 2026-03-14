@@ -1,4 +1,5 @@
 import { configure } from "mobx";
+
 import "./ui/x-app";
 
 configure({

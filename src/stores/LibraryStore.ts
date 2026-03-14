@@ -1,4 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
+
 import { Renderer } from "../core/Renderer";
 import { Rule } from "../core/Rules";
 import { World } from "../core/World";

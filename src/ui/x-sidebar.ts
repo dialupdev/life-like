@@ -5,19 +5,21 @@ import { TemplateResult, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
+
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ZoomDirection } from "../core/Renderer";
 import { Locator } from "../Locator";
 import { DrawerMode } from "../stores/DrawerStore";
+
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-data.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-pause-circle.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-play-circle.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-rewind-circle.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-step-forward-circle.js";

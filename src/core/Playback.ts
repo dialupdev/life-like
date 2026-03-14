@@ -1,7 +1,8 @@
 import { makeObservable, observable, action } from "mobx";
+
+import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 import { Renderer } from "./Renderer";
 import { World } from "./World";
-import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
 
 export class Playback {
   private _world: World;
