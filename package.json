@@ -1,15 +1,11 @@
 {
   "name": "life-like",
   "version": "0.1.0",
-  "description": "Life-like",
   "private": true,
-  "author": "Steve Davis <steve@dialup.dev>",
+  "description": "Life-like",
   "license": "MIT",
+  "author": "Steve Davis <steve@dialup.dev>",
   "type": "module",
-  "engines": {
-    "node": "^24",
-    "npm": "^11"
-  },
   "scripts": {
     "patterns:download": "bash ./scripts/download-patterns.sh",
     "patterns:install": "bash ./scripts/install-patterns.sh",
@@ -60,5 +56,9 @@
     "webpack": "^5.105.2",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.3"
+  },
+  "engines": {
+    "node": "^24",
+    "npm": "^11"
   }
 }
