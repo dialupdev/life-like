@@ -28,7 +28,13 @@ class ControlGroup extends LitElement {
     return html`
       ${when(this.label, () => html`<p>${this.label}</p>`)}
       <slot></slot>
-      ${when(!this.noDivider, () => html`<sp-divider size="s"></sp-divider>`)}
+      ${when(
+        !this.noDivider,
+        () =>
+          html`
+            <sp-divider size="s"></sp-divider>
+          `
+      )}
     `;
   }
 }

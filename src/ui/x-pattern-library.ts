@@ -52,7 +52,10 @@ class PatternLibrary extends MobxLitElement {
                 </sp-accordion-item>`
             )}
           </sp-accordion>`,
-        () => html`<sp-progress-bar label="Patterns loading..." indeterminate></sp-progress-bar>`
+        () =>
+          html`
+            <sp-progress-bar label="Patterns loading..." indeterminate></sp-progress-bar>
+          `
       )}
     `;
   }

@@ -1,5 +1,4 @@
 import eslint from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginImportX from "eslint-plugin-import-x";
 import { configs as eslintPluginLitConfigs } from "eslint-plugin-lit";
 import globals from "globals";
@@ -11,7 +10,6 @@ export default tseslint.config(
       eslint.configs.recommended,
       tseslint.configs.strict,
       tseslint.configs.stylistic,
-      eslintConfigPrettier,
       eslintPluginLitConfigs["flat/recommended"],
       eslintPluginImportX.flatConfigs.recommended,
       eslintPluginImportX.flatConfigs.typescript,

@@ -152,9 +152,15 @@ class Sidebar extends MobxLitElement {
         <x-control-group label="Playback">
           <sp-action-group size="m">
             <sp-action-button @click="${this._togglePlaying}">
-              ${this.locator.playback.playing
-                ? html`<sp-icon-pause-circle slot="icon"></sp-icon-pause-circle>`
-                : html`<sp-icon-play-circle slot="icon"></sp-icon-play-circle>`}
+              ${
+                this.locator.playback.playing
+                  ? html`
+                      <sp-icon-pause-circle slot="icon"></sp-icon-pause-circle>
+                    `
+                  : html`
+                      <sp-icon-play-circle slot="icon"></sp-icon-play-circle>
+                    `
+              }
             </sp-action-button>
             <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
               <sp-icon-step-forward-circle slot="icon"></sp-icon-step-forward-circle>
