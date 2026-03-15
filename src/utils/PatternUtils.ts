@@ -19,7 +19,7 @@ export function parseRlePattern(patternString: string, addCell: AddCellCallback)
 
     // Comment
     if (line.match(commentRe)) {
-      // eslint-disable-next-line
+      // oxlint-disable-next-line eslint/no-console
       console.log("comment", line);
 
       continue;

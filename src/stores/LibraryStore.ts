@@ -40,7 +40,7 @@ export class LibraryStore {
 
       return response.json();
     } catch (error) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line eslint/no-console
       console.error(error);
     }
   }
@@ -49,7 +49,7 @@ export class LibraryStore {
     if (options?.isGzipped) {
       const blob = await response.blob();
       const compressedReadableStream = blob.stream().pipeThrough(new DecompressionStream("gzip"));
-      const decompressedResponse = await new Response(compressedReadableStream);
+      const decompressedResponse = new Response(compressedReadableStream);
 
       return decompressedResponse.text();
     } else {
@@ -59,7 +59,7 @@ export class LibraryStore {
 
   public loadPatterns(): void {
     if (this.categories.length === 0) {
-      this._fetchPatternLibrary().then(categories => {
+      void this._fetchPatternLibrary().then(categories => {
         runInAction(() => {
           this.categories.replace(categories!);
         });
@@ -84,7 +84,7 @@ export class LibraryStore {
 
       this._renderer.zoomToFit();
     } catch (error) {
-      // eslint-disable-next-line no-console
+      // oxlint-disable-next-line eslint/no-console
       console.error(error);
     }
   }

@@ -44,7 +44,7 @@ class App extends MobxLitElement {
   constructor() {
     super();
 
-    this._canvasPromise.then(canvas => {
+    void this._canvasPromise.then(canvas => {
       this._locator = new Locator(canvas);
 
       const pluginBuilder = new PluginBuilder(canvas);
