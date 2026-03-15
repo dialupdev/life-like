@@ -17,4 +17,4 @@ mkdir -p "$PATTERNS_DIR"
 unzip -n -q $PATTERNS_SOURCE_FILE -d $LIBRARY_DIR
 cp -a "$PATTERNS_SOURCE_DIR/." "$PATTERNS_DIR"
 
-node ./scripts/build-pattern-library.js $PUBLIC_DIR $PATTERNS_DIR
+node ./scripts/build-pattern-library.ts $PUBLIC_DIR $PATTERNS_DIR

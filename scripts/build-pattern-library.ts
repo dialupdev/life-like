@@ -7,7 +7,17 @@ const PATTERNS_FILENAME = path.join(PUBLIC_DIR, "patterns.json");
 
 const SUPPORTED_FILE_EXTENSIONS = [".lif"];
 
-function getFileExtension(filename) {
+interface Pattern {
+  name: string;
+  path: string;
+}
+
+interface Category {
+  name: string;
+  patterns: Pattern[];
+}
+
+function getFileExtension(filename: string): string {
   let extension = path.extname(filename);
 
   if (extension === ".gz") {
@@ -23,12 +33,12 @@ const patternFiles = fs
 
 console.log(`Installing ${patternFiles.length} patterns...`);
 
-const patterns = [];
+const categories: Category[] = [];
 
 for (const file of patternFiles) {
   const categoryName = file.parentPath.split(path.sep).slice(-1)[0];
 
-  let category = patterns.find(category => category.name === categoryName);
+  let category: Category | undefined = categories.find(category => category.name === categoryName);
 
   if (!category) {
     category = {
@@ -36,7 +46,7 @@ for (const file of patternFiles) {
       patterns: [],
     };
 
-    patterns.push(category);
+    categories.push(category);
   }
 
   category.patterns.push({
@@ -46,7 +56,7 @@ for (const file of patternFiles) {
 }
 
 try {
-  fs.writeFileSync(PATTERNS_FILENAME, JSON.stringify(patterns));
+  fs.writeFileSync(PATTERNS_FILENAME, JSON.stringify(categories));
 
   console.log("Done!");
 } catch (e) {
