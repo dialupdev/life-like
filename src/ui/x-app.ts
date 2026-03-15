@@ -1,5 +1,5 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { TemplateResult, html, nothing, css } from "lit";
+import { html, css } from "lit";
 import { customElement, state, queryAsync } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
@@ -7,6 +7,8 @@ import { SIDEBAR_WIDTH } from "../Constants";
 import { Locator } from "../Locator";
 import { PluginBuilder } from "../plugins/PluginBuilder";
 import { PluginManager, PluginGroup } from "../plugins/PluginManager";
+
+import type { TemplateResult, nothing } from "lit";
 
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/theme-light.js";

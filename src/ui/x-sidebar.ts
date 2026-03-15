@@ -1,15 +1,17 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { Menu } from "@spectrum-web-components/menu";
-import { Slider } from "@spectrum-web-components/slider";
-import { TemplateResult, html, css } from "lit";
+import { html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { SIDEBAR_WIDTH } from "../Constants";
 import { ZoomDirection } from "../core/Renderer";
-import { Locator } from "../Locator";
 import { DrawerMode } from "../stores/DrawerStore";
+
+import type { Locator } from "../Locator";
+import type { Menu } from "@spectrum-web-components/menu";
+import type { Slider } from "@spectrum-web-components/slider";
+import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";

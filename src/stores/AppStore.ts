@@ -1,8 +1,8 @@
 import { makeObservable, action } from "mobx";
 
-import { Playback } from "../core/Playback";
-import { Renderer } from "../core/Renderer";
-import { World } from "../core/World";
+import type { Playback } from "../core/Playback";
+import type { Renderer } from "../core/Renderer";
+import type { World } from "../core/World";
 
 export class AppStore {
   private _world: World;

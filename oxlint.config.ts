@@ -17,6 +17,7 @@ export default defineConfig({
         allowTernary: true,
       },
     ],
+    "typescript/consistent-type-imports": "error",
     "typescript/explicit-function-return-type": [
       "error",
       {

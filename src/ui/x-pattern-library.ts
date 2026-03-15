@@ -1,9 +1,10 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { TemplateResult, html, css } from "lit";
+import { html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
-import { Locator } from "../Locator";
+import type { Locator } from "../Locator";
+import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/accordion/sp-accordion.js";
 import "@spectrum-web-components/accordion/sp-accordion-item.js";

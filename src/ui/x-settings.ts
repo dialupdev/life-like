@@ -1,12 +1,14 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
-import { Picker } from "@spectrum-web-components/picker";
-import { Slider } from "@spectrum-web-components/slider";
-import { TemplateResult, html, css } from "lit";
+import { html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Rule } from "../core/Rules";
-import { Locator } from "../Locator";
 import { getAllRules } from "../utils/RuleUtils";
+
+import type { Rule } from "../core/Rules";
+import type { Locator } from "../Locator";
+import type { Picker } from "@spectrum-web-components/picker";
+import type { Slider } from "@spectrum-web-components/slider";
+import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";

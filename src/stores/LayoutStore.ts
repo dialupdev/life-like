@@ -1,5 +1,6 @@
 import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../Constants";
-import { Renderer } from "../core/Renderer";
+
+import type { Renderer } from "../core/Renderer";
 
 export class LayoutStore {
   private _canvas: HTMLCanvasElement;
