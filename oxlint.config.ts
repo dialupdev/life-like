@@ -25,7 +25,7 @@ export default defineConfig({
       },
     ],
     // This rule is not yet available in oxlint.
-    // https://oxc.rs/docs/guide/usage/linter/rules.html?sort=name&dir=asc
+    // https://github.com/oxc-project/oxc/issues/2180
     // "typescript/explicit-member-accessibility": ["error", { overrides: { constructors: "off" } }],
     "typescript/unbound-method": "off",
   },
