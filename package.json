@@ -10,9 +10,10 @@
     "patterns:download": "bash ./scripts/download-patterns.sh",
     "patterns:install": "bash ./scripts/install-patterns.sh",
     "patterns": "npm run patterns:download && npm run patterns:install",
-    "build": "webpack --mode=development",
-    "build:production": "webpack --mode=production",
-    "start": "webpack serve --mode=development",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:production": "vite build --mode=production",
     "tsc": "tsc --noEmit",
     "fmt": "oxfmt --check",
     "fmt:fix": "oxfmt",
@@ -39,19 +40,16 @@
     "mobx": "^6.15.0"
   },
   "devDependencies": {
+    "@rollup/plugin-swc": "^0.4.0",
+    "@swc/core": "^1.15.18",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^25.5.0",
-    "css-loader": "^7.1.4",
-    "html-webpack-plugin": "^5.6.6",
     "oxfmt": "^0.40.0",
     "oxlint": "^1.55.0",
     "oxlint-tsgolint": "^0.16.0",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.4",
     "typescript": "^5.7.2",
-    "webpack": "^5.105.2",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.3"
+    "vite": "^8.0.0",
+    "vite-plugin-html": "^3.2.2"
   },
   "engines": {
     "node": "^24",
