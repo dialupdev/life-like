@@ -190,7 +190,7 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Zoom">
           <sp-action-group size="m">
-            <overlay-trigger>
+            <overlay-trigger triggered-by="click">
               <sp-action-button slot="trigger" class="zoom-button">
                 <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
                 ${this._truncateZoomScale(this.locator.renderer.zoomScale)}%
