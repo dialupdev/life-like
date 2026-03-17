@@ -1,4 +1,4 @@
-import { Rule } from "../core/Rules";
+import { Rule } from "../core/Rules.ts";
 
 export type RuleKey = keyof typeof Rule;
 

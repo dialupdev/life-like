@@ -1,4 +1,4 @@
-import { szudzikPairSigned, szudzikUnpairSigned } from "../utils/MathUtils";
+import { szudzikPairSigned, szudzikUnpairSigned } from "../utils/MathUtils.ts";
 
 export class Cell {
   public x: number;

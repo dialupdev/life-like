@@ -4,11 +4,11 @@ import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
 
-import { SIDEBAR_WIDTH } from "../Constants";
-import { ZoomDirection } from "../core/Renderer";
-import { DrawerMode } from "../stores/DrawerStore";
+import { SIDEBAR_WIDTH } from "../Constants.ts";
+import { ZoomDirection } from "../core/Renderer.ts";
+import { DrawerMode } from "../stores/DrawerStore.ts";
 
-import type { Locator } from "../Locator";
+import type { Locator } from "../Locator.ts";
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Slider } from "@spectrum-web-components/slider";
 import type { TemplateResult } from "lit";
@@ -31,9 +31,9 @@ import "@spectrum-web-components/menu/sp-menu.js";
 import "@spectrum-web-components/overlay/overlay-trigger.js";
 import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
-import "./x-control-group";
-import "./x-pattern-library";
-import "./x-settings";
+import "./x-control-group.ts";
+import "./x-pattern-library.ts";
+import "./x-settings.ts";
 
 type DrawerCase = [DrawerMode, () => TemplateResult];
 

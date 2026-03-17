@@ -1,11 +1,11 @@
 import { makeObservable, observable, action } from "mobx";
 
-import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils";
-import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils";
-import { Cell } from "./Cell";
-import { Rule } from "./Rules";
+import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils.ts";
+import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
+import { Cell } from "./Cell.ts";
+import { Rule } from "./Rules.ts";
 
-import type { RuleKey } from "../utils/RuleUtils";
+import type { RuleKey } from "../utils/RuleUtils.ts";
 
 export class World {
   private _birthSet!: Set<number>;

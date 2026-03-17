@@ -1,10 +1,10 @@
 import { makeObservable, observable, runInAction } from "mobx";
 
-import { Rule } from "../core/Rules";
-import { parseRlePattern } from "../utils/PatternUtils";
+import { Rule } from "../core/Rules.ts";
+import { parseRlePattern } from "../utils/PatternUtils.ts";
 
-import type { Renderer } from "../core/Renderer";
-import type { World } from "../core/World";
+import type { Renderer } from "../core/Renderer.ts";
+import type { World } from "../core/World.ts";
 
 export interface Pattern {
   name: string;

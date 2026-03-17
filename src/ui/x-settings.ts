@@ -2,10 +2,10 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { getAllRules } from "../utils/RuleUtils";
+import { getAllRules } from "../utils/RuleUtils.ts";
 
-import type { Rule } from "../core/Rules";
-import type { Locator } from "../Locator";
+import type { Rule } from "../core/Rules.ts";
+import type { Locator } from "../Locator.ts";
 import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
 import type { TemplateResult } from "lit";

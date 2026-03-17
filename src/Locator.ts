@@ -1,10 +1,10 @@
-import { Playback } from "./core/Playback";
-import { Renderer } from "./core/Renderer";
-import { World } from "./core/World";
-import { AppStore } from "./stores/AppStore";
-import { DrawerStore } from "./stores/DrawerStore";
-import { LayoutStore } from "./stores/LayoutStore";
-import { LibraryStore } from "./stores/LibraryStore";
+import { Playback } from "./core/Playback.ts";
+import { Renderer } from "./core/Renderer.ts";
+import { World } from "./core/World.ts";
+import { AppStore } from "./stores/AppStore.ts";
+import { DrawerStore } from "./stores/DrawerStore.ts";
+import { LayoutStore } from "./stores/LayoutStore.ts";
+import { LibraryStore } from "./stores/LibraryStore.ts";
 
 export class Locator {
   public world: World;

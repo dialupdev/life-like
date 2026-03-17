@@ -1,6 +1,6 @@
 import { configure } from "mobx";
 
-import "./ui/x-app";
+import "./ui/x-app.ts";
 
 configure({
   enforceActions: "always",

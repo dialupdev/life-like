@@ -3,17 +3,17 @@ import { html, css } from "lit";
 import { customElement, state, queryAsync } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
-import { SIDEBAR_WIDTH } from "../Constants";
-import { Locator } from "../Locator";
-import { PluginBuilder } from "../plugins/PluginBuilder";
-import { PluginManager, PluginGroup } from "../plugins/PluginManager";
+import { SIDEBAR_WIDTH } from "../Constants.ts";
+import { Locator } from "../Locator.ts";
+import { PluginBuilder } from "../plugins/PluginBuilder.ts";
+import { PluginManager, PluginGroup } from "../plugins/PluginManager.ts";
 
 import type { TemplateResult, nothing } from "lit";
 
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/theme-light.js";
 import "@spectrum-web-components/theme/scale-medium.js";
-import "./x-sidebar";
+import "./x-sidebar.ts";
 
 @customElement("x-app")
 class App extends MobxLitElement {

@@ -1,14 +1,14 @@
-import { SIDEBAR_WIDTH } from "../Constants";
-import { PanDirection, ZoomDirection } from "../core/Renderer";
-import { DrawerMode } from "../stores/DrawerStore";
-import { ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin } from "./PluginBuilder";
+import { SIDEBAR_WIDTH } from "../Constants.ts";
+import { PanDirection, ZoomDirection } from "../core/Renderer.ts";
+import { DrawerMode } from "../stores/DrawerStore.ts";
+import { ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin } from "./PluginBuilder.ts";
 
-import type { Playback } from "../core/Playback";
-import type { Renderer } from "../core/Renderer";
-import type { AppStore } from "../stores/AppStore";
-import type { DrawerStore } from "../stores/DrawerStore";
-import type { LayoutStore } from "../stores/LayoutStore";
-import type { PluginBuilder, Plugin } from "./PluginBuilder";
+import type { Playback } from "../core/Playback.ts";
+import type { Renderer } from "../core/Renderer.ts";
+import type { AppStore } from "../stores/AppStore.ts";
+import type { DrawerStore } from "../stores/DrawerStore.ts";
+import type { LayoutStore } from "../stores/LayoutStore.ts";
+import type { PluginBuilder, Plugin } from "./PluginBuilder.ts";
 
 export enum PluginGroup {
   default,
