@@ -77,7 +77,8 @@ export class PluginManager {
       new KeyboardPlugin(" ", this._playback.togglePlaying, { preventDefault: true, stopPropagation: true }), // So that the space bar doesn't click buttons
       new KeyboardPlugin("t", this._playback.tickLazy),
       new KeyboardPlugin("f", this._renderer.zoomToFit),
-      new KeyboardPlugin("r", this._appStore.randomize),
+      new KeyboardPlugin("w", this._appStore.randomize),
+      new KeyboardPlugin("r", this._appStore.rewind),
     ]);
   }
 
