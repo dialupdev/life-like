@@ -36,6 +36,7 @@ import "@spectrum-web-components/overlay/overlay-trigger.js";
 import "@spectrum-web-components/picker/sp-picker.js";
 import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
+import "@spectrum-web-components/tooltip/sp-tooltip.js";
 import "./x-control-group.ts";
 import "./x-pattern-library.ts";
 import "./x-settings.ts";
@@ -169,42 +170,59 @@ class Sidebar extends MobxLitElement {
       <div class="controls">
         <x-control-group label="World">
           <sp-action-group size="m">
-            <sp-action-button @click="${this._randomize}" label="Randomize">
-              <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
-              Randomize
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button slot="trigger" @click="${this._randomize}" label="Randomize">
+                <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
+                Randomize
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Randomize (w)</sp-tooltip>
+            </overlay-trigger>
 
-            <sp-action-button
-              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
-              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
-            >
-              <sp-icon-settings slot="icon"></sp-icon-settings>
-              Settings
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button
+                slot="trigger"
+                @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
+                ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
+                label="Settings"
+              >
+                <sp-icon-settings slot="icon"></sp-icon-settings>
+                Settings
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open settings (s)</sp-tooltip>
+            </overlay-trigger>
           </sp-action-group>
         </x-control-group>
 
         <x-control-group label="Playback">
           <sp-action-group size="m">
-            <sp-action-button @click="${this._rewind}" label="Rewind">
-              <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button slot="trigger" @click="${this._rewind}" label="Rewind">
+                <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Rewind (r)</sp-tooltip>
+            </overlay-trigger>
 
-            <sp-action-button @click="${this._togglePlaying}" label="Toggle playback">
-              ${
-                this.locator.playback.playing
-                  ? html`
-                      <sp-icon-pause slot="icon"></sp-icon-pause>
-                    `
-                  : html`
-                      <sp-icon-play slot="icon"></sp-icon-play>
-                    `
-              }
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button slot="trigger" @click="${this._togglePlaying}" label="Toggle playback">
+                ${
+                  this.locator.playback.playing
+                    ? html`
+                        <sp-icon-pause slot="icon"></sp-icon-pause>
+                      `
+                    : html`
+                        <sp-icon-play slot="icon"></sp-icon-play>
+                      `
+                }
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle playback (space)</sp-tooltip>
+            </overlay-trigger>
 
-            <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
-              <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button slot="trigger" @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
+                <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Step forward (t)</sp-tooltip>
+            </overlay-trigger>
           </sp-action-group>
         </x-control-group>
 
@@ -223,7 +241,7 @@ class Sidebar extends MobxLitElement {
         <x-control-group label="Zoom">
           <sp-action-group size="m">
             <overlay-trigger triggered-by="click">
-              <sp-action-button slot="trigger" class="zoom-button">
+              <sp-action-button slot="trigger" class="zoom-button" label="Zoom">
                 <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
                 ${this._truncateZoomScale(this.locator.renderer.zoomScale)}%
               </sp-action-button>
@@ -260,16 +278,19 @@ class Sidebar extends MobxLitElement {
               </sp-popover>
             </overlay-trigger>
 
-            <sp-action-button @click="${this._fit}">
-              <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
-              Fit
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button slot="trigger" @click="${this._fit}" label="Fit">
+                <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
+                Fit
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Zoom to fit (f)</sp-tooltip>
+            </overlay-trigger>
           </sp-action-group>
         </x-control-group>
 
         <x-control-group label="Rule">
           <sp-action-group size="m">
-            <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule}>
+            <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule} label="Rule">
               ${getAllRules().map(([name, value]) => {
                 return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
               })}
@@ -279,13 +300,18 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Patterns" noDivider>
           <sp-action-group size="m">
-            <sp-action-button
-              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
-              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.patternLibrary}
-            >
-              <sp-icon-data slot="icon"></sp-icon-data>
-              Library
-            </sp-action-button>
+            <overlay-trigger triggered-by="hover">
+              <sp-action-button
+                slot="trigger"
+                @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
+                ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.patternLibrary}
+                label="Library"
+              >
+                <sp-icon-data slot="icon"></sp-icon-data>
+                Library
+              </sp-action-button>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open pattern library (l)</sp-tooltip>
+            </overlay-trigger>
           </sp-action-group>
         </x-control-group>
       </div>
