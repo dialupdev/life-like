@@ -11,8 +11,8 @@ import { PluginManager, PluginGroup } from "../plugins/PluginManager.ts";
 import type { TemplateResult, nothing } from "lit";
 
 import "@spectrum-web-components/theme/sp-theme.js";
-import "@spectrum-web-components/theme/theme-light.js";
-import "@spectrum-web-components/theme/scale-medium.js";
+import "@spectrum-web-components/theme/spectrum-two/scale-medium.js";
+import "@spectrum-web-components/theme/spectrum-two/theme-light.js";
 import "./x-sidebar.ts";
 
 @customElement("x-app")
@@ -68,7 +68,7 @@ class App extends MobxLitElement {
 
   protected render(): TemplateResult | typeof nothing {
     return html`
-      <sp-theme system="spectrum" color="light" scale="medium">
+      <sp-theme system="spectrum-two" scale="medium" color="light">
         <canvas></canvas>
 
         ${when(this._locator, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}

@@ -16,15 +16,15 @@ import type { TemplateResult } from "lit";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-double-left.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-data.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-pause-circle.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-play-circle.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-rewind-circle.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-pause.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-play.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-step-forward-circle.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-step-forward.js";
 import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
 import "@spectrum-web-components/menu/sp-menu.js";
@@ -155,22 +155,22 @@ class Sidebar extends MobxLitElement {
       <div class="controls">
         <x-control-group label="Playback">
           <sp-action-group size="m">
-            <sp-action-button @click="${this._togglePlaying}">
+            <sp-action-button @click="${this._togglePlaying}" label="Toggle playback">
               ${
                 this.locator.playback.playing
                   ? html`
-                      <sp-icon-pause-circle slot="icon"></sp-icon-pause-circle>
+                      <sp-icon-pause slot="icon"></sp-icon-pause>
                     `
                   : html`
-                      <sp-icon-play-circle slot="icon"></sp-icon-play-circle>
+                      <sp-icon-play slot="icon"></sp-icon-play>
                     `
               }
             </sp-action-button>
             <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
-              <sp-icon-step-forward-circle slot="icon"></sp-icon-step-forward-circle>
+              <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
             </sp-action-button>
-            <sp-action-button @click="${this._reset}">
-              <sp-icon-rewind-circle slot="icon"></sp-icon-rewind-circle>
+            <sp-action-button @click="${this._reset}" label="Reset">
+              <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
               Reset
             </sp-action-button>
           </sp-action-group>
