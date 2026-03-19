@@ -120,9 +120,9 @@ class Sidebar extends MobxLitElement {
     this.locator.playback.tickLazy();
   }
 
-  private _setFrameRate(e: Event): void {
-    const frameRate = (e.target as Slider).value;
-    this.locator.playback.setFrameRate(frameRate);
+  private _setFrameRateLimit(e: Event): void {
+    const frameRateLimit = (e.target as Slider).value;
+    this.locator.playback.setFrameRateLimit(frameRateLimit);
   }
 
   private _zoomToScale(e: Event): void {
@@ -226,14 +226,14 @@ class Sidebar extends MobxLitElement {
           </sp-action-group>
         </x-control-group>
 
-        <x-control-group label="Frame rate">
+        <x-control-group label="Frame rate limit">
           <sp-slider
             min="1"
             max="120"
             step="1"
             variant="filled"
-            value=${this.locator.playback.frameRate}
-            @input="${this._setFrameRate}"
+            value=${this.locator.playback.frameRateLimit}
+            @input="${this._setFrameRateLimit}"
           >
           </sp-slider>
         </x-control-group>

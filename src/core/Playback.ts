@@ -13,7 +13,7 @@ export class Playback {
   private _elapsedTime!: number;
   private _frameInterval = 1000 / 30;
 
-  @observable public accessor frameRate = 30;
+  @observable public accessor frameRateLimit = 30;
   @observable public accessor playing = false;
 
   constructor(world: World, renderer: Renderer) {
@@ -24,13 +24,13 @@ export class Playback {
     this.pause = this.pause.bind(this);
     this.togglePlaying = this.togglePlaying.bind(this);
     this.tickLazy = this.tickLazy.bind(this);
-    this.setFrameRate = this.setFrameRate.bind(this);
+    this.setFrameRateLimit = this.setFrameRateLimit.bind(this);
 
-    getUserConfig("frameRate", (value: string) => parseInt(value, 10), this.setFrameRate);
+    getUserConfig("frameRateLimit", (value: string) => parseInt(value, 10), this.setFrameRateLimit);
 
     // Around 30 fps is when we can safely skip ad hoc renderer updates
     // without the experience feeling laggy
-    this._renderer.shouldSkipUpdate = () => this.playing && this.frameRate > 30;
+    this._renderer.shouldSkipUpdate = () => this.playing && this.frameRateLimit > 30;
 
     makeObservable(this);
   }
@@ -88,11 +88,11 @@ export class Playback {
   }
 
   @action
-  public setFrameRate(frameRate: number): void {
-    this._frameInterval = 1000 / frameRate;
+  public setFrameRateLimit(frameRateLimit: number): void {
+    this._frameInterval = 1000 / frameRateLimit;
 
-    this.frameRate = frameRate;
+    this.frameRateLimit = frameRateLimit;
 
-    setUserConfig("frameRate", frameRate.toString());
+    setUserConfig("frameRateLimit", frameRateLimit.toString());
   }
 }
