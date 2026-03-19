@@ -19,6 +19,7 @@ import type { TemplateResult } from "lit";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-double-left.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-data.js";
@@ -106,6 +107,10 @@ class Sidebar extends MobxLitElement {
     this.locator.appStore.randomize();
   }
 
+  private _rewind(): void {
+    this.locator.appStore.rewind();
+  }
+
   private _togglePlaying(): void {
     this.locator.playback.togglePlaying();
   }
@@ -181,6 +186,10 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Playback">
           <sp-action-group size="m">
+            <sp-action-button @click="${this._rewind}" label="Rewind">
+              <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
+            </sp-action-button>
+
             <sp-action-button @click="${this._togglePlaying}" label="Toggle playback">
               ${
                 this.locator.playback.playing
@@ -192,6 +201,7 @@ class Sidebar extends MobxLitElement {
                     `
               }
             </sp-action-button>
+
             <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
               <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
             </sp-action-button>
@@ -249,7 +259,7 @@ class Sidebar extends MobxLitElement {
                 </sp-menu>
               </sp-popover>
             </overlay-trigger>
-            
+
             <sp-action-button @click="${this._fit}">
               <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
               Fit

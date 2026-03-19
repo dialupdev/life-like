@@ -83,6 +83,8 @@ export class LibraryStore {
 
       parseRlePattern(patternString, this._world.addCell.bind(this._world));
 
+      this._world.saveStartState();
+
       this._renderer.zoomToFit();
     } catch (error) {
       // oxlint-disable-next-line eslint/no-console

@@ -1,5 +1,3 @@
-import { makeObservable, action } from "mobx";
-
 import type { Playback } from "../core/Playback.ts";
 import type { Renderer } from "../core/Renderer.ts";
 import type { World } from "../core/World.ts";
@@ -15,16 +13,20 @@ export class AppStore {
     this._playback = playback;
 
     this.randomize = this.randomize.bind(this);
-
-    makeObservable(this);
+    this.rewind = this.rewind.bind(this);
 
     this.randomize();
   }
 
-  @action
   public randomize(): void {
     this._playback.pause();
     this._world.randomize();
+    this._renderer.zoomToFit();
+  }
+
+  public rewind(): void {
+    this._playback.pause();
+    this._world.rewind();
     this._renderer.zoomToFit();
   }
 }

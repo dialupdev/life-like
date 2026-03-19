@@ -11,6 +11,9 @@ export class World {
   private _birthSet!: Set<number>;
   private _survivalSet!: Set<number>;
 
+  private _neighborCountsStartState = new Map<number, number>();
+  private _cellsStartState = new Map<number, Cell>();
+
   // If JS had a way to hash entities for value comparison within a
   // map/set (rather than using reference equality), we would use
   // Cell as the Map key which would remove the need for Cell.fromHash().
@@ -121,6 +124,18 @@ export class World {
         }
       }
     }
+
+    this.saveStartState();
+  }
+
+  public saveStartState(): void {
+    this._neighborCountsStartState = new Map(this._neighborCounts);
+    this._cellsStartState = new Map(this.cells);
+  }
+
+  public rewind(): void {
+    this._neighborCounts = new Map(this._neighborCountsStartState);
+    this.cells = new Map(this._cellsStartState);
   }
 
   public tick(): void {
