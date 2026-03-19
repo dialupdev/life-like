@@ -162,6 +162,23 @@ class Sidebar extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <div class="controls">
+        <x-control-group label="World">
+          <sp-action-group size="m">
+            <sp-action-button @click="${this._randomize}" label="Randomize">
+              <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
+              Randomize
+            </sp-action-button>
+
+            <sp-action-button
+              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
+              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
+            >
+              <sp-icon-settings slot="icon"></sp-icon-settings>
+              Settings
+            </sp-action-button>
+          </sp-action-group>
+        </x-control-group>
+
         <x-control-group label="Playback">
           <sp-action-group size="m">
             <sp-action-button @click="${this._togglePlaying}" label="Toggle playback">
@@ -177,10 +194,6 @@ class Sidebar extends MobxLitElement {
             </sp-action-button>
             <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
               <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
-            </sp-action-button>
-            <sp-action-button @click="${this._randomize}" label="Randomize">
-              <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
-              Randomize
             </sp-action-button>
           </sp-action-group>
         </x-control-group>
@@ -236,6 +249,7 @@ class Sidebar extends MobxLitElement {
                 </sp-menu>
               </sp-popover>
             </overlay-trigger>
+            
             <sp-action-button @click="${this._fit}">
               <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
               Fit
@@ -250,18 +264,6 @@ class Sidebar extends MobxLitElement {
                 return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
               })}
             </sp-picker>
-          </sp-action-group>
-        </x-control-group>
-
-        <x-control-group label="Config">
-          <sp-action-group size="m">
-            <sp-action-button
-              @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
-              ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
-            >
-              <sp-icon-settings slot="icon"></sp-icon-settings>
-              Settings
-            </sp-action-button>
           </sp-action-group>
         </x-control-group>
 
