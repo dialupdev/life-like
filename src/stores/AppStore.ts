@@ -14,15 +14,15 @@ export class AppStore {
     this._renderer = renderer;
     this._playback = playback;
 
-    this.reset = this.reset.bind(this);
+    this.randomize = this.randomize.bind(this);
 
     makeObservable(this);
 
-    this.reset();
+    this.randomize();
   }
 
   @action
-  public reset(): void {
+  public randomize(): void {
     this._playback.pause();
     this._world.randomize();
     this._renderer.zoomToFit();

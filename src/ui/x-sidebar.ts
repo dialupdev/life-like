@@ -16,11 +16,11 @@ import type { TemplateResult } from "lit";
 import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-double-left.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-data.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-magic-wand.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-pause.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-play.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
@@ -142,8 +142,8 @@ class Sidebar extends MobxLitElement {
     this.locator.renderer.zoomToFit();
   }
 
-  private _reset(): void {
-    this.locator.appStore.reset();
+  private _randomize(): void {
+    this.locator.appStore.randomize();
   }
 
   private _closeDrawer(): void {
@@ -169,9 +169,9 @@ class Sidebar extends MobxLitElement {
             <sp-action-button @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
               <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
             </sp-action-button>
-            <sp-action-button @click="${this._reset}" label="Reset">
-              <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
-              Reset
+            <sp-action-button @click="${this._randomize}" label="Randomize">
+              <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
+              Randomize
             </sp-action-button>
           </sp-action-group>
         </x-control-group>
