@@ -7,9 +7,12 @@ import { classMap } from "lit/directives/class-map.js";
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { ZoomDirection } from "../core/Renderer.ts";
 import { DrawerMode } from "../stores/DrawerStore.ts";
+import { getAllRules } from "../utils/RuleUtils.ts";
 
+import type { Rule } from "../core/Rules.ts";
 import type { Locator } from "../Locator.ts";
 import type { Menu } from "@spectrum-web-components/menu";
+import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
 import type { TemplateResult } from "lit";
 
@@ -29,6 +32,7 @@ import "@spectrum-web-components/menu/sp-menu-divider.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
 import "@spectrum-web-components/menu/sp-menu.js";
 import "@spectrum-web-components/overlay/overlay-trigger.js";
+import "@spectrum-web-components/picker/sp-picker.js";
 import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
 import "./x-control-group.ts";
@@ -98,6 +102,10 @@ class Sidebar extends MobxLitElement {
     ];
   }
 
+  private _randomize(): void {
+    this.locator.appStore.randomize();
+  }
+
   private _togglePlaying(): void {
     this.locator.playback.togglePlaying();
   }
@@ -142,8 +150,9 @@ class Sidebar extends MobxLitElement {
     this.locator.renderer.zoomToFit();
   }
 
-  private _randomize(): void {
-    this.locator.appStore.randomize();
+  private _setRule(e: Event): void {
+    const rule = (e.target as Picker).value as Rule;
+    this.locator.world.setRule(rule);
   }
 
   private _closeDrawer(): void {
@@ -231,6 +240,16 @@ class Sidebar extends MobxLitElement {
               <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
               Fit
             </sp-action-button>
+          </sp-action-group>
+        </x-control-group>
+
+        <x-control-group label="Rule">
+          <sp-action-group size="m">
+            <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule}>
+              ${getAllRules().map(([name, value]) => {
+                return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
+              })}
+            </sp-picker>
           </sp-action-group>
         </x-control-group>
 

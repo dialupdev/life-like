@@ -2,11 +2,7 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { getAllRules } from "../utils/RuleUtils.ts";
-
-import type { Rule } from "../core/Rules.ts";
 import type { Locator } from "../Locator.ts";
-import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
 import type { TemplateResult } from "lit";
 
@@ -14,7 +10,6 @@ import "@spectrum-web-components/action-button/sp-action-button.js";
 import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
-import "@spectrum-web-components/picker/sp-picker.js";
 import "@spectrum-web-components/slider/sp-slider.js";
 
 @customElement("x-settings")
@@ -36,11 +31,6 @@ class Settings extends MobxLitElement {
   private _setRandomizeAverageDensity(e: Event): void {
     const averageDensity = (e.target as Slider).value;
     this.locator.world.setRandomizeAverageDensity(averageDensity);
-  }
-
-  private _setRule(e: Event): void {
-    const rule = (e.target as Picker).value as Rule;
-    this.locator.world.setRule(rule);
   }
 
   protected render(): TemplateResult {
@@ -70,13 +60,6 @@ class Settings extends MobxLitElement {
         @input="${this._setRandomizeAverageDensity}"
       >
       </sp-slider>
-
-      <sp-field-label for="rule">Rule</sp-field-label>
-      <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule}>
-        ${getAllRules().map(([name, value]) => {
-          return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
-        })}
-      </sp-picker>
     `;
   }
 }
