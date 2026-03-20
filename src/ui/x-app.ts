@@ -8,7 +8,7 @@ import { Locator } from "../Locator.ts";
 import { PluginBuilder } from "../plugins/PluginBuilder.ts";
 import { PluginManager, PluginGroup } from "../plugins/PluginManager.ts";
 
-import type { TemplateResult, nothing } from "lit";
+import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/spectrum-two/scale-medium.js";
@@ -23,11 +23,6 @@ class App extends MobxLitElement {
     }
     :host {
       display: block;
-      height: 100vh;
-      left: 0;
-      position: absolute;
-      top: 0;
-      width: ${SIDEBAR_WIDTH * 2}px;
     }
     canvas {
       image-rendering: pixelated;
@@ -66,7 +61,7 @@ class App extends MobxLitElement {
     });
   }
 
-  protected render(): TemplateResult | typeof nothing {
+  protected render(): TemplateResult {
     return html`
       <sp-theme system="spectrum-two" scale="medium" color="light">
         <canvas></canvas>
