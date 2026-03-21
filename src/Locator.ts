@@ -20,7 +20,7 @@ export class Locator {
     const context = canvas.getContext("2d", { alpha: false })!;
 
     this.world = new World();
-    this.renderer = new Renderer(canvas, context, this.world, "#A76FDE");
+    this.renderer = new Renderer(canvas, context, this.world, "oklch(0.5523 0.2476 256.83)");
     this.playback = new Playback(this.world, this.renderer);
 
     this.drawerStore = new DrawerStore();
