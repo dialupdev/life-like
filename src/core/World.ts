@@ -24,6 +24,9 @@ export class World {
   // Instead, the map key is the Szudzik pair for each cell's (x ,y).
   public cells = new Map<number, Cell>();
 
+  @observable public accessor generation = 0;
+  @observable public accessor population = 0;
+
   @observable public accessor rule = Rule.life;
   @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
@@ -128,16 +131,25 @@ export class World {
     this.saveStartState();
   }
 
+  @action
   public saveStartState(): void {
     this._neighborCountsStartState = new Map(this._neighborCounts);
     this._cellsStartState = new Map(this.cells);
+
+    this.generation = 0;
+    this.population = this.cells.size;
   }
 
+  @action
   public rewind(): void {
     this._neighborCounts = new Map(this._neighborCountsStartState);
     this.cells = new Map(this._cellsStartState);
+
+    this.generation = 0;
+    this.population = this.cells.size;
   }
 
+  @action
   public tick(): void {
     const cellsToKill = new Set<Cell>();
     const cellsToSpawn = new Set<Cell>();
@@ -168,6 +180,9 @@ export class World {
     for (const cell of cellsToSpawn) {
       this._spawn(cell);
     }
+
+    this.generation++;
+    this.population = this.cells.size;
   }
 
   public getBounds(): [number, number, number, number] {
