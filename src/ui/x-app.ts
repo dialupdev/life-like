@@ -13,6 +13,7 @@ import type { TemplateResult } from "lit";
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/spectrum-two/scale-medium.js";
 import "@spectrum-web-components/theme/spectrum-two/theme-light.js";
+import "./x-hud.ts";
 import "./x-sidebar.ts";
 
 @customElement("x-app")
@@ -66,7 +67,13 @@ class App extends MobxLitElement {
       <sp-theme system="spectrum-two" scale="medium" color="light">
         <canvas></canvas>
 
-        ${when(this._locator, () => html`<x-sidebar .locator=${this._locator}></x-sidebar>`)}
+        ${when(
+          this._locator,
+          () => html`
+            <x-sidebar .locator=${this._locator}></x-sidebar>
+            <x-hud .locator=${this._locator}></x-hud>
+          `
+        )}
       </sp-theme>
     `;
   }
