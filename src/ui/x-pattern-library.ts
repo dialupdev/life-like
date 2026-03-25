@@ -35,6 +35,12 @@ class PatternLibrary extends MobxLitElement {
     void this.locator.libraryStore.loadPattern(path);
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+
+    void this.locator.libraryStore.loadPatterns();
+  }
+
   protected render(): TemplateResult {
     const categories = this.locator.libraryStore.categories;
 

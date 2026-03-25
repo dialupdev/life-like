@@ -55,8 +55,6 @@ class App extends MobxLitElement {
 
     pluginManager.activateGroup(PluginGroup.default);
     pluginManager.activateGroup(PluginGroup.playback);
-
-    this._locator.libraryStore.loadPatterns();
   }
 
   protected render(): TemplateResult {

@@ -58,12 +58,16 @@ export class LibraryStore {
     }
   }
 
-  public loadPatterns(): void {
-    if (this.categories.length === 0) {
-      void this._fetchPatternLibrary().then(categories => {
-        runInAction(() => {
-          this.categories.replace(categories!);
-        });
+  public async loadPatterns(): Promise<void> {
+    if (this.categories.length > 0) {
+      return;
+    }
+
+    const categories = await this._fetchPatternLibrary();
+
+    if (categories) {
+      runInAction(() => {
+        this.categories.replace(categories);
       });
     }
   }
