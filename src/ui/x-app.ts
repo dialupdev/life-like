@@ -1,6 +1,6 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { html, css } from "lit";
-import { customElement, state, queryAsync } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
@@ -25,7 +25,7 @@ class App extends MobxLitElement {
     :host {
       display: block;
     }
-    canvas {
+    ::slotted(canvas) {
       image-rendering: pixelated;
       left: ${SIDEBAR_WIDTH}px;
       position: absolute;
@@ -36,36 +36,33 @@ class App extends MobxLitElement {
   @state()
   private accessor _locator!: Locator;
 
-  @queryAsync("canvas")
-  private accessor _canvasPromise!: Promise<HTMLCanvasElement>;
+  connectedCallback(): void {
+    super.connectedCallback();
 
-  constructor() {
-    super();
+    const canvas = this.querySelector("canvas")!;
 
-    void this._canvasPromise.then(canvas => {
-      this._locator = new Locator(canvas);
+    this._locator = new Locator(canvas);
 
-      const pluginBuilder = new PluginBuilder(canvas);
-      const pluginManager = new PluginManager(
-        pluginBuilder,
-        this._locator.renderer,
-        this._locator.playback,
-        this._locator.drawerStore,
-        this._locator.layoutStore,
-        this._locator.appStore
-      );
+    const pluginBuilder = new PluginBuilder(canvas);
+    const pluginManager = new PluginManager(
+      pluginBuilder,
+      this._locator.renderer,
+      this._locator.playback,
+      this._locator.drawerStore,
+      this._locator.layoutStore,
+      this._locator.appStore
+    );
 
-      pluginManager.activateGroup(PluginGroup.default);
-      pluginManager.activateGroup(PluginGroup.playback);
+    pluginManager.activateGroup(PluginGroup.default);
+    pluginManager.activateGroup(PluginGroup.playback);
 
-      this._locator.libraryStore.loadPatterns();
-    });
+    this._locator.libraryStore.loadPatterns();
   }
 
   protected render(): TemplateResult {
     return html`
       <sp-theme system="spectrum-two" scale="medium" color="light">
-        <canvas></canvas>
+        <slot></slot>
 
         ${when(
           this._locator,
