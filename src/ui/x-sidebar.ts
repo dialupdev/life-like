@@ -1,16 +1,21 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { consume } from "@lit/context";
 import { html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
+import { type Playback, playbackContext } from "../core/Playback.ts";
 import { ZoomDirection } from "../core/Renderer.ts";
+import { type Renderer, rendererContext } from "../core/Renderer.ts";
+import { type World, worldContext } from "../core/World.ts";
+import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { DrawerMode } from "../stores/DrawerStore.ts";
+import { type DrawerStore, drawerStoreContext } from "../stores/DrawerStore.ts";
 import { getAllRules } from "../utils/RuleUtils.ts";
 
 import type { Rule } from "../core/Rules.ts";
-import type { Locator } from "../Locator.ts";
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
@@ -94,57 +99,72 @@ class Sidebar extends MobxLitElement {
     }
   `;
 
-  @property()
-  public accessor locator!: Locator;
+  @consume({ context: worldContext })
+  private accessor _world!: World;
+
+  @consume({ context: rendererContext })
+  private accessor _renderer!: Renderer;
+
+  @consume({ context: playbackContext })
+  private accessor _playback!: Playback;
+
+  @consume({ context: drawerStoreContext })
+  private accessor _drawerStore!: DrawerStore;
+
+  @consume({ context: appStoreContext })
+  private accessor _appStore!: AppStore;
 
   private get _drawerCases(): DrawerCase[] {
     return [
-      [DrawerMode.settings, () => html`<x-settings .locator=${this.locator}></x-settings>`],
-      [DrawerMode.patternLibrary, () => html`<x-pattern-library .locator=${this.locator}></x-pattern-library>`],
+      [DrawerMode.settings, () => html`<x-settings></x-settings>`],
+      [
+        DrawerMode.patternLibrary,
+        () => html`<x-pattern-library></x-pattern-library>`,
+      ],
     ];
   }
 
   private _randomize(): void {
-    this.locator.appStore.randomize();
+    this._appStore.randomize();
   }
 
   private _rewind(): void {
-    this.locator.appStore.rewind();
+    this._appStore.rewind();
   }
 
   private _togglePlaying(): void {
-    this.locator.playback.togglePlaying();
+    this._playback.togglePlaying();
   }
 
   private _tick(): void {
-    this.locator.playback.tickLazy();
+    this._playback.tickLazy();
   }
 
   private _setFrameRateLimit(e: Event): void {
     const frameRateLimit = (e.target as Slider).value;
-    this.locator.playback.setFrameRateLimit(frameRateLimit);
+    this._playback.setFrameRateLimit(frameRateLimit);
   }
 
   private _zoomToScale(e: Event): void {
     const value = (e.target as Menu).value;
 
     if (value === "in") {
-      this.locator.renderer.zoomByStep(ZoomDirection.in);
+      this._renderer.zoomByStep(ZoomDirection.in);
       return;
     }
 
     if (value === "out") {
-      this.locator.renderer.zoomByStep(ZoomDirection.out);
+      this._renderer.zoomByStep(ZoomDirection.out);
       return;
     }
 
     if (value === "fit") {
-      this.locator.renderer.zoomToFit();
+      this._renderer.zoomToFit();
       return;
     }
 
     const scale = parseFloat(value);
-    this.locator.renderer.zoomToScale(scale);
+    this._renderer.zoomToScale(scale);
   }
 
   private _truncateZoomScale(scale: number): number {
@@ -153,16 +173,16 @@ class Sidebar extends MobxLitElement {
   }
 
   private _fit(): void {
-    this.locator.renderer.zoomToFit();
+    this._renderer.zoomToFit();
   }
 
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value as Rule;
-    this.locator.world.setRule(rule);
+    this._world.setRule(rule);
   }
 
   private _closeDrawer(): void {
-    this.locator.drawerStore.closeDrawer();
+    this._drawerStore.closeDrawer();
   }
 
   protected render(): TemplateResult {
@@ -181,8 +201,8 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger triggered-by="hover">
               <sp-action-button
                 slot="trigger"
-                @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.settings)}"
-                ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.settings}
+                @click="${() => this._drawerStore.toggleDrawer(DrawerMode.settings)}"
+                ?selected=${this._drawerStore.drawerMode === DrawerMode.settings}
                 label="Settings"
               >
                 <sp-icon-settings slot="icon"></sp-icon-settings>
@@ -205,7 +225,7 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger triggered-by="hover">
               <sp-action-button slot="trigger" @click="${this._togglePlaying}" label="Toggle playback">
                 ${
-                  this.locator.playback.playing
+                  this._playback.playing
                     ? html`
                         <sp-icon-pause slot="icon"></sp-icon-pause>
                       `
@@ -218,7 +238,7 @@ class Sidebar extends MobxLitElement {
             </overlay-trigger>
 
             <overlay-trigger triggered-by="hover">
-              <sp-action-button slot="trigger" @click="${this._tick}" ?disabled=${this.locator.playback.playing} label="Step forward">
+              <sp-action-button slot="trigger" @click="${this._tick}" ?disabled=${this._playback.playing} label="Step forward">
                 <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
               </sp-action-button>
               <sp-tooltip slot="hover-content" placement="bottom" delayed>Step forward (t)</sp-tooltip>
@@ -232,7 +252,7 @@ class Sidebar extends MobxLitElement {
             max="120"
             step="1"
             variant="filled"
-            value=${this.locator.playback.frameRateLimit}
+            value=${this._playback.frameRateLimit}
             @input="${this._setFrameRateLimit}"
           >
           </sp-slider>
@@ -243,7 +263,7 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger triggered-by="click">
               <sp-action-button slot="trigger" class="zoom-button" label="Zoom">
                 <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
-                ${this._truncateZoomScale(this.locator.renderer.zoomScale)}%
+                ${this._truncateZoomScale(this._renderer.zoomScale)}%
               </sp-action-button>
               <sp-popover slot="click-content" direction="bottom" class="zoom-menu">
                 <sp-menu @change=${this._zoomToScale}>
@@ -290,7 +310,7 @@ class Sidebar extends MobxLitElement {
 
         <x-control-group label="Rule">
           <sp-action-group size="m">
-            <sp-picker id="rule" value=${this.locator.world.rule} @change=${this._setRule} label="Rule">
+            <sp-picker id="rule" value=${this._world.rule} @change=${this._setRule} label="Rule">
               ${getAllRules().map(([name, value]) => {
                 return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
               })}
@@ -303,8 +323,8 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger triggered-by="hover">
               <sp-action-button
                 slot="trigger"
-                @click="${() => this.locator.drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
-                ?selected=${this.locator.drawerStore.drawerMode === DrawerMode.patternLibrary}
+                @click="${() => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
+                ?selected=${this._drawerStore.drawerMode === DrawerMode.patternLibrary}
                 label="Library"
               >
                 <sp-icon-data slot="icon"></sp-icon-data>
@@ -319,14 +339,14 @@ class Sidebar extends MobxLitElement {
       <div
         class=${classMap({
           drawer: true,
-          open: this.locator.drawerStore.drawerOpen,
+          open: this._drawerStore.drawerOpen,
         })}
       >
-        <x-control-group label=${this.locator.drawerStore.drawerMode} noDivider>
+        <x-control-group label=${this._drawerStore.drawerMode} noDivider>
           <sp-action-button class="close-drawer-button" quiet @click="${this._closeDrawer}">
             <sp-icon-close slot="icon"></sp-icon-close>
           </sp-action-button>
-          ${choose(this.locator.drawerStore.drawerMode, this._drawerCases)}
+          ${choose(this._drawerStore.drawerMode, this._drawerCases)}
         </x-control-group>
       </div>
     `;

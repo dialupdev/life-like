@@ -1,9 +1,12 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { consume } from "@lit/context";
 import { html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
-import type { Locator } from "../Locator.ts";
+import { type Playback, playbackContext } from "../core/Playback.ts";
+import { type LibraryStore, libraryStoreContext } from "../stores/LibraryStore.ts";
+
 import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/accordion/sp-accordion.js";
@@ -25,24 +28,28 @@ class PatternLibrary extends MobxLitElement {
     }
   `;
 
-  @property()
-  public accessor locator!: Locator;
+  @consume({ context: playbackContext })
+  private accessor _playback!: Playback;
+
+  @consume({ context: libraryStoreContext })
+  private accessor _libraryStore!: LibraryStore;
 
   private _loadPattern(e: CustomEvent): void {
     const path = (e.target! as HTMLElement).getAttribute("data-path")!;
 
-    this.locator.playback.pause();
-    void this.locator.libraryStore.loadPattern(path);
+    this._playback.pause();
+
+    void this._libraryStore.loadPattern(path);
   }
 
   connectedCallback(): void {
     super.connectedCallback();
 
-    void this.locator.libraryStore.loadPatterns();
+    void this._libraryStore.loadPatterns();
   }
 
   protected render(): TemplateResult {
-    const categories = this.locator.libraryStore.categories;
+    const categories = this._libraryStore.categories;
 
     return html`
       ${when(

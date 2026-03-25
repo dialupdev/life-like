@@ -1,9 +1,12 @@
+import { createContext } from "@lit/context";
 import { makeObservable, observable, computed, action } from "mobx";
 
 export enum DrawerMode {
   settings = "Settings",
   patternLibrary = "Library",
 }
+
+export const drawerStoreContext = createContext<DrawerStore>("drawerStore");
 
 export class DrawerStore {
   @observable public accessor drawerMode: DrawerMode | undefined = undefined;

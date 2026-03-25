@@ -1,3 +1,4 @@
+import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../Constants.ts";
@@ -24,6 +25,8 @@ export enum ZoomDirection {
 }
 
 type ShouldSkipUpdate = () => boolean;
+
+export const rendererContext = createContext<Renderer>("renderer");
 
 export class Renderer {
   private _canvas: HTMLCanvasElement;

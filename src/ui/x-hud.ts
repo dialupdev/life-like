@@ -1,10 +1,12 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { consume } from "@lit/context";
 import { html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import throttle from "lodash.throttle";
 import { reaction, type IReactionDisposer } from "mobx";
 
-import type { Locator } from "../Locator.ts";
+import { type World, worldContext } from "../core/World.ts";
+
 import type { TemplateResult } from "lit";
 
 @customElement("x-hud")
@@ -27,8 +29,8 @@ class Hud extends MobxLitElement {
     }
   `;
 
-  @property()
-  public accessor locator!: Locator;
+  @consume({ context: worldContext })
+  private accessor _world!: World;
 
   @state()
   private accessor _generation = 0;
@@ -39,8 +41,8 @@ class Hud extends MobxLitElement {
   private worldStateDisposer?: IReactionDisposer;
 
   private _flushWorldState = (): void => {
-    this._generation = this.locator.world.generation;
-    this._population = this.locator.world.population;
+    this._generation = this._world.generation;
+    this._population = this._world.population;
   };
 
   connectedCallback(): void {
@@ -49,7 +51,7 @@ class Hud extends MobxLitElement {
     const throttledFlushWorldState = throttle(this._flushWorldState, 250);
 
     this.worldStateDisposer = reaction(
-      () => [this.locator.world.generation, this.locator.world.population],
+      () => [this._world.generation, this._world.population],
       throttledFlushWorldState,
       { fireImmediately: true }
     );

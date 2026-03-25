@@ -1,3 +1,4 @@
+import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
 import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils.ts";
@@ -6,6 +7,8 @@ import { Cell } from "./Cell.ts";
 import { Rule } from "./Rules.ts";
 
 import type { RuleKey } from "../utils/RuleUtils.ts";
+
+export const worldContext = createContext<World>("world");
 
 export class World {
   private _birthSet!: Set<number>;

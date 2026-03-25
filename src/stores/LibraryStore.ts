@@ -1,3 +1,4 @@
+import { createContext } from "@lit/context";
 import { makeObservable, observable, runInAction } from "mobx";
 
 import { Rule } from "../core/Rules.ts";
@@ -19,6 +20,8 @@ export interface Category {
 interface GetResponseTextOptions {
   isGzipped: boolean;
 }
+
+export const libraryStoreContext = createContext<LibraryStore>("libraryStore");
 
 export class LibraryStore {
   private _world: World;

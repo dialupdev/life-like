@@ -1,9 +1,12 @@
+import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 
 import type { Renderer } from "./Renderer.ts";
 import type { World } from "./World.ts";
+
+export const playbackContext = createContext<Playback>("playback");
 
 export class Playback {
   private _world: World;

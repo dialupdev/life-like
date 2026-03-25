@@ -1,8 +1,10 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
+import { consume } from "@lit/context";
 import { html, css } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
-import type { Locator } from "../Locator.ts";
+import { type World, worldContext } from "../core/World.ts";
+
 import type { Slider } from "@spectrum-web-components/slider";
 import type { TemplateResult } from "lit";
 
@@ -20,17 +22,17 @@ class Settings extends MobxLitElement {
     }
   `;
 
-  @property()
-  public accessor locator!: Locator;
+  @consume({ context: worldContext })
+  private accessor _world!: World;
 
   private _setRandomizeFieldSize(e: Event): void {
     const fieldSize = (e.target as Slider).value;
-    this.locator.world.setRandomizeFieldSize(fieldSize);
+    this._world.setRandomizeFieldSize(fieldSize);
   }
 
   private _setRandomizeAverageDensity(e: Event): void {
     const averageDensity = (e.target as Slider).value;
-    this.locator.world.setRandomizeAverageDensity(averageDensity);
+    this._world.setRandomizeAverageDensity(averageDensity);
   }
 
   protected render(): TemplateResult {
@@ -43,7 +45,7 @@ class Settings extends MobxLitElement {
         max="400"
         step="1"
         variant="filled"
-        value=${this.locator.world.randomizeFieldSize}
+        value=${this._world.randomizeFieldSize}
         @input="${this._setRandomizeFieldSize}"
       >
       </sp-slider>
@@ -56,7 +58,7 @@ class Settings extends MobxLitElement {
         max="1"
         step="0.01"
         variant="filled"
-        value=${this.locator.world.randomizeAverageDensity}
+        value=${this._world.randomizeAverageDensity}
         @input="${this._setRandomizeAverageDensity}"
       >
       </sp-slider>

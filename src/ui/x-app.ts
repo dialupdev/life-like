@@ -1,12 +1,8 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { html, css } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { when } from "lit/directives/when.js";
+import { customElement } from "lit/decorators.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
-import { Locator } from "../Locator.ts";
-import { PluginBuilder } from "../plugins/PluginBuilder.ts";
-import { PluginManager, PluginGroup } from "../plugins/PluginManager.ts";
 
 import type { TemplateResult } from "lit";
 
@@ -33,42 +29,13 @@ class App extends MobxLitElement {
     }
   `;
 
-  @state()
-  private accessor _locator!: Locator;
-
-  connectedCallback(): void {
-    super.connectedCallback();
-
-    const canvas = this.querySelector("canvas")!;
-
-    this._locator = new Locator(canvas);
-
-    const pluginBuilder = new PluginBuilder(canvas);
-    const pluginManager = new PluginManager(
-      pluginBuilder,
-      this._locator.renderer,
-      this._locator.playback,
-      this._locator.drawerStore,
-      this._locator.layoutStore,
-      this._locator.appStore
-    );
-
-    pluginManager.activateGroup(PluginGroup.default);
-    pluginManager.activateGroup(PluginGroup.playback);
-  }
-
   protected render(): TemplateResult {
     return html`
       <sp-theme system="spectrum-two" scale="medium" color="light">
         <slot></slot>
 
-        ${when(
-          this._locator,
-          () => html`
-            <x-sidebar .locator=${this._locator}></x-sidebar>
-            <x-hud .locator=${this._locator}></x-hud>
-          `
-        )}
+        <x-sidebar></x-sidebar>
+        <x-hud></x-hud>
       </sp-theme>
     `;
   }

@@ -1,6 +1,10 @@
+import { createContext } from "@lit/context";
+
 import type { Playback } from "../core/Playback.ts";
 import type { Renderer } from "../core/Renderer.ts";
 import type { World } from "../core/World.ts";
+
+export const appStoreContext = createContext<AppStore>("appStore");
 
 export class AppStore {
   private _world: World;
