@@ -2,8 +2,6 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { consume } from "@lit/context";
 import { html, css } from "lit";
 import { customElement } from "lit/decorators.js";
-import { choose } from "lit/directives/choose.js";
-import { classMap } from "lit/directives/class-map.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { type Playback, playbackContext } from "../core/Playback.ts";
@@ -11,8 +9,7 @@ import { ZoomDirection } from "../core/Renderer.ts";
 import { type Renderer, rendererContext } from "../core/Renderer.ts";
 import { type World, worldContext } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
-import { DrawerMode } from "../stores/DrawerStore.ts";
-import { type DrawerStore, drawerStoreContext } from "../stores/DrawerStore.ts";
+import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
 import { getAllRules } from "../utils/RuleUtils.ts";
 
 import type { Rule } from "../core/Rules.ts";
@@ -26,7 +23,6 @@ import "@spectrum-web-components/action-group/sp-action-group.js";
 import "@spectrum-web-components/field-label/sp-field-label.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-double-left.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-chevron-down.js";
-import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-data.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-full-screen.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-magic-wand.js";
@@ -43,10 +39,6 @@ import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
 import "@spectrum-web-components/tooltip/sp-tooltip.js";
 import "./x-control-group.ts";
-import "./x-pattern-library.ts";
-import "./x-settings.ts";
-
-type DrawerCase = [DrawerMode, () => TemplateResult];
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
@@ -58,15 +50,12 @@ class Sidebar extends MobxLitElement {
       display: block;
       width: ${SIDEBAR_WIDTH}px;
     }
-    .controls,
-    .drawer {
+    .controls {
+      background: #f4f5f7;
       border-right: 2px solid #ddd;
       height: 100vh;
       overflow-y: auto;
       padding: 4px 20px;
-    }
-    .controls {
-      background: #f4f5f7;
       position: relative;
       z-index: 1;
     }
@@ -80,22 +69,6 @@ class Sidebar extends MobxLitElement {
       display: inline-block;
       text-align: center;
       width: 1.1em;
-    }
-    .drawer {
-      background: #f4f5f7;
-      left: 0;
-      position: absolute;
-      top: 0;
-      transition: left 0.2s;
-      width: ${SIDEBAR_WIDTH}px;
-    }
-    .drawer.open {
-      left: ${SIDEBAR_WIDTH}px;
-    }
-    .close-drawer-button {
-      position: absolute;
-      right: 5px;
-      top: 5px;
     }
   `;
 
@@ -113,16 +86,6 @@ class Sidebar extends MobxLitElement {
 
   @consume({ context: appStoreContext })
   private accessor _appStore!: AppStore;
-
-  private get _drawerCases(): DrawerCase[] {
-    return [
-      [DrawerMode.settings, () => html`<x-settings></x-settings>`],
-      [
-        DrawerMode.patternLibrary,
-        () => html`<x-pattern-library></x-pattern-library>`,
-      ],
-    ];
-  }
 
   private _randomize(): void {
     this._appStore.randomize();
@@ -179,10 +142,6 @@ class Sidebar extends MobxLitElement {
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value as Rule;
     this._world.setRule(rule);
-  }
-
-  private _closeDrawer(): void {
-    this._drawerStore.closeDrawer();
   }
 
   protected render(): TemplateResult {
@@ -333,20 +292,6 @@ class Sidebar extends MobxLitElement {
               <sp-tooltip slot="hover-content" placement="bottom" delayed>Open pattern library (l)</sp-tooltip>
             </overlay-trigger>
           </sp-action-group>
-        </x-control-group>
-      </div>
-
-      <div
-        class=${classMap({
-          drawer: true,
-          open: this._drawerStore.drawerOpen,
-        })}
-      >
-        <x-control-group label=${this._drawerStore.drawerMode} noDivider>
-          <sp-action-button class="close-drawer-button" quiet @click="${this._closeDrawer}">
-            <sp-icon-close slot="icon"></sp-icon-close>
-          </sp-action-button>
-          ${choose(this._drawerStore.drawerMode, this._drawerCases)}
         </x-control-group>
       </div>
     `;

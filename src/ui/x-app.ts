@@ -9,6 +9,7 @@ import type { TemplateResult } from "lit";
 import "@spectrum-web-components/theme/sp-theme.js";
 import "@spectrum-web-components/theme/spectrum-two/scale-medium.js";
 import "@spectrum-web-components/theme/spectrum-two/theme-light.js";
+import "./x-drawer.ts";
 import "./x-hud.ts";
 import "./x-sidebar.ts";
 
@@ -35,6 +36,7 @@ class App extends MobxLitElement {
         <slot></slot>
 
         <x-sidebar></x-sidebar>
+        <x-drawer></x-drawer>
         <x-hud></x-hud>
       </sp-theme>
     `;
