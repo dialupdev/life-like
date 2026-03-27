@@ -45,12 +45,12 @@
     "@swc/core": "^1.15.21",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^25.5.0",
-    "oxfmt": "^0.41.0",
-    "oxlint": "^1.56.0",
-    "oxlint-tsgolint": "^0.17.2",
+    "oxfmt": "^0.42.0",
+    "oxlint": "^1.57.0",
+    "oxlint-tsgolint": "^0.18.1",
     "rollup": "^4.60.0",
     "typescript": "^6.0.2",
-    "vite": "^8.0.2",
+    "vite": "^8.0.3",
     "vite-plugin-html": "^3.2.2"
   },
   "engines": {
