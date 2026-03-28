@@ -59,10 +59,7 @@ class Drawer extends MobxLitElement {
   private get _drawerCases(): DrawerCase[] {
     return [
       [DrawerMode.settings, () => html`<x-settings></x-settings>`],
-      [
-        DrawerMode.patternLibrary,
-        () => html`<x-pattern-library></x-pattern-library>`,
-      ],
+      [DrawerMode.patternLibrary, () => html`<x-pattern-library></x-pattern-library>`],
     ];
   }
 

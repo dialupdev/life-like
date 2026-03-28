@@ -183,21 +183,20 @@ class Sidebar extends MobxLitElement {
 
             <overlay-trigger triggered-by="hover">
               <sp-action-button slot="trigger" @click="${this._togglePlaying}" label="Toggle playback">
-                ${
-                  this._playback.playing
-                    ? html`
-                        <sp-icon-pause slot="icon"></sp-icon-pause>
-                      `
-                    : html`
-                        <sp-icon-play slot="icon"></sp-icon-play>
-                      `
-                }
+                ${this._playback.playing
+                  ? html`<sp-icon-pause slot="icon"></sp-icon-pause>`
+                  : html`<sp-icon-play slot="icon"></sp-icon-play>`}
               </sp-action-button>
               <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle playback (space)</sp-tooltip>
             </overlay-trigger>
 
             <overlay-trigger triggered-by="hover">
-              <sp-action-button slot="trigger" @click="${this._tick}" ?disabled=${this._playback.playing} label="Step forward">
+              <sp-action-button
+                slot="trigger"
+                @click="${this._tick}"
+                ?disabled=${this._playback.playing}
+                label="Step forward"
+              >
                 <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
               </sp-action-button>
               <sp-tooltip slot="hover-content" placement="bottom" delayed>Step forward (t)</sp-tooltip>
