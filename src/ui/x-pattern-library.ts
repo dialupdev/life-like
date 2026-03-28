@@ -57,10 +57,10 @@ class PatternLibrary extends MobxLitElement {
         () =>
           html`<sp-accordion size="s">
             ${categories.map(
-              category =>
+              (category) =>
                 html`<sp-accordion-item label=${category.name}>
                   ${category.patterns.map(
-                    pattern =>
+                    (pattern) =>
                       html`<sp-action-button quiet size="s" @click=${this._loadPattern} data-path=${pattern.path}
                         >${pattern.name}</sp-action-button
                       >`

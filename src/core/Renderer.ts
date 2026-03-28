@@ -250,7 +250,7 @@ export class Renderer {
     this._clear();
     this._context.fillStyle = this._color;
 
-    this._world.cells.forEach(cell => {
+    this._world.cells.forEach((cell) => {
       this._drawCell(cell.x, cell.y);
     });
   }

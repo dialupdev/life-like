@@ -18,13 +18,13 @@ export function parseRule(rule: Rule): [Set<number>, Set<number>] {
     halves[0]
       .substring(1)
       .split("")
-      .map(s => parseInt(s, 10))
+      .map((s) => parseInt(s, 10))
   );
   const survivalSet = new Set(
     halves[1]
       .substring(1)
       .split("")
-      .map(s => parseInt(s, 10))
+      .map((s) => parseInt(s, 10))
   );
 
   return [birthSet, survivalSet];
@@ -39,7 +39,7 @@ function _convertToTitlecase(key: RuleKey): string {
 export function getRuleKeyByValue(value: Rule): RuleKey {
   const ruleKeys = Object.keys(Rule) as RuleKey[];
 
-  return ruleKeys.find(key => Rule[key] === value)!;
+  return ruleKeys.find((key) => Rule[key] === value)!;
 }
 
 function getRuleNameByKey(key: RuleKey): string {
@@ -55,7 +55,7 @@ function getRuleNameByKey(key: RuleKey): string {
 export function getAllRules(): [string, string][] {
   const ruleKeys = Object.keys(Rule) as RuleKey[];
 
-  return ruleKeys.map(ruleKey => {
+  return ruleKeys.map((ruleKey) => {
     const ruleName = getRuleNameByKey(ruleKey);
     const ruleValue = Rule[ruleKey];
 

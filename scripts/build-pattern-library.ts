@@ -29,7 +29,7 @@ function getFileExtension(filename: string): string {
 
 const patternFiles = fs
   .readdirSync(PATTERNS_DIR, { withFileTypes: true, recursive: true })
-  .filter(entry => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(getFileExtension(entry.name)));
+  .filter((entry) => entry.isFile() && SUPPORTED_FILE_EXTENSIONS.includes(getFileExtension(entry.name)));
 
 console.log(`Installing ${patternFiles.length} patterns...`);
 
@@ -38,7 +38,7 @@ const categories: Category[] = [];
 for (const file of patternFiles) {
   const categoryName = file.parentPath.split(path.sep).slice(-1)[0];
 
-  let category: Category | undefined = categories.find(category => category.name === categoryName);
+  let category: Category | undefined = categories.find((category) => category.name === categoryName);
 
   if (!category) {
     category = {

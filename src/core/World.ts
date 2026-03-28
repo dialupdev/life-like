@@ -194,7 +194,7 @@ export class World {
     let min_y = Number.MAX_VALUE;
     let max_y = Number.MAX_VALUE * -1;
 
-    this.cells.forEach(cell => {
+    this.cells.forEach((cell) => {
       min_x = Math.min(min_x, cell.x);
       max_x = Math.max(max_x, cell.x);
       min_y = Math.min(min_y, cell.y);
