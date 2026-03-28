@@ -30,7 +30,7 @@ export class AppStore {
 
   public rewind(): void {
     this._playback.pause();
-    this._world.rewind();
+    this._world.restoreSnapshot();
     this._layout.zoomToFit();
   }
 }

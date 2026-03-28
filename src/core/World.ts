@@ -1,31 +1,19 @@
 import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
+import { SzudzikSparseLife } from "../algorithms/SzudzikSparseLife.ts";
 import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
-import { Cell } from "./Cell.ts";
 import { Rule } from "./Rules.ts";
 
+import type { LifeAlgorithm } from "../algorithms/LifeAlgorithm.ts";
 import type { RuleKey } from "../utils/RuleUtils.ts";
+import type { Cell } from "./Cell.ts";
 
 export const worldContext = createContext<World>("world");
 
 export class World {
-  private _birthSet!: Set<number>;
-  private _survivalSet!: Set<number>;
-
-  private _neighborCountsStartState = new Map<number, number>();
-  private _cellsStartState = new Map<number, Cell>();
-
-  // If JS had a way to hash entities for value comparison within a
-  // map/set (rather than using reference equality), we would use
-  // Cell as the Map key which would remove the need for Cell.fromHash().
-  // Instead, the map key is the Szudzik pair for each cell's (x, y).
-  private _neighborCounts = new Map<number, number>();
-
-  // Same here - ideally we would use a Set for cells instead of a Map.
-  // Instead, the map key is the Szudzik pair for each cell's (x ,y).
-  private _cells = new Map<number, Cell>();
+  private _algorithm: LifeAlgorithm;
 
   @observable public accessor generation = 0;
   @observable public accessor population = 0;
@@ -35,7 +23,10 @@ export class World {
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
-    [this._birthSet, this._survivalSet] = parseRule(this.rule);
+    this._algorithm = new SzudzikSparseLife();
+
+    const [birthSet, survivalSet] = parseRule(this.rule);
+    this._algorithm.setRule(birthSet, survivalSet);
 
     this.setRule = this.setRule.bind(this);
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
@@ -48,41 +39,10 @@ export class World {
     makeObservable(this);
   }
 
-  private _spawn(cell: Cell): void {
-    for (const neighborHash of cell.generateNeighborHashes()) {
-      this._incrementNeighborCount(neighborHash);
-    }
-
-    this._cells.set(cell.hash(), cell);
-  }
-
-  private _kill(cell: Cell): void {
-    for (const neighborHash of cell.generateNeighborHashes()) {
-      this._decrementNeighborCount(neighborHash);
-    }
-
-    this._cells.delete(cell.hash());
-  }
-
-  private _incrementNeighborCount(hash: number): void {
-    const neighborCount = this._neighborCounts.get(hash);
-
-    this._neighborCounts.set(hash, neighborCount ? neighborCount + 1 : 1);
-  }
-
-  private _decrementNeighborCount(hash: number): void {
-    const neighborCountMinusOne = this._neighborCounts.get(hash)! - 1;
-
-    if (neighborCountMinusOne === 0) {
-      this._neighborCounts.delete(hash);
-    } else {
-      this._neighborCounts.set(hash, neighborCountMinusOne);
-    }
-  }
-
   @action
   public setRule(rule: Rule): void {
-    [this._birthSet, this._survivalSet] = parseRule(rule);
+    const [birthSet, survivalSet] = parseRule(rule);
+    this._algorithm.setRule(birthSet, survivalSet);
 
     this.rule = rule;
 
@@ -104,18 +64,49 @@ export class World {
   }
 
   public addCell(worldX: number, worldY: number): void {
-    const cell = new Cell(worldX, worldY);
-    this._spawn(cell);
+    this._algorithm.addCell(worldX, worldY);
   }
 
   public removeCell(worldX: number, worldY: number): void {
-    const cell = new Cell(worldX, worldY);
-    this._kill(cell);
+    this._algorithm.removeCell(worldX, worldY);
+  }
+
+  @action
+  public tick(): void {
+    this._algorithm.tick();
+
+    this.generation++;
+    this.population = this._algorithm.getPopulation();
+  }
+
+  public forEachCellInRect(
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
+    callback: (cell: Cell) => void
+  ): void {
+    this._algorithm.forEachCellInRect(minX, minY, maxX, maxY, callback);
   }
 
   public clear(): void {
-    this._cells.clear();
-    this._neighborCounts.clear();
+    this._algorithm.clear();
+  }
+
+  @action
+  public saveSnapshot(): void {
+    this._algorithm.saveSnapshot();
+
+    this.generation = 0;
+    this.population = this._algorithm.getPopulation();
+  }
+
+  @action
+  public restoreSnapshot(): void {
+    this._algorithm.restoreSnapshot();
+
+    this.generation = 0;
+    this.population = this._algorithm.getPopulation();
   }
 
   public randomize(): void {
@@ -132,95 +123,10 @@ export class World {
       }
     }
 
-    this.saveStartState();
-  }
-
-  @action
-  public saveStartState(): void {
-    this._neighborCountsStartState = new Map(this._neighborCounts);
-    this._cellsStartState = new Map(this._cells);
-
-    this.generation = 0;
-    this.population = this._cells.size;
-  }
-
-  @action
-  public rewind(): void {
-    this._neighborCounts = new Map(this._neighborCountsStartState);
-    this._cells = new Map(this._cellsStartState);
-
-    this.generation = 0;
-    this.population = this._cells.size;
-  }
-
-  @action
-  public tick(): void {
-    const cellsToKill = new Set<Cell>();
-    const cellsToSpawn = new Set<Cell>();
-
-    // Mark cells to kill
-    for (const [hash, cell] of this._cells) {
-      const neighborCount = this._neighborCounts.get(hash);
-
-      if (!neighborCount || !this._survivalSet.has(neighborCount)) {
-        cellsToKill.add(cell);
-      }
-    }
-
-    // Mark cells to spawn
-    for (const [hash, count] of this._neighborCounts) {
-      if (this._birthSet.has(count) && !this._cells.has(hash)) {
-        const cell = Cell.fromHash(hash);
-        cellsToSpawn.add(cell);
-      }
-    }
-
-    // Kill cells
-    for (const cell of cellsToKill) {
-      this._kill(cell);
-    }
-
-    // Spawn cells
-    for (const cell of cellsToSpawn) {
-      this._spawn(cell);
-    }
-
-    this.generation++;
-    this.population = this._cells.size;
-  }
-
-  public forEachCellInRect(
-    minX: number,
-    minY: number,
-    maxX: number,
-    maxY: number,
-    callback: (cell: Cell) => void
-  ): void {
-    for (const [, cell] of this._cells) {
-      if (cell.x >= minX && cell.x <= maxX && cell.y >= minY && cell.y <= maxY) {
-        callback(cell);
-      }
-    }
+    this.saveSnapshot();
   }
 
   public getBounds(): [number, number, number, number] {
-    let minX = Number.MAX_VALUE;
-    let maxX = Number.MAX_VALUE * -1;
-    let minY = Number.MAX_VALUE;
-    let maxY = Number.MAX_VALUE * -1;
-
-    for (const [, cell] of this._cells) {
-      minX = Math.min(minX, cell.x);
-      maxX = Math.max(maxX, cell.x);
-      minY = Math.min(minY, cell.y);
-      maxY = Math.max(maxY, cell.y);
-    }
-
-    // Add 1 to each of these to account for the size of the final cell in the row or column
-    const width = maxX - minX + 1;
-    const height = maxY - minY + 1;
-
-    // x, y, width, height
-    return [minX, minY, width, height];
+    return this._algorithm.getBounds();
   }
 }
