@@ -121,12 +121,13 @@ export class World {
   public randomize(): void {
     this.clear();
 
-    const halfFieldSize = this.randomizeFieldSize / 2;
+    const min = Math.floor(this.randomizeFieldSize / 2) * -1;
+    const max = min + this.randomizeFieldSize;
 
-    for (let x = -halfFieldSize; x < halfFieldSize; x++) {
-      for (let y = -halfFieldSize; y < halfFieldSize; y++) {
+    for (let worldX = min; worldX < max; worldX++) {
+      for (let worldY = min; worldY < max; worldY++) {
         if (Math.random() < this.randomizeAverageDensity) {
-          this.addCell(x, y);
+          this.addCell(worldX, worldY);
         }
       }
     }
