@@ -92,12 +92,8 @@ export class PluginBuilder {
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
 
-    for (const plugin of this._dragPlugins) {
-      plugin.run(e.clientX, e.clientY, 0, 0);
-    }
-
-    this._dragCursor && document.body.style.setProperty("cursor", this._dragCursor);
     window.addEventListener("mousemove", this._runDragPlugins);
+    this._dragCursor && document.body.style.setProperty("cursor", this._dragCursor);
   }
 
   private _stopDrag(): void {
