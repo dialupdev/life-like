@@ -130,7 +130,7 @@ export class PluginBuilder {
   }
 
   private _addEventListeners(canvas: HTMLCanvasElement): void {
-    window.addEventListener("resize", throttle(this._runResizePlugins, 500));
+    window.addEventListener("resize", throttle(this._runResizePlugins, 250));
     canvas.addEventListener("wheel", this._runWheelPlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
