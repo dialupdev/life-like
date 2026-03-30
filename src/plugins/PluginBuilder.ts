@@ -17,6 +17,10 @@ export class WheelPlugin {
   constructor(public run: (delta: number, viewportX: number, viewportY: number) => void) {}
 }
 
+export class MovePlugin {
+  constructor(public run: (viewportX: number, viewportY: number) => void) {}
+}
+
 export class DragPlugin {
   constructor(
     public run: (viewportX: number, viewportY: number, deltaX: number, deltaY: number) => void,
@@ -37,15 +41,20 @@ export type Plugin = ResizePlugin | WheelPlugin | DragPlugin | KeyboardPlugin;
 export class PluginBuilder {
   private _resizePlugins = new Set<ResizePlugin>();
   private _wheelPlugins = new Set<WheelPlugin>();
+  private _movePlugins = new Set<MovePlugin>();
   private _dragPlugins = new Set<DragPlugin>();
   private _keyboardPlugins = new Map<string, KeyboardPlugin>();
   private _lastMouseX!: number;
   private _lastMouseY!: number;
   private _dragCursor?: string;
 
+  // During drag sessions, we don't want to trigger move events
+  private _suppressMoveEvents = false;
+
   constructor(canvas: HTMLCanvasElement) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
     this._runWheelPlugins = this._runWheelPlugins.bind(this);
+    this._runMovePlugins = this._runMovePlugins.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
     this._startDrag = this._startDrag.bind(this);
     this._stopDrag = this._stopDrag.bind(this);
@@ -72,6 +81,16 @@ export class PluginBuilder {
     }
   }
 
+  private _runMovePlugins(e: MouseEvent): void {
+    if (this._suppressMoveEvents) {
+      return;
+    }
+
+    for (const plugin of this._movePlugins) {
+      plugin.run(e.clientX, e.clientY);
+    }
+  }
+
   private _runDragPlugins(e: MouseEvent): void {
     const deltaX = e.clientX - this._lastMouseX;
     const deltaY = e.clientY - this._lastMouseY;
@@ -90,6 +109,8 @@ export class PluginBuilder {
       return;
     }
 
+    this._suppressMoveEvents = true;
+
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
 
@@ -100,6 +121,8 @@ export class PluginBuilder {
   private _stopDrag(): void {
     this._dragCursor && document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._runDragPlugins);
+
+    this._suppressMoveEvents = false;
   }
 
   private _runKeyboardPlugin(e: KeyboardEvent): void {
@@ -129,6 +152,7 @@ export class PluginBuilder {
   private _addEventListeners(canvas: HTMLCanvasElement): void {
     window.addEventListener("resize", throttle(this._runResizePlugins, 250));
     canvas.addEventListener("wheel", this._runWheelPlugins);
+    canvas.addEventListener("mousemove", this._runMovePlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
     window.addEventListener("keydown", this._runKeyboardPlugin, true);
@@ -139,6 +163,8 @@ export class PluginBuilder {
       this._resizePlugins.add(plugin);
     } else if (plugin instanceof WheelPlugin) {
       this._wheelPlugins.add(plugin);
+    } else if (plugin instanceof MovePlugin) {
+      this._movePlugins.add(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.add(plugin);
       if (plugin.options?.cursor) this._dragCursor = plugin.options.cursor;
@@ -152,6 +178,8 @@ export class PluginBuilder {
       this._resizePlugins.delete(plugin);
     } else if (plugin instanceof WheelPlugin) {
       this._wheelPlugins.delete(plugin);
+    } else if (plugin instanceof MovePlugin) {
+      this._movePlugins.delete(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.delete(plugin);
       if (plugin.options?.cursor) delete this._dragCursor;

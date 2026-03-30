@@ -1,7 +1,7 @@
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { PanDirection, ZoomDirection } from "../core/Layout.ts";
 import { DrawerMode } from "../stores/DrawerStore.ts";
-import { ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin } from "./PluginBuilder.ts";
+import { ResizePlugin, WheelPlugin, MovePlugin, DragPlugin, KeyboardPlugin } from "./PluginBuilder.ts";
 
 import type { Layout } from "../core/Layout.ts";
 import type { Playback } from "../core/Playback.ts";
@@ -60,6 +60,7 @@ export class PluginManager {
       new KeyboardPlugin("ArrowLeft", () => this._layout.panInDirection(PanDirection.left), {
         preventDefault: true,
       }),
+      new MovePlugin((viewportX, viewportY) => this._layout.updateHoverPosition(viewportX - SIDEBAR_WIDTH, viewportY)),
       new KeyboardPlugin("d", () => this._renderer.toggleDebugMode()),
       new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
       new KeyboardPlugin("l", () => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)),

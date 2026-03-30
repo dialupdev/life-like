@@ -37,6 +37,9 @@ export class Layout {
 
   @observable public accessor zoomScale = 1.0; // 100%
 
+  @observable public accessor hoveredWorldX = 0;
+  @observable public accessor hoveredWorldY = 0;
+
   public requestUpdate: RequestUpdate | undefined;
 
   constructor(canvas: HTMLCanvasElement, world: World) {
@@ -236,5 +239,16 @@ export class Layout {
     this.zoomScale = newZoomScale;
 
     this.requestUpdate?.();
+  }
+
+  @action
+  public updateHoverPosition(canvasX: number, canvasY: number): void {
+    canvasX = canvasX - this.offsetX;
+    canvasY = canvasY - this.offsetY;
+
+    const actualCellSize = NATURAL_CELL_SIZE * this.zoomScale;
+
+    this.hoveredWorldX = Math.floor(canvasX / actualCellSize);
+    this.hoveredWorldY = Math.floor(canvasY / actualCellSize);
   }
 }

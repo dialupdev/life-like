@@ -5,6 +5,7 @@ import { customElement, state } from "lit/decorators.js";
 import throttle from "lodash.throttle";
 import { reaction, type IReactionDisposer } from "mobx";
 
+import { type Layout, layoutContext } from "../core/Layout.ts";
 import { type World, worldContext } from "../core/World.ts";
 
 import type { TemplateResult } from "lit";
@@ -31,6 +32,9 @@ class Hud extends MobxLitElement {
 
   @consume({ context: worldContext })
   private accessor _world!: World;
+
+  @consume({ context: layoutContext })
+  private accessor _layout!: Layout;
 
   @state()
   private accessor _generation = 0;
@@ -65,9 +69,12 @@ class Hud extends MobxLitElement {
 
   protected render(): TemplateResult {
     return html`
-      <div class="frame-rate">
+      <div>
         <span>Generation: ${this._generation}</span> |
         <span>Population: ${this._population}</span>
+      </div>
+      <div>
+        <span>World coordinates: ${this._layout.hoveredWorldX}, ${this._layout.hoveredWorldY}</span>
       </div>
     `;
   }
