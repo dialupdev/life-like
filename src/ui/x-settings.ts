@@ -77,7 +77,7 @@ class Settings extends MobxLitElement {
         <sp-switch slot="trigger" ?checked=${this._renderer.debugMode} @change="${this._setDebugMode}"
           >Debug mode</sp-switch
         >
-        <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle debug mode (d)</sp-tooltip>
+        <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle debug mode (D)</sp-tooltip>
       </overlay-trigger>
     `;
   }

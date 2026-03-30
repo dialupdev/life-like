@@ -154,7 +154,7 @@ class Sidebar extends MobxLitElement {
                 <sp-icon-magic-wand slot="icon"></sp-icon-magic-wand>
                 Randomize
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Randomize (w)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Randomize (W)</sp-tooltip>
             </overlay-trigger>
 
             <overlay-trigger triggered-by="hover">
@@ -167,7 +167,7 @@ class Sidebar extends MobxLitElement {
                 <sp-icon-settings slot="icon"></sp-icon-settings>
                 Settings
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open settings (s)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open settings (S)</sp-tooltip>
             </overlay-trigger>
           </sp-action-group>
         </x-control-group>
@@ -178,7 +178,7 @@ class Sidebar extends MobxLitElement {
               <sp-action-button slot="trigger" @click="${this._rewind}" label="Rewind">
                 <sp-icon-chevron-double-left slot="icon"></sp-icon-chevron-double-left>
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Rewind (r)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Rewind (R)</sp-tooltip>
             </overlay-trigger>
 
             <overlay-trigger triggered-by="hover">
@@ -187,7 +187,7 @@ class Sidebar extends MobxLitElement {
                   ? html`<sp-icon-pause slot="icon"></sp-icon-pause>`
                   : html`<sp-icon-play slot="icon"></sp-icon-play>`}
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle playback (space)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Toggle playback (Space)</sp-tooltip>
             </overlay-trigger>
 
             <overlay-trigger triggered-by="hover">
@@ -199,7 +199,7 @@ class Sidebar extends MobxLitElement {
               >
                 <sp-icon-step-forward slot="icon"></sp-icon-step-forward>
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Step forward (t)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Step forward (T)</sp-tooltip>
             </overlay-trigger>
           </sp-action-group>
         </x-control-group>
@@ -216,7 +216,7 @@ class Sidebar extends MobxLitElement {
           </sp-slider>
         </x-control-group>
 
-        <x-control-group label="Zoom">
+        <x-control-group label="Layout">
           <sp-action-group size="m">
             <overlay-trigger triggered-by="click">
               <sp-action-button slot="trigger" class="zoom-button" label="Zoom">
@@ -261,7 +261,7 @@ class Sidebar extends MobxLitElement {
                 <sp-icon-full-screen slot="icon"></sp-icon-full-screen>
                 Fit
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Zoom to fit (f)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Zoom to fit (F)</sp-tooltip>
             </overlay-trigger>
           </sp-action-group>
         </x-control-group>
@@ -288,7 +288,7 @@ class Sidebar extends MobxLitElement {
                 <sp-icon-data slot="icon"></sp-icon-data>
                 Library
               </sp-action-button>
-              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open pattern library (l)</sp-tooltip>
+              <sp-tooltip slot="hover-content" placement="bottom" delayed>Open pattern library (L)</sp-tooltip>
             </overlay-trigger>
           </sp-action-group>
         </x-control-group>
