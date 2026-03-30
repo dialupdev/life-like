@@ -14,12 +14,12 @@ export class ResizePlugin {
 }
 
 export class WheelPlugin {
-  constructor(public run: (delta: number, x: number, y: number) => void) {}
+  constructor(public run: (delta: number, viewportX: number, viewportY: number) => void) {}
 }
 
 export class DragPlugin {
   constructor(
-    public run: (x: number, y: number, deltaX: number, deltaY: number) => void,
+    public run: (viewportX: number, viewportY: number, deltaX: number, deltaY: number) => void,
     public options?: DragPluginOptions
   ) {}
 }
@@ -67,7 +67,8 @@ export class PluginBuilder {
     e.preventDefault();
 
     for (const plugin of this._wheelPlugins) {
-      plugin.run(e.deltaY, e.clientX, e.clientY);
+      // Wheel event deltas are inverted by default
+      plugin.run(e.deltaY * -1, e.clientX, e.clientY);
     }
   }
 

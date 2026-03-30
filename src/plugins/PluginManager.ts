@@ -42,15 +42,9 @@ export class PluginManager {
 
     this._pluginGroups.set(PluginGroup.default, [
       new ResizePlugin(this._layout.fitCanvasToWindow),
-      new WheelPlugin((delta: number, windowX: number, windowY: number) => {
-        // Zoom point relative to world offset
-        const canvasX = windowX - SIDEBAR_WIDTH;
-        const canvasY = windowY;
-
-        const normalizedDelta = -delta;
-
-        this._layout.zoomAt(normalizedDelta, canvasX, canvasY);
-      }),
+      new WheelPlugin((delta: number, viewportX: number, viewportY: number) =>
+        this._layout.zoomAt(delta, viewportX - SIDEBAR_WIDTH, viewportY)
+      ),
       new KeyboardPlugin("mod+=", () => this._layout.zoomByStep(ZoomDirection.in), { preventDefault: true }),
       new KeyboardPlugin("mod+-", () => this._layout.zoomByStep(ZoomDirection.out), { preventDefault: true }),
       new KeyboardPlugin("mod+1", () => this._layout.zoomToScale(1), { preventDefault: true }),
@@ -73,7 +67,7 @@ export class PluginManager {
     ]);
 
     this._pluginGroups.set(PluginGroup.playback, [
-      new DragPlugin((_x, _y, deltaX, deltaY) => this._layout.translateOffset(deltaX, deltaY), {
+      new DragPlugin((_viewportX, _viewportY, deltaX, deltaY) => this._layout.translateOffset(deltaX, deltaY), {
         cursor: "move",
       }),
       new KeyboardPlugin(" ", this._playback.togglePlaying, { preventDefault: true, stopPropagation: true }), // So that the space bar doesn't click buttons
