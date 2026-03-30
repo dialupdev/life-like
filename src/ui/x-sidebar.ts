@@ -4,9 +4,9 @@ import { html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
+import { ZoomDirection } from "../core/Layout.ts";
+import { type Layout, layoutContext } from "../core/Layout.ts";
 import { type Playback, playbackContext } from "../core/Playback.ts";
-import { ZoomDirection } from "../core/Renderer.ts";
-import { type Renderer, rendererContext } from "../core/Renderer.ts";
 import { type World, worldContext } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
@@ -75,8 +75,8 @@ class Sidebar extends MobxLitElement {
   @consume({ context: worldContext })
   private accessor _world!: World;
 
-  @consume({ context: rendererContext })
-  private accessor _renderer!: Renderer;
+  @consume({ context: layoutContext })
+  private accessor _layout!: Layout;
 
   @consume({ context: playbackContext })
   private accessor _playback!: Playback;
@@ -112,22 +112,22 @@ class Sidebar extends MobxLitElement {
     const value = (e.target as Menu).value;
 
     if (value === "in") {
-      this._renderer.zoomByStep(ZoomDirection.in);
+      this._layout.zoomByStep(ZoomDirection.in);
       return;
     }
 
     if (value === "out") {
-      this._renderer.zoomByStep(ZoomDirection.out);
+      this._layout.zoomByStep(ZoomDirection.out);
       return;
     }
 
     if (value === "fit") {
-      this._renderer.zoomToFit();
+      this._layout.zoomToFit();
       return;
     }
 
     const scale = parseFloat(value);
-    this._renderer.zoomToScale(scale);
+    this._layout.zoomToScale(scale);
   }
 
   private _truncateZoomScale(scale: number): number {
@@ -136,7 +136,7 @@ class Sidebar extends MobxLitElement {
   }
 
   private _fit(): void {
-    this._renderer.zoomToFit();
+    this._layout.zoomToFit();
   }
 
   private _setRule(e: Event): void {
@@ -221,7 +221,7 @@ class Sidebar extends MobxLitElement {
             <overlay-trigger triggered-by="click">
               <sp-action-button slot="trigger" class="zoom-button" label="Zoom">
                 <sp-icon-chevron-down slot="icon"></sp-icon-chevron-down>
-                ${this._truncateZoomScale(this._renderer.zoomScale)}%
+                ${this._truncateZoomScale(this._layout.zoomScale)}%
               </sp-action-button>
               <sp-popover slot="click-content" direction="bottom" class="zoom-menu">
                 <sp-menu @change=${this._zoomToScale}>

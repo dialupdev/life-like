@@ -4,7 +4,7 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { Rule } from "../core/Rules.ts";
 import { parseRlePattern } from "../utils/PatternUtils.ts";
 
-import type { Renderer } from "../core/Renderer.ts";
+import type { Layout } from "../core/Layout.ts";
 import type { World } from "../core/World.ts";
 
 export interface Pattern {
@@ -25,13 +25,13 @@ export const libraryStoreContext = createContext<LibraryStore>("libraryStore");
 
 export class LibraryStore {
   private _world: World;
-  private _renderer: Renderer;
+  private _layout: Layout;
 
   public categories = observable.array<Category>([]);
 
-  constructor(world: World, renderer: Renderer) {
+  constructor(world: World, layout: Layout) {
     this._world = world;
-    this._renderer = renderer;
+    this._layout = layout;
 
     this.loadPatterns = this.loadPatterns.bind(this);
 
@@ -92,7 +92,7 @@ export class LibraryStore {
 
       this._world.saveStartState();
 
-      this._renderer.zoomToFit();
+      this._layout.zoomToFit();
     } catch (error) {
       // oxlint-disable-next-line eslint/no-console
       console.error(error);

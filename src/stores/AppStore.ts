@@ -1,19 +1,19 @@
 import { createContext } from "@lit/context";
 
+import type { Layout } from "../core/Layout.ts";
 import type { Playback } from "../core/Playback.ts";
-import type { Renderer } from "../core/Renderer.ts";
 import type { World } from "../core/World.ts";
 
 export const appStoreContext = createContext<AppStore>("appStore");
 
 export class AppStore {
   private _world: World;
-  private _renderer: Renderer;
+  private _layout: Layout;
   private _playback: Playback;
 
-  constructor(world: World, renderer: Renderer, playback: Playback) {
+  constructor(world: World, layout: Layout, playback: Playback) {
     this._world = world;
-    this._renderer = renderer;
+    this._layout = layout;
     this._playback = playback;
 
     this.randomize = this.randomize.bind(this);
@@ -25,12 +25,12 @@ export class AppStore {
   public randomize(): void {
     this._playback.pause();
     this._world.randomize();
-    this._renderer.zoomToFit();
+    this._layout.zoomToFit();
   }
 
   public rewind(): void {
     this._playback.pause();
     this._world.rewind();
-    this._renderer.zoomToFit();
+    this._layout.zoomToFit();
   }
 }

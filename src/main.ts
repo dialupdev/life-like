@@ -1,7 +1,7 @@
 import { ContextProvider } from "@lit/context";
 import { configure } from "mobx";
 
-import { Layout } from "./core/Layout.ts";
+import { Layout, layoutContext } from "./core/Layout.ts";
 import { Playback, playbackContext } from "./core/Playback.ts";
 import { Renderer, rendererContext } from "./core/Renderer.ts";
 import { World, worldContext } from "./core/World.ts";
@@ -22,17 +22,22 @@ const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d", { alpha: false })!;
 
 const world = new World();
-const layout = new Layout(canvas);
-const renderer = new Renderer(canvas, context, layout, world, "oklch(0.5523 0.2476 256.83)");
+const layout = new Layout(canvas, world);
+const renderer = new Renderer(context, layout, world, "oklch(0.5523 0.2476 256.83)");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
-const libraryStore = new LibraryStore(world, renderer);
-const appStore = new AppStore(world, renderer, playback);
+const libraryStore = new LibraryStore(world, layout);
+const appStore = new AppStore(world, layout, playback);
 
 new ContextProvider(document.body, {
   context: worldContext,
   initialValue: world,
+});
+
+new ContextProvider(document.body, {
+  context: layoutContext,
+  initialValue: layout,
 });
 
 new ContextProvider(document.body, {
