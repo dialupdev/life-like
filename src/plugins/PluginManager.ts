@@ -65,6 +65,7 @@ export class PluginManager {
       new KeyboardPlugin("ArrowLeft", () => this._renderer.panInDirection(PanDirection.left), {
         preventDefault: true,
       }),
+      new KeyboardPlugin("d", () => this._renderer.toggleDebugMode()),
       new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
       new KeyboardPlugin("l", () => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)),
       new KeyboardPlugin("Escape", this._drawerStore.closeDrawer),
