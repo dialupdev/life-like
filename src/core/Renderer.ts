@@ -5,6 +5,7 @@ import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../Constants.ts";
 import { clamp } from "../utils/MathUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 
+import type { Layout } from "./Layout.ts";
 import type { World } from "./World.ts";
 
 const ZOOM_INTENSITY = 0.01;
@@ -32,6 +33,7 @@ export const rendererContext = createContext<Renderer>("renderer");
 export class Renderer {
   private _canvas: HTMLCanvasElement;
   private _context: CanvasRenderingContext2D;
+  private _layout: Layout;
   private _world: World;
   private _color: string;
 
@@ -44,9 +46,16 @@ export class Renderer {
 
   @observable public accessor zoomScale = 1.0; // 100%
 
-  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, world: World, color: string) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    context: CanvasRenderingContext2D,
+    layout: Layout,
+    world: World,
+    color: string
+  ) {
     this._canvas = canvas;
     this._context = context;
+    this._layout = layout;
     this._world = world;
     this._color = color;
 
@@ -59,6 +68,8 @@ export class Renderer {
     this.setDebugMode = this.setDebugMode.bind(this);
 
     getUserConfig("debugMode", (value: string) => value === "true", this.setDebugMode);
+
+    this._layout.requestUpdate = this.update.bind(this);
 
     makeObservable(this);
   }

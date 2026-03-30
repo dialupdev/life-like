@@ -1,6 +1,7 @@
 import { ContextProvider } from "@lit/context";
 import { configure } from "mobx";
 
+import { Layout } from "./core/Layout.ts";
 import { Playback, playbackContext } from "./core/Playback.ts";
 import { Renderer, rendererContext } from "./core/Renderer.ts";
 import { World, worldContext } from "./core/World.ts";
@@ -9,7 +10,6 @@ import { PluginGroup } from "./plugins/PluginManager.ts";
 import { PluginManager } from "./plugins/PluginManager.ts";
 import { AppStore, appStoreContext } from "./stores/AppStore.ts";
 import { DrawerStore, drawerStoreContext } from "./stores/DrawerStore.ts";
-import { LayoutStore } from "./stores/LayoutStore.ts";
 import { LibraryStore, libraryStoreContext } from "./stores/LibraryStore.ts";
 
 import "./ui/x-app.ts";
@@ -22,11 +22,11 @@ const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d", { alpha: false })!;
 
 const world = new World();
-const renderer = new Renderer(canvas, context, world, "oklch(0.5523 0.2476 256.83)");
+const layout = new Layout(canvas);
+const renderer = new Renderer(canvas, context, layout, world, "oklch(0.5523 0.2476 256.83)");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
-const layoutStore = new LayoutStore(canvas, renderer);
 const libraryStore = new LibraryStore(world, renderer);
 const appStore = new AppStore(world, renderer, playback);
 
@@ -61,7 +61,7 @@ new ContextProvider(document.body, {
 });
 
 const pluginBuilder = new PluginBuilder(canvas);
-const pluginManager = new PluginManager(pluginBuilder, renderer, playback, drawerStore, layoutStore, appStore);
+const pluginManager = new PluginManager(layout, renderer, playback, drawerStore, appStore, pluginBuilder);
 
 pluginManager.activateGroup(PluginGroup.default);
 pluginManager.activateGroup(PluginGroup.playback);

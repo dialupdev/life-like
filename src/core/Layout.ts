@@ -1,14 +1,14 @@
 import { PIXEL_RATIO, SIDEBAR_WIDTH } from "../Constants.ts";
 
-import type { Renderer } from "../core/Renderer.ts";
+type RequestUpdate = () => void;
 
-export class LayoutStore {
+export class Layout {
   private _canvas: HTMLCanvasElement;
-  private _renderer: Renderer;
 
-  constructor(canvas: HTMLCanvasElement, renderer: Renderer) {
+  public requestUpdate: RequestUpdate | undefined;
+
+  constructor(canvas: HTMLCanvasElement) {
     this._canvas = canvas;
-    this._renderer = renderer;
 
     this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
 
@@ -27,6 +27,6 @@ export class LayoutStore {
     this._canvas.style.width = `${width}px`;
     this._canvas.style.height = `${height}px`;
 
-    this._renderer.update();
+    this.requestUpdate?.();
   }
 }

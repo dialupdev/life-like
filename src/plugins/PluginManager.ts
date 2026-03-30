@@ -3,11 +3,11 @@ import { PanDirection, ZoomDirection } from "../core/Renderer.ts";
 import { DrawerMode } from "../stores/DrawerStore.ts";
 import { ResizePlugin, WheelPlugin, DragPlugin, KeyboardPlugin } from "./PluginBuilder.ts";
 
+import type { Layout } from "../core/Layout.ts";
 import type { Playback } from "../core/Playback.ts";
 import type { Renderer } from "../core/Renderer.ts";
 import type { AppStore } from "../stores/AppStore.ts";
 import type { DrawerStore } from "../stores/DrawerStore.ts";
-import type { LayoutStore } from "../stores/LayoutStore.ts";
 import type { PluginBuilder, Plugin } from "./PluginBuilder.ts";
 
 export enum PluginGroup {
@@ -16,31 +16,32 @@ export enum PluginGroup {
 }
 
 export class PluginManager {
-  private _pluginBuilder: PluginBuilder;
+  private _layout: Layout;
   private _renderer: Renderer;
   private _playback: Playback;
   private _drawerStore: DrawerStore;
-  private _layoutStore: LayoutStore;
   private _appStore: AppStore;
+  private _pluginBuilder: PluginBuilder;
+
   private _pluginGroups = new Map<PluginGroup, Plugin[]>();
 
   constructor(
-    pluginBuilder: PluginBuilder,
+    layout: Layout,
     renderer: Renderer,
     playback: Playback,
     drawerStore: DrawerStore,
-    layoutStore: LayoutStore,
-    appStore: AppStore
+    appStore: AppStore,
+    pluginBuilder: PluginBuilder
   ) {
-    this._pluginBuilder = pluginBuilder;
+    this._layout = layout;
     this._renderer = renderer;
     this._playback = playback;
     this._drawerStore = drawerStore;
-    this._layoutStore = layoutStore;
     this._appStore = appStore;
+    this._pluginBuilder = pluginBuilder;
 
     this._pluginGroups.set(PluginGroup.default, [
-      new ResizePlugin(this._layoutStore.fitCanvasToWindow),
+      new ResizePlugin(this._layout.fitCanvasToWindow),
       new WheelPlugin((delta: number, windowX: number, windowY: number) => {
         // Zoom point relative to world offset
         const canvasX = windowX - SIDEBAR_WIDTH;
