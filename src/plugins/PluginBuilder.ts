@@ -53,13 +53,18 @@ export class PluginBuilder {
   private _lastMouseY!: number;
   private _dragCursor?: string;
 
-  // During drag sessions, we don't want to trigger mousemove or mouseout events
-  private _suppressMousemoveAndMouseoutEvents = false;
+  // During drag sessions, we don't want to trigger mousemove events, and mouseout events work differently
+  private _isDragging = false;
+
+  // If a mouseout event happens during a drag session, we want to trigger its plugins
+  // at the end of the drag session (unless it also re-enters the canvas during the session)
+  private _mouseoutHappenedDuringDrag = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
     this._runWheelPlugins = this._runWheelPlugins.bind(this);
     this._runMouseMovePlugins = this._runMouseMovePlugins.bind(this);
+    this._handleMouseOver = this._handleMouseOver.bind(this);
     this._runMouseOutPlugins = this._runMouseOutPlugins.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
     this._startDrag = this._startDrag.bind(this);
@@ -88,7 +93,7 @@ export class PluginBuilder {
   }
 
   private _runMouseMovePlugins(e: MouseEvent): void {
-    if (this._suppressMousemoveAndMouseoutEvents) {
+    if (this._isDragging) {
       return;
     }
 
@@ -97,8 +102,16 @@ export class PluginBuilder {
     }
   }
 
+  private _handleMouseOver(_e: MouseEvent): void {
+    if (this._isDragging) {
+      this._mouseoutHappenedDuringDrag = false;
+    }
+  }
+
   private _runMouseOutPlugins(e: MouseEvent): void {
-    if (this._suppressMousemoveAndMouseoutEvents) {
+    if (this._isDragging) {
+      this._mouseoutHappenedDuringDrag = true;
+
       return;
     }
 
@@ -125,7 +138,7 @@ export class PluginBuilder {
       return;
     }
 
-    this._suppressMousemoveAndMouseoutEvents = true;
+    this._isDragging = true;
 
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
@@ -138,7 +151,15 @@ export class PluginBuilder {
     this._dragCursor && document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._runDragPlugins);
 
-    this._suppressMousemoveAndMouseoutEvents = false;
+    this._isDragging = false;
+
+    if (this._mouseoutHappenedDuringDrag) {
+      for (const plugin of this._mouseOutPlugins) {
+        plugin.run(this._lastMouseX, this._lastMouseY);
+      }
+
+      this._mouseoutHappenedDuringDrag = false;
+    }
   }
 
   private _runKeyboardPlugin(e: KeyboardEvent): void {
@@ -169,6 +190,7 @@ export class PluginBuilder {
     window.addEventListener("resize", throttle(this._runResizePlugins, 250));
     canvas.addEventListener("wheel", this._runWheelPlugins);
     canvas.addEventListener("mousemove", this._runMouseMovePlugins);
+    canvas.addEventListener("mouseover", this._handleMouseOver);
     canvas.addEventListener("mouseout", this._runMouseOutPlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
