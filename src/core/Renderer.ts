@@ -36,6 +36,18 @@ export class Renderer {
     makeObservable(this);
   }
 
+  private _getVisibleWorldBoundsInclusive(): [number, number, number, number] {
+    const [canvasWidth, canvasHeight] = this._layout.getCanvasSize();
+    const actualCellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
+
+    const minVisibleWorldX = Math.floor((this._layout.offsetX * -1) / actualCellSize);
+    const maxVisibleWorldX = Math.ceil((canvasWidth - this._layout.offsetX) / actualCellSize) - 1;
+    const minVisibleWorldY = Math.floor((this._layout.offsetY * -1) / actualCellSize);
+    const maxVisibleWorldY = Math.ceil((canvasHeight - this._layout.offsetY) / actualCellSize) - 1;
+
+    return [minVisibleWorldX, minVisibleWorldY, maxVisibleWorldX, maxVisibleWorldY];
+  }
+
   private _clear(): void {
     const [canvasWidth, canvasHeight] = this._layout.getCanvasSize();
 
@@ -127,9 +139,9 @@ export class Renderer {
     this._clear();
     this._context.fillStyle = this._color;
 
-    for (const [, cell] of this._world.cells) {
-      this._drawCell(cell.x, cell.y);
-    }
+    const [minX, minY, maxX, maxY] = this._getVisibleWorldBoundsInclusive();
+
+    this._world.forEachCellInRect(minX, minY, maxX, maxY, (cell) => this._drawCell(cell.x, cell.y));
 
     if (this.debugMode) {
       this._drawGridOverlay();

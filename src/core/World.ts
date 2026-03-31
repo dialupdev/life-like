@@ -25,7 +25,7 @@ export class World {
 
   // Same here - ideally we would use a Set for cells instead of a Map.
   // Instead, the map key is the Szudzik pair for each cell's (x ,y).
-  public cells = new Map<number, Cell>();
+  private _cells = new Map<number, Cell>();
 
   @observable public accessor generation = 0;
   @observable public accessor population = 0;
@@ -53,7 +53,7 @@ export class World {
       this._incrementNeighborCount(neighborHash);
     }
 
-    this.cells.set(cell.hash(), cell);
+    this._cells.set(cell.hash(), cell);
   }
 
   private _kill(cell: Cell): void {
@@ -61,7 +61,7 @@ export class World {
       this._decrementNeighborCount(neighborHash);
     }
 
-    this.cells.delete(cell.hash());
+    this._cells.delete(cell.hash());
   }
 
   private _incrementNeighborCount(hash: number): void {
@@ -114,7 +114,7 @@ export class World {
   }
 
   public clear(): void {
-    this.cells.clear();
+    this._cells.clear();
     this._neighborCounts.clear();
   }
 
@@ -138,19 +138,19 @@ export class World {
   @action
   public saveStartState(): void {
     this._neighborCountsStartState = new Map(this._neighborCounts);
-    this._cellsStartState = new Map(this.cells);
+    this._cellsStartState = new Map(this._cells);
 
     this.generation = 0;
-    this.population = this.cells.size;
+    this.population = this._cells.size;
   }
 
   @action
   public rewind(): void {
     this._neighborCounts = new Map(this._neighborCountsStartState);
-    this.cells = new Map(this._cellsStartState);
+    this._cells = new Map(this._cellsStartState);
 
     this.generation = 0;
-    this.population = this.cells.size;
+    this.population = this._cells.size;
   }
 
   @action
@@ -159,7 +159,7 @@ export class World {
     const cellsToSpawn = new Set<Cell>();
 
     // Mark cells to kill
-    for (const [hash, cell] of this.cells) {
+    for (const [hash, cell] of this._cells) {
       const neighborCount = this._neighborCounts.get(hash);
 
       if (!neighborCount || !this._survivalSet.has(neighborCount)) {
@@ -169,7 +169,7 @@ export class World {
 
     // Mark cells to spawn
     for (const [hash, count] of this._neighborCounts) {
-      if (this._birthSet.has(count) && !this.cells.has(hash)) {
+      if (this._birthSet.has(count) && !this._cells.has(hash)) {
         const cell = Cell.fromHash(hash);
         cellsToSpawn.add(cell);
       }
@@ -186,7 +186,21 @@ export class World {
     }
 
     this.generation++;
-    this.population = this.cells.size;
+    this.population = this._cells.size;
+  }
+
+  public forEachCellInRect(
+    minX: number,
+    minY: number,
+    maxX: number,
+    maxY: number,
+    callback: (cell: Cell) => void
+  ): void {
+    for (const [, cell] of this._cells) {
+      if (cell.x >= minX && cell.x <= maxX && cell.y >= minY && cell.y <= maxY) {
+        callback(cell);
+      }
+    }
   }
 
   public getBounds(): [number, number, number, number] {
@@ -195,7 +209,7 @@ export class World {
     let minY = Number.MAX_VALUE;
     let maxY = Number.MAX_VALUE * -1;
 
-    for (const [, cell] of this.cells) {
+    for (const [, cell] of this._cells) {
       minX = Math.min(minX, cell.x);
       maxX = Math.max(maxX, cell.x);
       minY = Math.min(minY, cell.y);
