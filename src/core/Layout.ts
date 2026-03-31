@@ -106,9 +106,9 @@ export class Layout {
     this.requestUpdate?.();
   }
 
+  @action
   public panInDirection(direction: PanDirection): void {
-    const cellSize = NATURAL_CELL_SIZE * this.zoomScale;
-    const panIncrement = cellSize * 10;
+    const panIncrement = 10;
 
     let deltaX = 0;
     let deltaY = 0;
@@ -128,7 +128,12 @@ export class Layout {
         break;
     }
 
-    this.translateOffset(deltaX, deltaY);
+    this.hoveredWorldX -= deltaX;
+    this.hoveredWorldY -= deltaY;
+
+    const actualCellSize = NATURAL_CELL_SIZE * this.zoomScale;
+
+    this.translateOffset(deltaX * actualCellSize, deltaY * actualCellSize);
   }
 
   @action
