@@ -74,7 +74,10 @@ class Hud extends MobxLitElement {
         <span>Population: ${this._population}</span>
       </div>
       <div>
-        <span>World coordinates: ${this._layout.hoveredWorldX}, ${this._layout.hoveredWorldY}</span>
+        <span
+          >World coordinates:
+          ${this._layout.hoveredWorldX ? `${this._layout.hoveredWorldX}, ${this._layout.hoveredWorldY}` : "-"}</span
+        >
       </div>
     `;
   }

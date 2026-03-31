@@ -37,8 +37,8 @@ export class Layout {
 
   @observable public accessor zoomScale = 1.0; // 100%
 
-  @observable public accessor hoveredWorldX = 0;
-  @observable public accessor hoveredWorldY = 0;
+  @observable public accessor hoveredWorldX: number | undefined = undefined;
+  @observable public accessor hoveredWorldY: number | undefined = undefined;
 
   public requestUpdate: RequestUpdate | undefined;
 
@@ -128,8 +128,8 @@ export class Layout {
         break;
     }
 
-    this.hoveredWorldX -= deltaX;
-    this.hoveredWorldY -= deltaY;
+    this.hoveredWorldX && (this.hoveredWorldX -= deltaX);
+    this.hoveredWorldY && (this.hoveredWorldY -= deltaY);
 
     const actualCellSize = NATURAL_CELL_SIZE * this.zoomScale;
 
@@ -255,5 +255,11 @@ export class Layout {
 
     this.hoveredWorldX = Math.floor(canvasX / actualCellSize);
     this.hoveredWorldY = Math.floor(canvasY / actualCellSize);
+  }
+
+  @action
+  public resetHoverPosition(): void {
+    this.hoveredWorldX = undefined;
+    this.hoveredWorldY = undefined;
   }
 }

@@ -21,6 +21,10 @@ export class MouseMovePlugin {
   constructor(public run: (viewportX: number, viewportY: number) => void) {}
 }
 
+export class MouseOutPlugin {
+  constructor(public run: (viewportX: number, viewportY: number) => void) {}
+}
+
 export class DragPlugin {
   constructor(
     public run: (viewportX: number, viewportY: number, deltaX: number, deltaY: number) => void,
@@ -42,19 +46,21 @@ export class PluginBuilder {
   private _resizePlugins = new Set<ResizePlugin>();
   private _wheelPlugins = new Set<WheelPlugin>();
   private _mouseMovePlugins = new Set<MouseMovePlugin>();
+  private _mouseOutPlugins = new Set<MouseOutPlugin>();
   private _dragPlugins = new Set<DragPlugin>();
   private _keyboardPlugins = new Map<string, KeyboardPlugin>();
   private _lastMouseX!: number;
   private _lastMouseY!: number;
   private _dragCursor?: string;
 
-  // During drag sessions, we don't want to trigger move events
-  private _suppressMoveEvents = false;
+  // During drag sessions, we don't want to trigger mousemove or mouseout events
+  private _suppressMousemoveAndMouseoutEvents = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
     this._runWheelPlugins = this._runWheelPlugins.bind(this);
     this._runMouseMovePlugins = this._runMouseMovePlugins.bind(this);
+    this._runMouseOutPlugins = this._runMouseOutPlugins.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
     this._startDrag = this._startDrag.bind(this);
     this._stopDrag = this._stopDrag.bind(this);
@@ -82,11 +88,21 @@ export class PluginBuilder {
   }
 
   private _runMouseMovePlugins(e: MouseEvent): void {
-    if (this._suppressMoveEvents) {
+    if (this._suppressMousemoveAndMouseoutEvents) {
       return;
     }
 
     for (const plugin of this._mouseMovePlugins) {
+      plugin.run(e.clientX, e.clientY);
+    }
+  }
+
+  private _runMouseOutPlugins(e: MouseEvent): void {
+    if (this._suppressMousemoveAndMouseoutEvents) {
+      return;
+    }
+
+    for (const plugin of this._mouseOutPlugins) {
       plugin.run(e.clientX, e.clientY);
     }
   }
@@ -109,7 +125,7 @@ export class PluginBuilder {
       return;
     }
 
-    this._suppressMoveEvents = true;
+    this._suppressMousemoveAndMouseoutEvents = true;
 
     this._lastMouseX = e.clientX;
     this._lastMouseY = e.clientY;
@@ -122,7 +138,7 @@ export class PluginBuilder {
     this._dragCursor && document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._runDragPlugins);
 
-    this._suppressMoveEvents = false;
+    this._suppressMousemoveAndMouseoutEvents = false;
   }
 
   private _runKeyboardPlugin(e: KeyboardEvent): void {
@@ -153,6 +169,7 @@ export class PluginBuilder {
     window.addEventListener("resize", throttle(this._runResizePlugins, 250));
     canvas.addEventListener("wheel", this._runWheelPlugins);
     canvas.addEventListener("mousemove", this._runMouseMovePlugins);
+    canvas.addEventListener("mouseout", this._runMouseOutPlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
     window.addEventListener("keydown", this._runKeyboardPlugin, true);
@@ -165,6 +182,8 @@ export class PluginBuilder {
       this._wheelPlugins.add(plugin);
     } else if (plugin instanceof MouseMovePlugin) {
       this._mouseMovePlugins.add(plugin);
+    } else if (plugin instanceof MouseOutPlugin) {
+      this._mouseOutPlugins.add(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.add(plugin);
       if (plugin.options?.cursor) this._dragCursor = plugin.options.cursor;
@@ -180,6 +199,8 @@ export class PluginBuilder {
       this._wheelPlugins.delete(plugin);
     } else if (plugin instanceof MouseMovePlugin) {
       this._mouseMovePlugins.delete(plugin);
+    } else if (plugin instanceof MouseOutPlugin) {
+      this._mouseOutPlugins.delete(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.delete(plugin);
       if (plugin.options?.cursor) delete this._dragCursor;
