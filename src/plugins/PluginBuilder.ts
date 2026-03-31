@@ -17,7 +17,7 @@ export class WheelPlugin {
   constructor(public run: (delta: number, viewportX: number, viewportY: number) => void) {}
 }
 
-export class MovePlugin {
+export class MouseMovePlugin {
   constructor(public run: (viewportX: number, viewportY: number) => void) {}
 }
 
@@ -41,7 +41,7 @@ export type Plugin = ResizePlugin | WheelPlugin | DragPlugin | KeyboardPlugin;
 export class PluginBuilder {
   private _resizePlugins = new Set<ResizePlugin>();
   private _wheelPlugins = new Set<WheelPlugin>();
-  private _movePlugins = new Set<MovePlugin>();
+  private _mouseMovePlugins = new Set<MouseMovePlugin>();
   private _dragPlugins = new Set<DragPlugin>();
   private _keyboardPlugins = new Map<string, KeyboardPlugin>();
   private _lastMouseX!: number;
@@ -54,7 +54,7 @@ export class PluginBuilder {
   constructor(canvas: HTMLCanvasElement) {
     this._runResizePlugins = this._runResizePlugins.bind(this);
     this._runWheelPlugins = this._runWheelPlugins.bind(this);
-    this._runMovePlugins = this._runMovePlugins.bind(this);
+    this._runMouseMovePlugins = this._runMouseMovePlugins.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
     this._startDrag = this._startDrag.bind(this);
     this._stopDrag = this._stopDrag.bind(this);
@@ -81,12 +81,12 @@ export class PluginBuilder {
     }
   }
 
-  private _runMovePlugins(e: MouseEvent): void {
+  private _runMouseMovePlugins(e: MouseEvent): void {
     if (this._suppressMoveEvents) {
       return;
     }
 
-    for (const plugin of this._movePlugins) {
+    for (const plugin of this._mouseMovePlugins) {
       plugin.run(e.clientX, e.clientY);
     }
   }
@@ -152,7 +152,7 @@ export class PluginBuilder {
   private _addEventListeners(canvas: HTMLCanvasElement): void {
     window.addEventListener("resize", throttle(this._runResizePlugins, 250));
     canvas.addEventListener("wheel", this._runWheelPlugins);
-    canvas.addEventListener("mousemove", this._runMovePlugins);
+    canvas.addEventListener("mousemove", this._runMouseMovePlugins);
     canvas.addEventListener("mousedown", this._startDrag);
     window.addEventListener("mouseup", this._stopDrag);
     window.addEventListener("keydown", this._runKeyboardPlugin, true);
@@ -163,8 +163,8 @@ export class PluginBuilder {
       this._resizePlugins.add(plugin);
     } else if (plugin instanceof WheelPlugin) {
       this._wheelPlugins.add(plugin);
-    } else if (plugin instanceof MovePlugin) {
-      this._movePlugins.add(plugin);
+    } else if (plugin instanceof MouseMovePlugin) {
+      this._mouseMovePlugins.add(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.add(plugin);
       if (plugin.options?.cursor) this._dragCursor = plugin.options.cursor;
@@ -178,8 +178,8 @@ export class PluginBuilder {
       this._resizePlugins.delete(plugin);
     } else if (plugin instanceof WheelPlugin) {
       this._wheelPlugins.delete(plugin);
-    } else if (plugin instanceof MovePlugin) {
-      this._movePlugins.delete(plugin);
+    } else if (plugin instanceof MouseMovePlugin) {
+      this._mouseMovePlugins.delete(plugin);
     } else if (plugin instanceof DragPlugin) {
       this._dragPlugins.delete(plugin);
       if (plugin.options?.cursor) delete this._dragCursor;
