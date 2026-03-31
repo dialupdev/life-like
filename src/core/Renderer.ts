@@ -127,9 +127,9 @@ export class Renderer {
     this._clear();
     this._context.fillStyle = this._color;
 
-    this._world.cells.forEach((cell) => {
+    for (const [, cell] of this._world.cells) {
       this._drawCell(cell.x, cell.y);
-    });
+    }
 
     if (this.debugMode) {
       this._drawGridOverlay();

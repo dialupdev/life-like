@@ -28,6 +28,7 @@ export default defineConfig({
     // https://github.com/oxc-project/oxc/issues/2180
     // "typescript/explicit-member-accessibility": ["error", { overrides: { constructors: "off" } }],
     "typescript/unbound-method": "off",
+    "unicorn/no-array-for-each": "error",
   },
   overrides: [
     {

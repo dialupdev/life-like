@@ -190,23 +190,23 @@ export class World {
   }
 
   public getBounds(): [number, number, number, number] {
-    let min_x = Number.MAX_VALUE;
-    let max_x = Number.MAX_VALUE * -1;
-    let min_y = Number.MAX_VALUE;
-    let max_y = Number.MAX_VALUE * -1;
+    let minX = Number.MAX_VALUE;
+    let maxX = Number.MAX_VALUE * -1;
+    let minY = Number.MAX_VALUE;
+    let maxY = Number.MAX_VALUE * -1;
 
-    this.cells.forEach((cell) => {
-      min_x = Math.min(min_x, cell.x);
-      max_x = Math.max(max_x, cell.x);
-      min_y = Math.min(min_y, cell.y);
-      max_y = Math.max(max_y, cell.y);
-    });
+    for (const [, cell] of this.cells) {
+      minX = Math.min(minX, cell.x);
+      maxX = Math.max(maxX, cell.x);
+      minY = Math.min(minY, cell.y);
+      maxY = Math.max(maxY, cell.y);
+    }
 
     // Add 1 to each of these to account for the size of the final cell in the row or column
-    const width = max_x - min_x + 1;
-    const height = max_y - min_y + 1;
+    const width = maxX - minX + 1;
+    const height = maxY - minY + 1;
 
     // x, y, width, height
-    return [min_x, min_y, width, height];
+    return [minX, minY, width, height];
   }
 }
