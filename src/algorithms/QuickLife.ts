@@ -3,13 +3,17 @@ import { Cell } from "../core/Cell.ts";
 import type { LifeAlgorithm } from "./LifeAlgorithm.ts";
 
 /**
- * Sparse life-like CA using a **chunk map** (fixed-size square blocks). This matches
- * the plan’s “hierarchical blocks + B/S stepping” goal without porting Golly’s full
- * qlifealgo C++ tree (separate block sizes, stability flags, etc.).
+ * Sparse life-like CA using a **chunk map** (fixed-size square blocks).
  *
- * Each chunk is `CHUNK_SIZE × CHUNK_SIZE` cells (`Uint8Array`, 0/1). Stepping builds a
- * **one-cell padded neighborhood** (9 chunks → `(CHUNK_SIZE+2)²` grid) and advances the
- * inner `CHUNK_SIZE²` block with **direct array indexing** (no per-cell `Map` lookups).
+ * Stepping builds a **one-cell padded neighborhood** (9 chunks → `(CHUNK_SIZE+2)²` grid)
+ * and advances the inner `CHUNK_SIZE²` block with **direct array indexing** (no per-cell
+ * `Map` lookups). **Per-chunk live counts** skip work when all nine neighbors are empty.
+ * **Next state** uses a **18-entry lookup table** (dead/alive × neighbor count 0–8) for
+ * outer-totalistic rules instead of `Set.has` in the hot loop.
+ *
+ * This is **not** a full port of Golly’s `qlifealgo` (bricks, staggered even/odd slices,
+ * tile/supertile dirty flags, `ruletable` slice indexing); see `GollyQuickLife` for the
+ * naming entry point and `gollybase/qlifealgo.cpp` for the reference implementation.
  * `forEachCellInRect` only walks chunks that overlap the query rectangle.
  */
 const CHUNK_SIZE = 64;
@@ -83,12 +87,27 @@ function fillPaddedNeighborhood(
   }
 }
 
+function countChunkPopulation(chunk: Uint8Array): number {
+  let count = 0;
+  for (let i = 0; i < chunk.length; i++) {
+    if (chunk[i]) {
+      count++;
+    }
+  }
+  return count;
+}
+
 export class QuickLife implements LifeAlgorithm {
   private _birthSet!: Set<number>;
   private _survivalSet!: Set<number>;
 
   private _chunks = new Map<string, Uint8Array>();
+  /** Cached live-cell count per chunk key (only keys with count > 0). */
+  private _chunkPop = new Map<string, number>();
   private _population = 0;
+
+  /** Index: dead → [0..8] = neighbor count; alive → [9..17] = 9 + neighbor count. Values 0/1. */
+  private _nextTable = new Uint8Array(18);
 
   private _chunksSnapshot = new Map<string, Uint8Array>();
   private _populationSnapshot = 0;
@@ -96,18 +115,38 @@ export class QuickLife implements LifeAlgorithm {
   constructor() {
     this._birthSet = new Set();
     this._survivalSet = new Set();
+    this._rebuildNextStateTable();
   }
 
   public setRule(birthSet: Set<number>, survivalSet: Set<number>): void {
     this._birthSet = birthSet;
     this._survivalSet = survivalSet;
+    this._rebuildNextStateTable();
   }
 
-  private _nextAlive(alive: boolean, neighborCount: number): boolean {
-    if (alive) {
-      return this._survivalSet.has(neighborCount);
+  private _rebuildNextStateTable(): void {
+    const table = new Uint8Array(18);
+    for (let alive = 0; alive <= 1; alive++) {
+      for (let neighborCount = 0; neighborCount <= 8; neighborCount++) {
+        const idx = alive ? 9 + neighborCount : neighborCount;
+        const next =
+          alive !== 0
+            ? this._survivalSet.has(neighborCount)
+            : this._birthSet.has(neighborCount);
+        table[idx] = next ? 1 : 0;
+      }
     }
-    return this._birthSet.has(neighborCount);
+    this._nextTable = table;
+  }
+
+  private _rebuildChunkPopFromChunks(): void {
+    this._chunkPop.clear();
+    for (const [key, arr] of this._chunks) {
+      const population = countChunkPopulation(arr);
+      if (population > 0) {
+        this._chunkPop.set(key, population);
+      }
+    }
   }
 
   public addCell(worldX: number, worldY: number): void {
@@ -127,6 +166,8 @@ export class QuickLife implements LifeAlgorithm {
     }
     chunk[cellIndex] = 1;
     this._population++;
+    const previousPop = this._chunkPop.get(key) ?? 0;
+    this._chunkPop.set(key, previousPop + 1);
   }
 
   public removeCell(worldX: number, worldY: number): void {
@@ -145,6 +186,14 @@ export class QuickLife implements LifeAlgorithm {
     }
     chunk[cellIndex] = 0;
     this._population--;
+
+    const previousPop = this._chunkPop.get(key) ?? 1;
+    const nextPop = previousPop - 1;
+    if (nextPop <= 0) {
+      this._chunkPop.delete(key);
+    } else {
+      this._chunkPop.set(key, nextPop);
+    }
 
     let chunkIsEmpty = true;
     for (let i = 0; i < chunk.length; i++) {
@@ -170,22 +219,55 @@ export class QuickLife implements LifeAlgorithm {
     }
 
     const nextChunks = new Map<string, Uint8Array>();
+    const nextChunkPop = new Map<string, number>();
     let nextPopulation = 0;
     const pad = new Uint8Array(PADDED_SIZE * PADDED_SIZE);
     const P = PADDED_SIZE;
+    const nextTable = this._nextTable;
 
     for (const chunkKeyString of chunkKeysToProcess) {
       const [chunkX, chunkY] = parseChunkKey(chunkKeyString);
 
-      const nw = this._chunks.get(chunkKey(chunkX - 1, chunkY - 1));
-      const n = this._chunks.get(chunkKey(chunkX, chunkY - 1));
-      const ne = this._chunks.get(chunkKey(chunkX + 1, chunkY - 1));
-      const w = this._chunks.get(chunkKey(chunkX - 1, chunkY));
-      const c = this._chunks.get(chunkKey(chunkX, chunkY));
-      const e = this._chunks.get(chunkKey(chunkX + 1, chunkY));
-      const sw = this._chunks.get(chunkKey(chunkX - 1, chunkY + 1));
-      const s = this._chunks.get(chunkKey(chunkX, chunkY + 1));
-      const se = this._chunks.get(chunkKey(chunkX + 1, chunkY + 1));
+      const kNw = chunkKey(chunkX - 1, chunkY - 1);
+      const kN = chunkKey(chunkX, chunkY - 1);
+      const kNe = chunkKey(chunkX + 1, chunkY - 1);
+      const kW = chunkKey(chunkX - 1, chunkY);
+      const kC = chunkKey(chunkX, chunkY);
+      const kE = chunkKey(chunkX + 1, chunkY);
+      const kSw = chunkKey(chunkX - 1, chunkY + 1);
+      const kS = chunkKey(chunkX, chunkY + 1);
+      const kSe = chunkKey(chunkX + 1, chunkY + 1);
+
+      const nw = this._chunks.get(kNw);
+      const n = this._chunks.get(kN);
+      const ne = this._chunks.get(kNe);
+      const w = this._chunks.get(kW);
+      const c = this._chunks.get(kC);
+      const e = this._chunks.get(kE);
+      const sw = this._chunks.get(kSw);
+      const s = this._chunks.get(kS);
+      const se = this._chunks.get(kSe);
+
+      let neighborhoodPop = 0;
+      const addPop = (key: string, chunk: Uint8Array | undefined): void => {
+        if (!chunk) {
+          return;
+        }
+        neighborhoodPop += this._chunkPop.get(key) ?? countChunkPopulation(chunk);
+      };
+      addPop(kNw, nw);
+      addPop(kN, n);
+      addPop(kNe, ne);
+      addPop(kW, w);
+      addPop(kC, c);
+      addPop(kE, e);
+      addPop(kSw, sw);
+      addPop(kS, s);
+      addPop(kSe, se);
+
+      if (neighborhoodPop === 0) {
+        continue;
+      }
 
       fillPaddedNeighborhood(pad, nw, n, ne, w, c, e, sw, s, se);
 
@@ -195,11 +277,12 @@ export class QuickLife implements LifeAlgorithm {
 
       const nextChunk = new Uint8Array(CHUNK_SIZE * CHUNK_SIZE);
       let chunkHasLiveCells = false;
+      let chunkLiveCount = 0;
 
       for (let localY = 0; localY < CHUNK_SIZE; localY++) {
         for (let localX = 0; localX < CHUNK_SIZE; localX++) {
           const cellIndex = (localY + 1) * P + (localX + 1);
-          const alive = pad[cellIndex];
+          const alive = pad[cellIndex] !== 0;
           const neighborCount =
             pad[cellIndex - P - 1] +
             pad[cellIndex - P] +
@@ -210,9 +293,11 @@ export class QuickLife implements LifeAlgorithm {
             pad[cellIndex + P] +
             pad[cellIndex + P + 1];
 
-          if (this._nextAlive(alive !== 0, neighborCount)) {
+          const tableIndex = alive ? 9 + neighborCount : neighborCount;
+          if (nextTable[tableIndex]) {
             nextChunk[localY * CHUNK_SIZE + localX] = 1;
             chunkHasLiveCells = true;
+            chunkLiveCount++;
             nextPopulation++;
           }
         }
@@ -220,10 +305,12 @@ export class QuickLife implements LifeAlgorithm {
 
       if (chunkHasLiveCells) {
         nextChunks.set(chunkKeyString, nextChunk);
+        nextChunkPop.set(chunkKeyString, chunkLiveCount);
       }
     }
 
     this._chunks = nextChunks;
+    this._chunkPop = nextChunkPop;
     this._population = nextPopulation;
   }
 
@@ -272,6 +359,7 @@ export class QuickLife implements LifeAlgorithm {
 
   public clear(): void {
     this._chunks.clear();
+    this._chunkPop.clear();
     this._population = 0;
   }
 
@@ -289,6 +377,7 @@ export class QuickLife implements LifeAlgorithm {
       this._chunks.set(key, new Uint8Array(arr));
     }
     this._population = this._populationSnapshot;
+    this._rebuildChunkPopFromChunks();
   }
 
   public getPopulation(): number {

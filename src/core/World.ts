@@ -22,6 +22,7 @@ export class World {
   @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
 
+  /** Default: `QuickLife`; use `GollyQuickLife` from `../algorithms/GollyQuickLife.ts` for the same implementation under Golly’s naming. */
   constructor(algorithm: LifeAlgorithm = new QuickLife()) {
     this._algorithm = algorithm;
 

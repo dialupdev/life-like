@@ -4,8 +4,14 @@ import { parseRule } from "../utils/RuleUtils.ts";
 import { Rule } from "../core/Rules.ts";
 
 import type { LifeAlgorithm } from "./LifeAlgorithm.ts";
+import { GollyQuickLife } from "./GollyQuickLife.ts";
 import { QuickLife } from "./QuickLife.ts";
 import { SzudzikSparseLife } from "./SzudzikSparseLife.ts";
+
+const CHUNK_ENGINES: { name: string; create: () => LifeAlgorithm }[] = [
+  { name: "QuickLife", create: () => new QuickLife() },
+  { name: "GollyQuickLife", create: () => new GollyQuickLife() },
+];
 
 function collectLiveSet(algo: LifeAlgorithm): Set<string> {
   const s = new Set<string>();
@@ -29,11 +35,12 @@ function assertSamePopulationAndCells(a: LifeAlgorithm, b: LifeAlgorithm): void 
   expect(collectLiveSet(a)).toEqual(collectLiveSet(b));
 }
 
-function seedBoth(
+function seedChunkEngine(
+  create: () => LifeAlgorithm,
   points: { x: number; y: number }[],
   rule: Rule
-): [QuickLife, SzudzikSparseLife] {
-  const q = new QuickLife();
+): [LifeAlgorithm, SzudzikSparseLife] {
+  const q = create();
   const z = new SzudzikSparseLife();
   const [birth, survival] = parseRule(rule);
   q.setRule(birth, survival);
@@ -45,14 +52,14 @@ function seedBoth(
   return [q, z];
 }
 
-describe("QuickLife vs SzudzikSparseLife parity", () => {
+describe.each(CHUNK_ENGINES)("$name vs SzudzikSparseLife parity", ({ create }) => {
   it("blinker one step (Life)", () => {
     const horizontal = [
       { x: 0, y: 0 },
       { x: 1, y: 0 },
       { x: 2, y: 0 },
     ];
-    const [q, z] = seedBoth(horizontal, Rule.life);
+    const [q, z] = seedChunkEngine(create, horizontal, Rule.life);
     q.tick();
     z.tick();
     assertSamePopulationAndCells(q, z);
@@ -67,7 +74,7 @@ describe("QuickLife vs SzudzikSparseLife parity", () => {
       { x: 2, y: 1 },
       { x: 2, y: 2 },
     ];
-    const [q, z] = seedBoth(start, Rule.life);
+    const [q, z] = seedChunkEngine(create, start, Rule.life);
     for (let i = 0; i < 4; i++) {
       q.tick();
       z.tick();
@@ -76,7 +83,8 @@ describe("QuickLife vs SzudzikSparseLife parity", () => {
   });
 
   it("HighLife small pattern", () => {
-    const [q, z] = seedBoth(
+    const [q, z] = seedChunkEngine(
+      create,
       [
         { x: 0, y: 0 },
         { x: 1, y: 0 },
@@ -92,7 +100,8 @@ describe("QuickLife vs SzudzikSparseLife parity", () => {
   });
 
   it("saveSnapshot and restoreSnapshot match Szudzik", () => {
-    const [q, z] = seedBoth(
+    const [q, z] = seedChunkEngine(
+      create,
       [
         { x: 0, y: 0 },
         { x: 1, y: 1 },
