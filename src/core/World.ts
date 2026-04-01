@@ -1,7 +1,7 @@
 import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
-import { SzudzikSparseLife } from "../algorithms/SzudzikSparseLife.ts";
+import { QuickLife } from "../algorithms/QuickLife.ts";
 import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 import { Rule } from "./Rules.ts";
@@ -22,8 +22,8 @@ export class World {
   @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
 
-  constructor() {
-    this._algorithm = new SzudzikSparseLife();
+  constructor(algorithm: LifeAlgorithm = new QuickLife()) {
+    this._algorithm = algorithm;
 
     const [birthSet, survivalSet] = parseRule(this.rule);
     this._algorithm.setRule(birthSet, survivalSet);

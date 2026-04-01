@@ -19,7 +19,8 @@
     "fmt:fix": "oxfmt",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "check": "npm run tsc && npm run fmt && npm run lint"
+    "check": "npm run tsc && npm run fmt && npm run lint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.2",
@@ -52,7 +53,8 @@
     "rollup": "^4.60.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.3",
-    "vite-plugin-html": "^3.2.2"
+    "vite-plugin-html": "^3.2.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": "^24",
