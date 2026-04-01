@@ -7,22 +7,17 @@ import type { LifeAlgorithm } from "./LifeAlgorithm.ts";
  * the plan’s “hierarchical blocks + B/S stepping” goal without porting Golly’s full
  * qlifealgo C++ tree (separate block sizes, stability flags, etc.).
  *
- * Each chunk is `CHUNK_SIZE × CHUNK_SIZE` cells (`Uint8Array`, 0/1). Stepping reads
- * the previous generation across chunk borders; `forEachCellInRect` only walks chunks
- * that overlap the query rectangle.
+ * Each chunk is `CHUNK_SIZE × CHUNK_SIZE` cells (`Uint8Array`, 0/1). Stepping builds a
+ * **one-cell padded neighborhood** (9 chunks → `(CHUNK_SIZE+2)²` grid) and advances the
+ * inner `CHUNK_SIZE²` block with **direct array indexing** (no per-cell `Map` lookups).
+ * `forEachCellInRect` only walks chunks that overlap the query rectangle.
  */
 const CHUNK_SIZE = 64;
 
-const NEIGHBOR_OFFSETS: [number, number][] = [
-  [-1, -1],
-  [-1, 0],
-  [-1, 1],
-  [0, -1],
-  [0, 1],
-  [1, -1],
-  [1, 0],
-  [1, 1],
-];
+/** Index of last row/column in the padded grid (one past inner chunk edge). */
+const PADDED_LAST = CHUNK_SIZE + 1;
+
+const PADDED_SIZE = CHUNK_SIZE + 2;
 
 function chunkKey(chunkX: number, chunkY: number): string {
   return `${chunkX},${chunkY}`;
@@ -31,6 +26,61 @@ function chunkKey(chunkX: number, chunkY: number): string {
 function parseChunkKey(key: string): [number, number] {
   const comma = key.indexOf(",");
   return [Number.parseInt(key.slice(0, comma), 10), Number.parseInt(key.slice(comma + 1), 10)];
+}
+
+/**
+ * Assemble the `(CHUNK_SIZE+2)²` padded grid for stepping `chunk (chunkX, chunkY)`:
+ * center = `c`, eight neighbors = compass names. Missing chunks are treated as all dead.
+ */
+function fillPaddedNeighborhood(
+  pad: Uint8Array,
+  nw: Uint8Array | undefined,
+  n: Uint8Array | undefined,
+  ne: Uint8Array | undefined,
+  w: Uint8Array | undefined,
+  c: Uint8Array | undefined,
+  e: Uint8Array | undefined,
+  sw: Uint8Array | undefined,
+  s: Uint8Array | undefined,
+  se: Uint8Array | undefined
+): void {
+  const P = PADDED_SIZE;
+  pad.fill(0);
+
+  if (c) {
+    for (let localY = 0; localY < CHUNK_SIZE; localY++) {
+      pad.set(c.subarray(localY * CHUNK_SIZE, (localY + 1) * CHUNK_SIZE), (1 + localY) * P + 1);
+    }
+  }
+  if (n) {
+    const northBottomRow = (CHUNK_SIZE - 1) * CHUNK_SIZE;
+    pad.set(n.subarray(northBottomRow, northBottomRow + CHUNK_SIZE), 1);
+  }
+  if (s) {
+    pad.set(s.subarray(0, CHUNK_SIZE), PADDED_LAST * P + 1);
+  }
+  if (w) {
+    for (let localY = 0; localY < CHUNK_SIZE; localY++) {
+      pad[(1 + localY) * P + 0] = w[localY * CHUNK_SIZE + CHUNK_SIZE - 1];
+    }
+  }
+  if (e) {
+    for (let localY = 0; localY < CHUNK_SIZE; localY++) {
+      pad[(1 + localY) * P + PADDED_LAST] = e[localY * CHUNK_SIZE];
+    }
+  }
+  if (nw) {
+    pad[0] = nw[(CHUNK_SIZE - 1) * CHUNK_SIZE + CHUNK_SIZE - 1];
+  }
+  if (ne) {
+    pad[PADDED_LAST] = ne[(CHUNK_SIZE - 1) * CHUNK_SIZE];
+  }
+  if (sw) {
+    pad[PADDED_LAST * P] = sw[(CHUNK_SIZE - 1) * CHUNK_SIZE + CHUNK_SIZE - 1];
+  }
+  if (se) {
+    pad[PADDED_LAST * P + PADDED_LAST] = se[0];
+  }
 }
 
 export class QuickLife implements LifeAlgorithm {
@@ -51,18 +101,6 @@ export class QuickLife implements LifeAlgorithm {
   public setRule(birthSet: Set<number>, survivalSet: Set<number>): void {
     this._birthSet = birthSet;
     this._survivalSet = survivalSet;
-  }
-
-  private _getCell(worldX: number, worldY: number): number {
-    const chunkX = Math.floor(worldX / CHUNK_SIZE);
-    const chunkY = Math.floor(worldY / CHUNK_SIZE);
-    const chunk = this._chunks.get(chunkKey(chunkX, chunkY));
-    if (!chunk) {
-      return 0;
-    }
-    const localX = worldX - chunkX * CHUNK_SIZE;
-    const localY = worldY - chunkY * CHUNK_SIZE;
-    return chunk[localY * CHUNK_SIZE + localX] ?? 0;
   }
 
   private _nextAlive(alive: boolean, neighborCount: number): boolean {
@@ -133,24 +171,46 @@ export class QuickLife implements LifeAlgorithm {
 
     const nextChunks = new Map<string, Uint8Array>();
     let nextPopulation = 0;
+    const pad = new Uint8Array(PADDED_SIZE * PADDED_SIZE);
+    const P = PADDED_SIZE;
 
     for (const chunkKeyString of chunkKeysToProcess) {
       const [chunkX, chunkY] = parseChunkKey(chunkKeyString);
+
+      const nw = this._chunks.get(chunkKey(chunkX - 1, chunkY - 1));
+      const n = this._chunks.get(chunkKey(chunkX, chunkY - 1));
+      const ne = this._chunks.get(chunkKey(chunkX + 1, chunkY - 1));
+      const w = this._chunks.get(chunkKey(chunkX - 1, chunkY));
+      const c = this._chunks.get(chunkKey(chunkX, chunkY));
+      const e = this._chunks.get(chunkKey(chunkX + 1, chunkY));
+      const sw = this._chunks.get(chunkKey(chunkX - 1, chunkY + 1));
+      const s = this._chunks.get(chunkKey(chunkX, chunkY + 1));
+      const se = this._chunks.get(chunkKey(chunkX + 1, chunkY + 1));
+
+      fillPaddedNeighborhood(pad, nw, n, ne, w, c, e, sw, s, se);
+
+      if (!pad.includes(1)) {
+        continue;
+      }
+
       const nextChunk = new Uint8Array(CHUNK_SIZE * CHUNK_SIZE);
       let chunkHasLiveCells = false;
 
       for (let localY = 0; localY < CHUNK_SIZE; localY++) {
         for (let localX = 0; localX < CHUNK_SIZE; localX++) {
-          const worldX = chunkX * CHUNK_SIZE + localX;
-          const worldY = chunkY * CHUNK_SIZE + localY;
-          const alive = this._getCell(worldX, worldY) !== 0;
-          let neighborCount = 0;
-          for (const [offsetX, offsetY] of NEIGHBOR_OFFSETS) {
-            if (this._getCell(worldX + offsetX, worldY + offsetY)) {
-              neighborCount++;
-            }
-          }
-          if (this._nextAlive(alive, neighborCount)) {
+          const cellIndex = (localY + 1) * P + (localX + 1);
+          const alive = pad[cellIndex];
+          const neighborCount =
+            pad[cellIndex - P - 1] +
+            pad[cellIndex - P] +
+            pad[cellIndex - P + 1] +
+            pad[cellIndex - 1] +
+            pad[cellIndex + 1] +
+            pad[cellIndex + P - 1] +
+            pad[cellIndex + P] +
+            pad[cellIndex + P + 1];
+
+          if (this._nextAlive(alive !== 0, neighborCount)) {
             nextChunk[localY * CHUNK_SIZE + localX] = 1;
             chunkHasLiveCells = true;
             nextPopulation++;
