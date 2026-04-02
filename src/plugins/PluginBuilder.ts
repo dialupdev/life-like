@@ -61,20 +61,20 @@ export class PluginBuilder {
   private _mouseoutHappenedDuringDrag = false;
 
   constructor(canvas: HTMLCanvasElement) {
-    this._runResizePlugins = this._runResizePlugins.bind(this);
-    this._runWheelPlugins = this._runWheelPlugins.bind(this);
-    this._runMouseMovePlugins = this._runMouseMovePlugins.bind(this);
+    this._handleResize = this._handleResize.bind(this);
+    this._handleWheel = this._handleWheel.bind(this);
+    this._handleMouseMove = this._handleMouseMove.bind(this);
     this._handleMouseOver = this._handleMouseOver.bind(this);
-    this._runMouseOutPlugins = this._runMouseOutPlugins.bind(this);
+    this._handleMouseOut = this._handleMouseOut.bind(this);
     this._runDragPlugins = this._runDragPlugins.bind(this);
-    this._startDrag = this._startDrag.bind(this);
-    this._stopDrag = this._stopDrag.bind(this);
-    this._runKeyboardPlugin = this._runKeyboardPlugin.bind(this);
+    this._handleMouseDown = this._handleMouseDown.bind(this);
+    this._handleMouseUp = this._handleMouseUp.bind(this);
+    this._handleKeyboard = this._handleKeyboard.bind(this);
 
     this._addEventListeners(canvas);
   }
 
-  private _runResizePlugins(e: UIEvent): void {
+  private _handleResize(e: UIEvent): void {
     const width = (e.target as Window).innerWidth;
     const height = (e.target as Window).innerHeight;
 
@@ -83,7 +83,7 @@ export class PluginBuilder {
     }
   }
 
-  private _runWheelPlugins(e: WheelEvent): void {
+  private _handleWheel(e: WheelEvent): void {
     e.preventDefault();
 
     for (const plugin of this._wheelPlugins) {
@@ -92,7 +92,7 @@ export class PluginBuilder {
     }
   }
 
-  private _runMouseMovePlugins(e: MouseEvent): void {
+  private _handleMouseMove(e: MouseEvent): void {
     if (this._isDragging) {
       return;
     }
@@ -108,7 +108,7 @@ export class PluginBuilder {
     }
   }
 
-  private _runMouseOutPlugins(e: MouseEvent): void {
+  private _handleMouseOut(e: MouseEvent): void {
     if (this._isDragging) {
       this._mouseoutHappenedDuringDrag = true;
 
@@ -132,7 +132,7 @@ export class PluginBuilder {
     }
   }
 
-  private _startDrag(e: MouseEvent): void {
+  private _handleMouseDown(e: MouseEvent): void {
     // Ignore drag events triggered by right click
     if (e.button !== 0) {
       return;
@@ -147,7 +147,7 @@ export class PluginBuilder {
     this._dragCursor && document.body.style.setProperty("cursor", this._dragCursor);
   }
 
-  private _stopDrag(): void {
+  private _handleMouseUp(): void {
     this._dragCursor && document.body.style.removeProperty("cursor");
     window.removeEventListener("mousemove", this._runDragPlugins);
 
@@ -162,7 +162,7 @@ export class PluginBuilder {
     }
   }
 
-  private _runKeyboardPlugin(e: KeyboardEvent): void {
+  private _handleKeyboard(e: KeyboardEvent): void {
     let keyBindings = "";
 
     if (e.metaKey || e.ctrlKey) {
@@ -187,14 +187,14 @@ export class PluginBuilder {
   }
 
   private _addEventListeners(canvas: HTMLCanvasElement): void {
-    window.addEventListener("resize", throttle(this._runResizePlugins, 250));
-    canvas.addEventListener("wheel", this._runWheelPlugins);
-    canvas.addEventListener("mousemove", this._runMouseMovePlugins);
+    window.addEventListener("resize", throttle(this._handleResize, 250));
+    canvas.addEventListener("wheel", this._handleWheel);
+    canvas.addEventListener("mousemove", this._handleMouseMove);
     canvas.addEventListener("mouseover", this._handleMouseOver);
-    canvas.addEventListener("mouseout", this._runMouseOutPlugins);
-    canvas.addEventListener("mousedown", this._startDrag);
-    window.addEventListener("mouseup", this._stopDrag);
-    window.addEventListener("keydown", this._runKeyboardPlugin, true);
+    canvas.addEventListener("mouseout", this._handleMouseOut);
+    canvas.addEventListener("mousedown", this._handleMouseDown);
+    window.addEventListener("mouseup", this._handleMouseUp);
+    window.addEventListener("keydown", this._handleKeyboard, true);
   }
 
   public activate(plugin: Plugin): void {
