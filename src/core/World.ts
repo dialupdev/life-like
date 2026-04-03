@@ -16,8 +16,8 @@ export enum DeltaType {
 export const worldContext = createContext<World>("world");
 
 export class World {
-  private _birthSet!: Set<number>;
-  private _survivalSet!: Set<number>;
+  private _birthTable: boolean[];
+  private _survivalTable: boolean[];
 
   private _neighborCountsStartState = new Map<number, number>();
   private _cellsStartState = new Map<number, Cell>();
@@ -44,7 +44,7 @@ export class World {
   @observable public accessor randomizeAverageDensity = 0.5;
 
   constructor() {
-    [this._birthSet, this._survivalSet] = parseRule(this.rule);
+    [this._birthTable, this._survivalTable] = parseRule(this.rule);
 
     this.setRule = this.setRule.bind(this);
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
@@ -91,7 +91,7 @@ export class World {
 
   @action
   public setRule(rule: Rule): void {
-    [this._birthSet, this._survivalSet] = parseRule(rule);
+    [this._birthTable, this._survivalTable] = parseRule(rule);
 
     this.rule = rule;
 
@@ -177,14 +177,14 @@ export class World {
     for (const [hash, cell] of this._cells) {
       const neighborCount = this._neighborCounts.get(hash);
 
-      if (!neighborCount || !this._survivalSet.has(neighborCount)) {
+      if (!neighborCount || !this._survivalTable[neighborCount]) {
         cellsToKill.add(cell);
       }
     }
 
     // Mark cells to spawn
     for (const [hash, count] of this._neighborCounts) {
-      if (this._birthSet.has(count) && !this._cells.has(hash)) {
+      if (this._birthTable[count] && !this._cells.has(hash)) {
         const cell = Cell.fromHash(hash);
         cellsToSpawn.add(cell);
       }

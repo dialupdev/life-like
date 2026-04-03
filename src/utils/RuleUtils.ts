@@ -2,23 +2,27 @@ import { Rule, ruleGroups, stylizedRuleNames } from "../core/Rules.ts";
 
 export type RuleKey = keyof typeof Rule;
 
-export function parseRule(rule: Rule): [Set<number>, Set<number>] {
+export function parseRule(rule: Rule): [boolean[], boolean[]] {
   const halves = rule.split("/");
 
-  const birthSet = new Set(
-    halves[0]
-      .substring(1)
-      .split("")
-      .map((s) => parseInt(s, 10))
-  );
-  const survivalSet = new Set(
-    halves[1]
-      .substring(1)
-      .split("")
-      .map((s) => parseInt(s, 10))
-  );
+  const birthTable = Array.from({ length: 8 }, () => false);
+  const survivalTable = Array.from({ length: 8 }, () => false);
 
-  return [birthSet, survivalSet];
+  halves[0]
+    .substring(1)
+    .split("")
+    .map((s) => parseInt(s, 10))
+    // oxlint-disable-next-line unicorn/no-array-for-each
+    .forEach((index) => (birthTable[index] = true));
+
+  halves[1]
+    .substring(1)
+    .split("")
+    .map((s) => parseInt(s, 10))
+    // oxlint-disable-next-line unicorn/no-array-for-each
+    .forEach((index) => (survivalTable[index] = true));
+
+  return [birthTable, survivalTable];
 }
 
 function _convertToTitlecase(key: RuleKey): string {
