@@ -18,8 +18,7 @@ export default defineConfig({
         swc: {
           jsc: {
             parser: { syntax: "typescript", decorators: true },
-            // SWC doesn't support the 2023-11 version yet.
-            transform: { decoratorVersion: "2022-03" },
+            transform: { decoratorVersion: "2023-11" },
           },
         },
       }),
