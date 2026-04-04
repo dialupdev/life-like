@@ -69,18 +69,6 @@ export class Renderer {
     const bottom = Math.round(scaledCellSize * (worldY + 1) + baseY);
 
     this._context.fillRect(left, top, right - left, bottom - top);
-
-    if (this.debugMode) {
-      // Draw cell coordinates as text
-      const fontSize = this._layout.zoomScale;
-      const textPadding = this._layout.zoomScale;
-
-      this._context.fillStyle = "white";
-      this._context.font = `${fontSize}px monospace`;
-      this._context.textBaseline = "bottom";
-      this._context.fillText(`${worldX},${worldY}`, left + textPadding, bottom - textPadding);
-      this._context.fillStyle = this._color;
-    }
   }
 
   private _drawGridOverlay(): void {
