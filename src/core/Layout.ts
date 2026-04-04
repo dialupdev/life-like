@@ -30,6 +30,7 @@ export const layoutContext = createContext<Layout>("layout");
 
 export class Layout {
   private _canvas: HTMLCanvasElement;
+  private _context: CanvasRenderingContext2D;
   private _world: World;
 
   public offsetX = 0.0; // Not including pixel ratio
@@ -42,8 +43,9 @@ export class Layout {
 
   public requestUpdate: RequestUpdate | undefined;
 
-  constructor(canvas: HTMLCanvasElement, world: World) {
+  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, world: World) {
     this._canvas = canvas;
+    this._context = context;
     this._world = world;
 
     this.fitCanvasToWindow = this.fitCanvasToWindow.bind(this);
@@ -95,6 +97,8 @@ export class Layout {
     // Scale canvas back down to its actual size
     this._canvas.style.width = `${width}px`;
     this._canvas.style.height = `${height}px`;
+
+    this._context.imageSmoothingEnabled = false;
 
     this.requestUpdate?.();
   }
