@@ -197,7 +197,7 @@ export class World {
     callback: (cell: Cell) => void
   ): void {
     for (const [, cell] of this._cells) {
-      if (cell.x >= minX && cell.x <= maxX && cell.y >= minY && cell.y <= maxY) {
+      if (cell.x >= minX && cell.x < maxX && cell.y >= minY && cell.y < maxY) {
         callback(cell);
       }
     }
