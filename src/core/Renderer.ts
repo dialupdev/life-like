@@ -41,9 +41,10 @@ export class Renderer {
     const actualCellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
 
     const minVisibleWorldX = Math.floor((this._layout.offsetX * -1) / actualCellSize);
-    const maxVisibleWorldX = Math.ceil((canvasWidth - this._layout.offsetX) / actualCellSize) - 1;
     const minVisibleWorldY = Math.floor((this._layout.offsetY * -1) / actualCellSize);
-    const maxVisibleWorldY = Math.ceil((canvasHeight - this._layout.offsetY) / actualCellSize) - 1;
+
+    const maxVisibleWorldX = Math.floor((canvasWidth - this._layout.offsetX) / actualCellSize);
+    const maxVisibleWorldY = Math.floor((canvasHeight - this._layout.offsetY) / actualCellSize);
 
     return [minVisibleWorldX, minVisibleWorldY, maxVisibleWorldX, maxVisibleWorldY];
   }
