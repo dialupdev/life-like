@@ -192,10 +192,13 @@ export class World {
   public forEachCellInRect(
     minX: number,
     minY: number,
-    maxX: number,
-    maxY: number,
+    width: number,
+    height: number,
     callback: (cell: Cell) => void
   ): void {
+    const maxX = minX + width;
+    const maxY = minY + height;
+
     for (const [, cell] of this._cells) {
       if (cell.x >= minX && cell.x < maxX && cell.y >= minY && cell.y < maxY) {
         callback(cell);

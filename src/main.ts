@@ -21,8 +21,6 @@ configure({
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d", { alpha: false })!;
 
-context.imageSmoothingEnabled = false;
-
 const world = new World();
 const layout = new Layout(canvas, context, world);
 const renderer = new Renderer(context, layout, world, "#0065fd");
