@@ -25,7 +25,7 @@ context.imageSmoothingEnabled = false;
 
 const world = new World();
 const layout = new Layout(canvas, context, world);
-const renderer = new Renderer(context, layout, world, "oklch(0.5523 0.2476 256.83)");
+const renderer = new Renderer(context, layout, world, "#0065fd");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
