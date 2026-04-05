@@ -2,7 +2,7 @@ import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../Constants.ts";
-import { parseHexColor } from "../utils/ColorUtils.ts";
+import { hexColorToABGR } from "../utils/ColorUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 
 import type { Layout } from "./Layout.ts";
@@ -16,7 +16,7 @@ export class Renderer {
   private _context: CanvasRenderingContext2D;
   private _layout: Layout;
   private _world: World;
-  private _colorRGBA: [number, number, number, number];
+  private _colorABGR: number;
 
   private _visibleWorldWidth: number = 0;
   private _visibleWorldHeight: number = 0;
@@ -33,7 +33,7 @@ export class Renderer {
     this._context = context;
     this._layout = layout;
     this._world = world;
-    this._colorRGBA = parseHexColor(color);
+    this._colorABGR = hexColorToABGR(color);
 
     // We need an offscreen canvas because we can't draw individual pixels directly onto
     // the main canvas - they need to be scaled, which requires drawing to an offscreen canvas first
@@ -142,25 +142,20 @@ export class Renderer {
 
     this._maybeBuildImageData(visibleWorldWidth, visibleWorldHeight);
 
-    const buffer = this._imageData!.data;
+    // Use a Uint32Array view of the image data for faster access
+    // This allows us to write 4 bytes (1 full pixel) at a time
+    const buffer = new Uint32Array(this._imageData!.data.buffer);
 
     // Fill buffer with white background
-    buffer.fill(255);
-
-    const [r, g, b, a] = this._colorRGBA;
+    buffer.fill(0xffffffff);
 
     // Write visible cells as single pixels into the buffer
-    // Each pixel is 4 bytes (RGBA)
     this._world.forEachCellInRect(minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight, (cell) => {
       const bufferX = cell.x - minVisibleWorldX;
       const bufferY = cell.y - minVisibleWorldY;
+      const offset = bufferY * visibleWorldWidth + bufferX;
 
-      const offset = (bufferY * visibleWorldWidth + bufferX) * 4;
-
-      buffer[offset] = r;
-      buffer[offset + 1] = g;
-      buffer[offset + 2] = b;
-      buffer[offset + 3] = a;
+      buffer[offset] = this._colorABGR;
     });
 
     // Write buffer to offscreen canvas

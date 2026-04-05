@@ -1,7 +1,9 @@
-export function parseHexColor(hex: string): [number, number, number, number] {
+export function hexColorToABGR(hex: string): number {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
+  const a = 255;
 
-  return [r, g, b, 255];
+  // 0xAABBGGRR
+  return (a << 24) | (b << 16) | (g << 8) | r;
 }
