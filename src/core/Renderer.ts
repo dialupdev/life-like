@@ -4,6 +4,7 @@ import { makeObservable, observable, action } from "mobx";
 import { PIXEL_RATIO, NATURAL_CELL_SIZE } from "../Constants.ts";
 import { hexColorToABGR } from "../utils/ColorUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
+import { DeltaType } from "./World.ts";
 
 import type { Layout } from "./Layout.ts";
 import type { World } from "./World.ts";
@@ -20,6 +21,10 @@ export class Renderer {
 
   private _visibleWorldWidth: number = 0;
   private _visibleWorldHeight: number = 0;
+
+  // Whether the whole world needs to be rendered,
+  // or just the deltas from the most recent tick
+  private _needsFullUpdate: boolean = true;
 
   private _offscreenCanvas: HTMLCanvasElement;
   private _offscreenContext: CanvasRenderingContext2D;
@@ -45,7 +50,11 @@ export class Renderer {
 
     getUserConfig("debugMode", (value: string) => value === "true", this.setDebugMode);
 
-    this._layout.requestUpdate = this.update.bind(this);
+    this._layout.requestUpdate = () => {
+      // Any layout changes require a full update
+      this._needsFullUpdate = true;
+      this.update();
+    };
 
     makeObservable(this);
   }
@@ -82,6 +91,72 @@ export class Renderer {
     this._offscreenCanvas.height = visibleWorldHeight;
 
     this._imageData = new ImageData(visibleWorldWidth, visibleWorldHeight);
+  }
+
+  private _fullUpdate(
+    buffer: Uint32Array,
+    minVisibleWorldX: number,
+    minVisibleWorldY: number,
+    visibleWorldWidth: number,
+    visibleWorldHeight: number
+  ): void {
+    // Fill buffer with white
+    buffer.fill(0xffffffff);
+
+    this._world.iterateAllCellsInRect(
+      minVisibleWorldX,
+      minVisibleWorldY,
+      visibleWorldWidth,
+      visibleWorldHeight,
+      (cell) => {
+        const bufferX = cell.x - minVisibleWorldX;
+        const bufferY = cell.y - minVisibleWorldY;
+        const offset = bufferY * visibleWorldWidth + bufferX;
+
+        // Draw each cell as a single pixel
+        buffer[offset] = this._colorABGR;
+      }
+    );
+  }
+
+  private _incrementalUpdate(
+    buffer: Uint32Array,
+    minVisibleWorldX: number,
+    minVisibleWorldY: number,
+    visibleWorldWidth: number,
+    visibleWorldHeight: number
+  ): void {
+    this._world.iterateDeltaCellsInRect(
+      DeltaType.killed,
+      minVisibleWorldX,
+      minVisibleWorldY,
+      visibleWorldWidth,
+      visibleWorldHeight,
+      (cell) => {
+        const bufferX = cell.x - minVisibleWorldX;
+        const bufferY = cell.y - minVisibleWorldY;
+        const offset = bufferY * visibleWorldWidth + bufferX;
+
+        // Draw a white pixel for killed cells
+        buffer[offset] = 0xffffffff;
+      }
+    );
+
+    this._world.iterateDeltaCellsInRect(
+      DeltaType.spawned,
+      minVisibleWorldX,
+      minVisibleWorldY,
+      visibleWorldWidth,
+      visibleWorldHeight,
+      (cell) => {
+        const bufferX = cell.x - minVisibleWorldX;
+        const bufferY = cell.y - minVisibleWorldY;
+        const offset = bufferY * visibleWorldWidth + bufferX;
+
+        // Draw a colored pixel for spawned cells
+        buffer[offset] = this._colorABGR;
+      }
+    );
   }
 
   private _drawGridOverlay(): void {
@@ -146,17 +221,15 @@ export class Renderer {
     // This allows us to write 4 bytes (1 full pixel) at a time
     const buffer = new Uint32Array(this._imageData!.data.buffer);
 
-    // Fill buffer with white background
-    buffer.fill(0xffffffff);
+    if (this._needsFullUpdate) {
+      this._fullUpdate(buffer, minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight);
+    } else {
+      this._incrementalUpdate(buffer, minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight);
+    }
 
-    // Write visible cells as single pixels into the buffer
-    this._world.forEachCellInRect(minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight, (cell) => {
-      const bufferX = cell.x - minVisibleWorldX;
-      const bufferY = cell.y - minVisibleWorldY;
-      const offset = bufferY * visibleWorldWidth + bufferX;
-
-      buffer[offset] = this._colorABGR;
-    });
+    // Now that we know the whole world is rendered,
+    // we can do an incremental update next time
+    this._needsFullUpdate = false;
 
     // Write buffer to offscreen canvas
     this._offscreenContext.putImageData(this._imageData!, 0, 0);

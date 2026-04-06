@@ -8,6 +8,11 @@ import { Rule } from "./Rules.ts";
 
 import type { RuleKey } from "../utils/RuleUtils.ts";
 
+export enum DeltaType {
+  killed,
+  spawned,
+}
+
 export const worldContext = createContext<World>("world");
 
 export class World {
@@ -26,6 +31,10 @@ export class World {
   // Same here - ideally we would use a Set for cells instead of a Map.
   // Instead, the map key is the Szudzik pair for each cell's (x ,y).
   private _cells = new Map<number, Cell>();
+
+  // Deltas from the most recent tick, which are used for incremental rendering
+  private _cellsKilledLastTick?: ReadonlySet<Cell>;
+  private _cellsSpawnedLastTick?: ReadonlySet<Cell>;
 
   @observable public accessor generation = 0;
   @observable public accessor population = 0;
@@ -116,6 +125,9 @@ export class World {
   public clear(): void {
     this._cells.clear();
     this._neighborCounts.clear();
+
+    this._cellsKilledLastTick = undefined;
+    this._cellsSpawnedLastTick = undefined;
   }
 
   public randomize(): void {
@@ -148,6 +160,9 @@ export class World {
   public rewind(): void {
     this._neighborCounts = new Map(this._neighborCountsStartState);
     this._cells = new Map(this._cellsStartState);
+
+    this._cellsKilledLastTick = undefined;
+    this._cellsSpawnedLastTick = undefined;
 
     this.generation = 0;
     this.population = this._cells.size;
@@ -185,11 +200,15 @@ export class World {
       this._spawn(cell);
     }
 
+    this._cellsKilledLastTick = cellsToKill;
+    this._cellsSpawnedLastTick = cellsToSpawn;
+
     this.generation++;
     this.population = this._cells.size;
   }
 
-  public forEachCellInRect(
+  // Run the callback for all cells in the given rectangle
+  public iterateAllCellsInRect(
     minX: number,
     minY: number,
     width: number,
@@ -200,6 +219,28 @@ export class World {
     const maxY = minY + height;
 
     for (const [, cell] of this._cells) {
+      if (cell.x >= minX && cell.x < maxX && cell.y >= minY && cell.y < maxY) {
+        callback(cell);
+      }
+    }
+  }
+
+  // Run the callback for all cells in the given rectangle
+  // that were killed or spawned in the most recent tick
+  public iterateDeltaCellsInRect(
+    deltaType: DeltaType,
+    minX: number,
+    minY: number,
+    width: number,
+    height: number,
+    callback: (cell: Cell) => void
+  ): void {
+    const cells = deltaType === DeltaType.killed ? this._cellsKilledLastTick! : this._cellsSpawnedLastTick!;
+
+    const maxX = minX + width;
+    const maxY = minY + height;
+
+    for (const cell of cells) {
       if (cell.x >= minX && cell.x < maxX && cell.y >= minY && cell.y < maxY) {
         callback(cell);
       }
