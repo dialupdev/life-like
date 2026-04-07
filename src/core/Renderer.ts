@@ -266,6 +266,7 @@ export class Renderer {
   public setDebugMode(debugMode: boolean): void {
     this.debugMode = debugMode;
 
+    this._needsFullUpdate = true;
     this.update();
 
     setUserConfig("debugMode", debugMode.toString());
