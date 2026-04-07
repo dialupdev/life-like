@@ -159,7 +159,12 @@ export class Renderer {
     );
   }
 
-  private _drawGridOverlay(): void {
+  private _drawGridOverlay(
+    minVisibleWorldX: number,
+    minVisibleWorldY: number,
+    visibleWorldWidth: number,
+    visibleWorldHeight: number
+  ): void {
     const actualCellSize = NATURAL_CELL_SIZE * this._layout.zoomScale;
     const scaledCellSize = PIXEL_RATIO * actualCellSize;
 
@@ -196,6 +201,27 @@ export class Renderer {
       this._context.lineTo(x, y1);
       this._context.stroke();
     }
+
+    // Cell coordinates as text
+    const fontSize = this._layout.zoomScale;
+    const textPadding = this._layout.zoomScale;
+
+    this._context.fillStyle = "#fff";
+    this._context.font = `${fontSize}px monospace`;
+    this._context.textBaseline = "bottom";
+
+    this._world.iterateAllCellsInRect(
+      minVisibleWorldX,
+      minVisibleWorldY,
+      visibleWorldWidth,
+      visibleWorldHeight,
+      (cell) => {
+        const left = Math.round(scaledCellSize * cell.x + baseX);
+        const bottom = Math.round(scaledCellSize * (cell.y + 1) + baseY);
+
+        this._context.fillText(`${cell.x},${cell.y}`, left + textPadding, bottom - textPadding);
+      }
+    );
 
     // Centered dark dot
     const dotRadius = this._layout.zoomScale;
@@ -250,7 +276,7 @@ export class Renderer {
     );
 
     if (this.debugMode) {
-      this._drawGridOverlay();
+      this._drawGridOverlay(minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight);
     }
   }
 
