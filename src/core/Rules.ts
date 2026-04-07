@@ -26,3 +26,12 @@ export enum Rule {
   vote = "B5678/S45678",
   walledCities = "B45678/S2345",
 }
+
+export const stylizedRuleNames: Partial<Record<Rule, string>> = {
+  [Rule.dayAndNight]: "Day & Night",
+  [Rule.dotLife]: "DotLife",
+  [Rule.dryLife]: "DryLife",
+  [Rule.highLife]: "HighLife",
+  [Rule.twoByTwo]: "2x2",
+  [Rule.voteFourFive]: "Vote 4/5",
+};

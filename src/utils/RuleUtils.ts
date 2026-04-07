@@ -1,15 +1,6 @@
-import { Rule } from "../core/Rules.ts";
+import { Rule, stylizedRuleNames } from "../core/Rules.ts";
 
 export type RuleKey = keyof typeof Rule;
-
-const stylizedRuleNames: Partial<Record<Rule, string>> = {
-  [Rule.dayAndNight]: "Day & Night",
-  [Rule.dotLife]: "DotLife",
-  [Rule.dryLife]: "DryLife",
-  [Rule.highLife]: "HighLife",
-  [Rule.twoByTwo]: "2x2",
-  [Rule.voteFourFive]: "Vote 4/5",
-};
 
 export function parseRule(rule: Rule): [Set<number>, Set<number>] {
   const halves = rule.split("/");
