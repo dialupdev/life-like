@@ -33,8 +33,8 @@ export class World {
   private _cells = new Map<number, Cell>();
 
   // Deltas from the most recent tick, which are used for incremental rendering
-  private _cellsKilledLastTick?: ReadonlySet<Cell>;
-  private _cellsSpawnedLastTick?: ReadonlySet<Cell>;
+  private _cellsKilledLastTick?: Set<Cell>;
+  private _cellsSpawnedLastTick?: Set<Cell>;
 
   @observable public accessor generation = 0;
   @observable public accessor population = 0;
