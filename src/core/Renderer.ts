@@ -264,12 +264,16 @@ export class Renderer {
 
   @action
   public setDebugMode(debugMode: boolean): void {
+    const debugModeChanged = this.debugMode !== debugMode;
+
     this.debugMode = debugMode;
 
-    this._needsFullUpdate = true;
-    this.update();
-
     setUserConfig("debugMode", debugMode.toString());
+
+    if (debugModeChanged) {
+      this._needsFullUpdate = true;
+      this.update();
+    }
   }
 
   public toggleDebugMode(): void {
