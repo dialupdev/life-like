@@ -147,6 +147,16 @@ class Sidebar extends MobxLitElement {
   protected render(): TemplateResult {
     return html`
       <div class="controls">
+        <x-control-group label="Rule">
+          <sp-action-group size="m">
+            <sp-picker id="rule" value=${this._world.rule} @change=${this._setRule} label="Rule">
+              ${getAllRules().map(([name, value]) => {
+                return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
+              })}
+            </sp-picker>
+          </sp-action-group>
+        </x-control-group>
+
         <x-control-group label="World">
           <sp-action-group size="m">
             <overlay-trigger triggered-by="hover">
@@ -263,16 +273,6 @@ class Sidebar extends MobxLitElement {
               </sp-action-button>
               <sp-tooltip slot="hover-content" placement="bottom" delayed>Zoom to fit (F)</sp-tooltip>
             </overlay-trigger>
-          </sp-action-group>
-        </x-control-group>
-
-        <x-control-group label="Rule">
-          <sp-action-group size="m">
-            <sp-picker id="rule" value=${this._world.rule} @change=${this._setRule} label="Rule">
-              ${getAllRules().map(([name, value]) => {
-                return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
-              })}
-            </sp-picker>
           </sp-action-group>
         </x-control-group>
 
