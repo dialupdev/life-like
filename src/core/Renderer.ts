@@ -159,7 +159,7 @@ export class Renderer {
     );
   }
 
-  private _drawGridOverlay(
+  private _drawDebugOverlay(
     minVisibleWorldX: number,
     minVisibleWorldY: number,
     visibleWorldWidth: number,
@@ -276,7 +276,7 @@ export class Renderer {
     );
 
     if (this.debugMode) {
-      this._drawGridOverlay(minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight);
+      this._drawDebugOverlay(minVisibleWorldX, minVisibleWorldY, visibleWorldWidth, visibleWorldHeight);
     }
   }
 
