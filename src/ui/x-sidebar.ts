@@ -88,6 +88,11 @@ class Sidebar extends MobxLitElement {
   @consume({ context: appStoreContext })
   private accessor _appStore!: AppStore;
 
+  private _setRule(e: Event): void {
+    const rule = (e.target as Picker).value as Rule;
+    this._world.setRule(rule);
+  }
+
   private _randomize(): void {
     this._appStore.randomize();
   }
@@ -138,11 +143,6 @@ class Sidebar extends MobxLitElement {
 
   private _fit(): void {
     this._layout.zoomToFit();
-  }
-
-  private _setRule(e: Event): void {
-    const rule = (e.target as Picker).value as Rule;
-    this._world.setRule(rule);
   }
 
   protected render(): TemplateResult {
