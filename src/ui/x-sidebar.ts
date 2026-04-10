@@ -10,7 +10,7 @@ import { type Playback, playbackContext } from "../core/Playback.ts";
 import { type World, worldContext } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
-import { getAllRules } from "../utils/RuleUtils.ts";
+import { getRuleGroups } from "../utils/RuleUtils.ts";
 
 import type { Rule } from "../core/Rules.ts";
 import type { Menu } from "@spectrum-web-components/menu";
@@ -31,6 +31,7 @@ import "@spectrum-web-components/icons-workflow/icons/sp-icon-play.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-step-forward.js";
 import "@spectrum-web-components/menu/sp-menu-divider.js";
+import "@spectrum-web-components/menu/sp-menu-group.js";
 import "@spectrum-web-components/menu/sp-menu-item.js";
 import "@spectrum-web-components/menu/sp-menu.js";
 import "@spectrum-web-components/overlay/overlay-trigger.js";
@@ -150,8 +151,15 @@ class Sidebar extends MobxLitElement {
         <x-control-group label="Rule">
           <sp-action-group size="m">
             <sp-picker id="rule" value=${this._world.rule} @change=${this._setRule} label="Rule">
-              ${getAllRules().map(([name, value]) => {
-                return html`<sp-menu-item value=${value}>${name}</sp-menu-item>`;
+              ${getRuleGroups().map(({ name, rules }) => {
+                return html`
+                  <sp-menu-group>
+                    <span slot="header">${name}</span>
+                    ${rules.map(([ruleName, ruleValue]) => {
+                      return html`<sp-menu-item value=${ruleValue}>${ruleName}</sp-menu-item>`;
+                    })}
+                  </sp-menu-group>
+                `;
               })}
             </sp-picker>
           </sp-action-group>

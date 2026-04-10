@@ -1,4 +1,4 @@
-import { Rule, stylizedRuleNames } from "../core/Rules.ts";
+import { Rule, ruleGroups, stylizedRuleNames } from "../core/Rules.ts";
 
 export type RuleKey = keyof typeof Rule;
 
@@ -43,13 +43,21 @@ function getRuleNameByKey(key: RuleKey): string {
   }
 }
 
-export function getAllRules(): [string, string][] {
-  const ruleKeys = Object.keys(Rule) as RuleKey[];
+interface RuleGroupNamesAndValues {
+  name: string;
+  rules: [string, string][];
+}
 
-  return ruleKeys.map((ruleKey) => {
-    const ruleName = getRuleNameByKey(ruleKey);
-    const ruleValue = Rule[ruleKey];
+export function getRuleGroups(): RuleGroupNamesAndValues[] {
+  return ruleGroups.map(({ name, rules }) => {
+    return {
+      name,
+      rules: rules.map((ruleValue) => {
+        const ruleKey = getRuleKeyByValue(ruleValue);
+        const ruleName = getRuleNameByKey(ruleKey);
 
-    return [ruleName, ruleValue];
+        return [ruleName, ruleValue];
+      }),
+    };
   });
 }
