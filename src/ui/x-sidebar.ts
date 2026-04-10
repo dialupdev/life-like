@@ -179,7 +179,6 @@ class Sidebar extends MobxLitElement {
               <sp-action-button
                 slot="trigger"
                 @click="${() => this._drawerStore.toggleDrawer(DrawerMode.settings)}"
-                ?selected=${this._drawerStore.drawerMode === DrawerMode.settings}
                 label="Settings"
               >
                 <sp-icon-settings slot="icon"></sp-icon-settings>
@@ -290,7 +289,6 @@ class Sidebar extends MobxLitElement {
               <sp-action-button
                 slot="trigger"
                 @click="${() => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)}"
-                ?selected=${this._drawerStore.drawerMode === DrawerMode.patternLibrary}
                 label="Library"
               >
                 <sp-icon-data slot="icon"></sp-icon-data>

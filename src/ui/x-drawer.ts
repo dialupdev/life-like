@@ -30,12 +30,13 @@ class Drawer extends MobxLitElement {
       position: absolute;
       top: 0;
       width: ${SIDEBAR_WIDTH}px;
+      z-index: 1;
     }
     .drawer {
       background: #f4f5f7;
       border-right: 2px solid #ddd;
       height: 100vh;
-      left: 0;
+      left: -${SIDEBAR_WIDTH}px;
       overflow-y: auto;
       padding: 4px 20px;
       position: absolute;
@@ -44,7 +45,7 @@ class Drawer extends MobxLitElement {
       width: ${SIDEBAR_WIDTH}px;
     }
     .drawer.open {
-      left: ${SIDEBAR_WIDTH}px;
+      left: 0;
     }
     .close-drawer-button {
       position: absolute;
