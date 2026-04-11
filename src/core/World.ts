@@ -6,6 +6,11 @@ import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 import { Cell } from "./Cell.ts";
 import { Rule } from "./Rules.ts";
 
+export enum RuleType {
+  named = "named",
+  custom = "custom",
+}
+
 export enum DeltaType {
   killed,
   spawned,
@@ -38,6 +43,8 @@ export class World {
   @observable public accessor population = 0;
 
   @observable public accessor rule: string = Rule.life;
+  @observable public accessor ruleType: RuleType = RuleType.named;
+
   @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
 
@@ -45,10 +52,12 @@ export class World {
     [this._birthTable, this._survivalTable] = parseRule(this.rule);
 
     this.setRule = this.setRule.bind(this);
+    this.setRuleType = this.setRuleType.bind(this);
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
     this.setRandomizeAverageDensity = this.setRandomizeAverageDensity.bind(this);
 
     getUserConfig("rule", (value: string) => (isValidRule(value) ? value : ""), this.setRule);
+    getUserConfig("ruleType", (value: string) => value as RuleType, this.setRuleType);
     getUserConfig("randomizeFieldSize", (value: string) => parseInt(value, 10), this.setRandomizeFieldSize);
     getUserConfig("randomizeAverageDensity", (value: string) => parseFloat(value), this.setRandomizeAverageDensity);
 
@@ -94,6 +103,13 @@ export class World {
     this.rule = rule;
 
     setUserConfig("rule", rule);
+  }
+
+  @action
+  public setRuleType(ruleType: RuleType): void {
+    this.ruleType = ruleType;
+
+    setUserConfig("ruleType", ruleType);
   }
 
   @action

@@ -2,12 +2,13 @@ import { MobxLitElement } from "@adobe/lit-mobx";
 import { consume } from "@lit/context";
 import { html, css } from "lit";
 import { customElement } from "lit/decorators.js";
+import { when } from "lit/directives/when.js";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { ZoomDirection } from "../core/Layout.ts";
 import { type Layout, layoutContext } from "../core/Layout.ts";
 import { type Playback, playbackContext } from "../core/Playback.ts";
-import { type World, worldContext } from "../core/World.ts";
+import { type World, worldContext, RuleType } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
 import { getRuleGroups } from "../utils/RuleUtils.ts";
@@ -15,6 +16,7 @@ import { getRuleGroups } from "../utils/RuleUtils.ts";
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
+import type { Textfield } from "@spectrum-web-components/textfield";
 import type { TemplateResult } from "lit";
 
 import "@spectrum-web-components/action-button/sp-action-button.js";
@@ -37,6 +39,7 @@ import "@spectrum-web-components/overlay/overlay-trigger.js";
 import "@spectrum-web-components/picker/sp-picker.js";
 import "@spectrum-web-components/popover/sp-popover.js";
 import "@spectrum-web-components/slider/sp-slider.js";
+import "@spectrum-web-components/textfield/sp-textfield.js";
 import "@spectrum-web-components/tooltip/sp-tooltip.js";
 import "./x-control-group.ts";
 
@@ -89,7 +92,18 @@ class Sidebar extends MobxLitElement {
 
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value;
-    this._world.setRule(rule);
+
+    if (rule === "custom") {
+      this._world.setRuleType(RuleType.custom);
+    } else {
+      this._world.setRule(rule);
+      this._world.setRuleType(RuleType.named);
+    }
+  }
+
+  private _setCustomRule(e: Event): void {
+    const customRule = (e.target as Textfield).value;
+    this._world.setRule(customRule);
   }
 
   private _randomize(): void {
@@ -149,7 +163,12 @@ class Sidebar extends MobxLitElement {
       <div class="controls">
         <x-control-group label="Rule">
           <sp-action-group size="m">
-            <sp-picker id="rule" value=${this._world.rule} @change=${this._setRule} label="Rule">
+            <sp-picker
+              id="rule"
+              value=${this._world.ruleType === RuleType.custom ? "custom" : this._world.rule}
+              @change=${this._setRule}
+              label="Rule"
+            >
               ${getRuleGroups().map(({ name, rules }) => {
                 return html`
                   <sp-menu-group>
@@ -160,8 +179,25 @@ class Sidebar extends MobxLitElement {
                   </sp-menu-group>
                 `;
               })}
+              <sp-menu-group>
+                <span slot="header">Other</span>
+                <sp-menu-item value="custom">Custom</sp-menu-item>
+              </sp-menu-group>
             </sp-picker>
           </sp-action-group>
+
+          ${when(
+            this._world.ruleType === RuleType.custom,
+            () => html`
+              <sp-field-label for="custom-rule">Rulestring (e.g. B3/S23)</sp-field-label>
+              <sp-textfield
+                id="custom-rule"
+                placeholder="B3/S23"
+                value=${this._world.rule}
+                @input=${this._setCustomRule}
+              ></sp-textfield>
+            `
+          )}
         </x-control-group>
 
         <x-control-group label="World">
