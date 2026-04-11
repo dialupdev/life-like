@@ -1,12 +1,10 @@
 import { createContext } from "@lit/context";
 import { makeObservable, observable, action } from "mobx";
 
-import { parseRule, getRuleKeyByValue } from "../utils/RuleUtils.ts";
+import { isValidRule, parseRule } from "../utils/RuleUtils.ts";
 import { getUserConfig, setUserConfig } from "../utils/UserConfigUtils.ts";
 import { Cell } from "./Cell.ts";
 import { Rule } from "./Rules.ts";
-
-import type { RuleKey } from "../utils/RuleUtils.ts";
 
 export enum DeltaType {
   killed,
@@ -39,7 +37,7 @@ export class World {
   @observable public accessor generation = 0;
   @observable public accessor population = 0;
 
-  @observable public accessor rule = Rule.life;
+  @observable public accessor rule: string = Rule.life;
   @observable public accessor randomizeFieldSize = 100;
   @observable public accessor randomizeAverageDensity = 0.5;
 
@@ -50,7 +48,7 @@ export class World {
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
     this.setRandomizeAverageDensity = this.setRandomizeAverageDensity.bind(this);
 
-    getUserConfig("rule", (value: string) => Rule[value as RuleKey], this.setRule);
+    getUserConfig("rule", (value: string) => (isValidRule(value) ? value : ""), this.setRule);
     getUserConfig("randomizeFieldSize", (value: string) => parseInt(value, 10), this.setRandomizeFieldSize);
     getUserConfig("randomizeAverageDensity", (value: string) => parseFloat(value), this.setRandomizeAverageDensity);
 
@@ -90,12 +88,12 @@ export class World {
   }
 
   @action
-  public setRule(rule: Rule): void {
+  public setRule(rule: string): void {
     [this._birthTable, this._survivalTable] = parseRule(rule);
 
     this.rule = rule;
 
-    setUserConfig("rule", getRuleKeyByValue(rule));
+    setUserConfig("rule", rule);
   }
 
   @action

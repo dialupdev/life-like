@@ -12,7 +12,6 @@ import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
 import { getRuleGroups } from "../utils/RuleUtils.ts";
 
-import type { Rule } from "../core/Rules.ts";
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Picker } from "@spectrum-web-components/picker";
 import type { Slider } from "@spectrum-web-components/slider";
@@ -89,7 +88,7 @@ class Sidebar extends MobxLitElement {
   private accessor _appStore!: AppStore;
 
   private _setRule(e: Event): void {
-    const rule = (e.target as Picker).value as Rule;
+    const rule = (e.target as Picker).value;
     this._world.setRule(rule);
   }
 

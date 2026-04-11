@@ -1,8 +1,13 @@
+import { RULE_REGEX } from "../Constants.ts";
 import { Rule, ruleGroups, stylizedRuleNames } from "../core/Rules.ts";
 
 export type RuleKey = keyof typeof Rule;
 
-export function parseRule(rule: Rule): [boolean[], boolean[]] {
+export function isValidRule(rule: string): boolean {
+  return RULE_REGEX.test(rule);
+}
+
+export function parseRule(rule: string): [boolean[], boolean[]] {
   const halves = rule.split("/");
 
   const birthTable = Array.from({ length: 8 }, () => false);
@@ -41,7 +46,7 @@ function getRuleNameByKey(key: RuleKey): string {
   const ruleValue = Rule[key];
 
   if (stylizedRuleNames[ruleValue]) {
-    return stylizedRuleNames[ruleValue]!;
+    return stylizedRuleNames[ruleValue];
   } else {
     return _convertToTitlecase(key);
   }
