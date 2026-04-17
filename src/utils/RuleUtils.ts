@@ -30,25 +30,24 @@ export function parseRule(rule: string): [boolean[], boolean[]] {
   return [birthTable, survivalTable];
 }
 
-function _convertToTitlecase(key: RuleKey): string {
-  const splitWords = key.replace(/([A-Z])/g, " $1");
-
-  return splitWords.charAt(0).toUpperCase() + splitWords.slice(1);
-}
-
-export function getRuleKeyByValue(value: Rule): RuleKey {
+function _getRuleKeyByValue(value: Rule): RuleKey {
   const ruleKeys = Object.keys(Rule) as RuleKey[];
 
   return ruleKeys.find((key) => Rule[key] === value)!;
 }
 
-function getRuleNameByKey(key: RuleKey): string {
-  const ruleValue = Rule[key];
+function _ruleKeyAsTitlecase(value: Rule): string {
+  const key = _getRuleKeyByValue(value);
+  const splitWords = key.replace(/([A-Z])/g, " $1");
 
-  if (stylizedRuleNames[ruleValue]) {
-    return stylizedRuleNames[ruleValue];
+  return splitWords.charAt(0).toUpperCase() + splitWords.slice(1);
+}
+
+export function getRuleNameByValue(value: Rule): string {
+  if (stylizedRuleNames[value]) {
+    return stylizedRuleNames[value];
   } else {
-    return _convertToTitlecase(key);
+    return _ruleKeyAsTitlecase(value);
   }
 }
 
@@ -62,8 +61,7 @@ export function getRuleGroups(): RuleGroupNamesAndValues[] {
     return {
       name,
       rules: rules.map((ruleValue) => {
-        const ruleKey = getRuleKeyByValue(ruleValue);
-        const ruleName = getRuleNameByKey(ruleKey);
+        const ruleName = getRuleNameByValue(ruleValue);
 
         return [ruleName, ruleValue];
       }),
