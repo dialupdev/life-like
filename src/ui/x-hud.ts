@@ -42,7 +42,7 @@ class Hud extends MobxLitElement {
   @state()
   private accessor _population = 0;
 
-  private worldStateDisposer?: IReactionDisposer;
+  private _worldStateDisposer?: IReactionDisposer;
 
   private _flushWorldState = (): void => {
     this._generation = this._world.generation;
@@ -54,7 +54,7 @@ class Hud extends MobxLitElement {
 
     const throttledFlushWorldState = throttle(this._flushWorldState, 250);
 
-    this.worldStateDisposer = reaction(
+    this._worldStateDisposer = reaction(
       () => [this._world.generation, this._world.population],
       throttledFlushWorldState,
       { fireImmediately: true }
@@ -62,7 +62,7 @@ class Hud extends MobxLitElement {
   }
 
   disconnectedCallback(): void {
-    this.worldStateDisposer?.();
+    this._worldStateDisposer?.();
 
     super.disconnectedCallback();
   }
