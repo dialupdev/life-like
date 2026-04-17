@@ -1,17 +1,19 @@
 import { MobxLitElement } from "@adobe/lit-mobx";
 import { consume } from "@lit/context";
 import { html, css } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
+import { reaction, type IReactionDisposer } from "mobx";
 
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { ZoomDirection } from "../core/Layout.ts";
 import { type Layout, layoutContext } from "../core/Layout.ts";
 import { type Playback, playbackContext } from "../core/Playback.ts";
+import { Rule } from "../core/Rules.ts";
 import { type World, worldContext, RuleType } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
-import { getRuleGroups } from "../utils/RuleUtils.ts";
+import { getRuleGroups, isValidRule } from "../utils/RuleUtils.ts";
 
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Picker } from "@spectrum-web-components/picker";
@@ -90,6 +92,11 @@ class Sidebar extends MobxLitElement {
   @consume({ context: appStoreContext })
   private accessor _appStore!: AppStore;
 
+  @state()
+  private accessor _customRule: string = Rule.life;
+
+  private _ruleTypeDisposer?: IReactionDisposer;
+
   private _setRule(e: Event): void {
     const rule = (e.target as Picker).value;
 
@@ -103,7 +110,12 @@ class Sidebar extends MobxLitElement {
 
   private _setCustomRule(e: Event): void {
     const customRule = (e.target as Textfield).value;
-    this._world.setRule(customRule);
+
+    this._customRule = customRule;
+
+    if (isValidRule(customRule)) {
+      this._world.setRule(customRule);
+    }
   }
 
   private _randomize(): void {
@@ -158,6 +170,28 @@ class Sidebar extends MobxLitElement {
     this._layout.zoomToFit();
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+
+    // When the user switches from a named rule to a custom rule,
+    // we need to update the local custom rule state to match the world rule
+    this._ruleTypeDisposer = reaction(
+      () => this._world.ruleType,
+      () => {
+        if (this._world.ruleType === RuleType.custom) {
+          this._customRule = this._world.rule;
+        }
+      },
+      { fireImmediately: true }
+    );
+  }
+
+  disconnectedCallback(): void {
+    this._ruleTypeDisposer?.();
+
+    super.disconnectedCallback();
+  }
+
   protected render(): TemplateResult {
     return html`
       <div class="controls">
@@ -192,8 +226,8 @@ class Sidebar extends MobxLitElement {
               <sp-field-label for="custom-rule">Rulestring (e.g. B3/S23)</sp-field-label>
               <sp-textfield
                 id="custom-rule"
-                placeholder="B3/S23"
-                value=${this._world.rule}
+                value=${this._customRule}
+                ?invalid=${!isValidRule(this._customRule)}
                 @input=${this._setCustomRule}
               ></sp-textfield>
             `
