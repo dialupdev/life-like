@@ -163,6 +163,18 @@ export class PluginBuilder {
   }
 
   private _handleKeyboard(e: KeyboardEvent): void {
+    const path = e.composedPath() as HTMLElement[];
+
+    const isEditingText = path.some((el) => {
+      const tagName = el.tagName?.toLowerCase();
+      return tagName === "input" || tagName === "textarea" || el.hasAttribute?.("contenteditable");
+    });
+
+    // If the user is editing text, don't trigger keyboard shortcuts
+    if (isEditingText) {
+      return;
+    }
+
     let keyBindings = "";
 
     if (e.metaKey || e.ctrlKey) {
