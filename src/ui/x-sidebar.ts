@@ -13,7 +13,7 @@ import { Rule } from "../core/Rules.ts";
 import { type World, worldContext, RuleType } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
-import { getRuleGroups, isValidRule } from "../utils/RuleUtils.ts";
+import { getRuleGroups, isValidRule, isNamedRule, getRuleNameByValue } from "../utils/RuleUtils.ts";
 
 import type { Menu } from "@spectrum-web-components/menu";
 import type { Picker } from "@spectrum-web-components/picker";
@@ -223,7 +223,13 @@ class Sidebar extends MobxLitElement {
           ${when(
             this._world.ruleType === RuleType.custom,
             () => html`
-              <sp-field-label for="custom-rule">Rulestring (e.g. B3/S23)</sp-field-label>
+              <sp-field-label for="custom-rule"
+                >Rulestring (e.g. B3/S23)
+                ${when(
+                  isNamedRule(this._customRule),
+                  () => html`<strong>[${getRuleNameByValue(this._customRule as Rule)}]</strong>`
+                )}</sp-field-label
+              >
               <sp-textfield
                 id="custom-rule"
                 value=${this._customRule}

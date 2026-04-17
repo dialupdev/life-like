@@ -7,6 +7,10 @@ export function isValidRule(rule: string): boolean {
   return RULE_REGEX.test(rule);
 }
 
+export function isNamedRule(rule: string): boolean {
+  return Object.values(Rule).includes(rule as Rule);
+}
+
 export function parseRule(rule: string): [boolean[], boolean[]] {
   const halves = rule.split("/");
 
