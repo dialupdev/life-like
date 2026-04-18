@@ -88,7 +88,7 @@ export class LibraryStore {
 
       this._world.clear();
 
-      parseRlePattern(patternString, this._world.addCell.bind(this._world));
+      parseRlePattern(patternString, this._world.addCell);
 
       this._world.saveStartState();
 

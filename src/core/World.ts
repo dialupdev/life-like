@@ -55,6 +55,7 @@ export class World {
     this.setRuleType = this.setRuleType.bind(this);
     this.setRandomizeFieldSize = this.setRandomizeFieldSize.bind(this);
     this.setRandomizeAverageDensity = this.setRandomizeAverageDensity.bind(this);
+    this.addCell = this.addCell.bind(this);
 
     getUserConfig("rule", (value: string) => (isValidRule(value) ? value : ""), this.setRule);
     getUserConfig("ruleType", (value: string) => value as RuleType, this.setRuleType);
