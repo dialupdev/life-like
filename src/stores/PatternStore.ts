@@ -21,9 +21,9 @@ interface GetResponseTextOptions {
   isGzipped: boolean;
 }
 
-export const libraryStoreContext = createContext<LibraryStore>("libraryStore");
+export const patternStoreContext = createContext<PatternStore>("patternStore");
 
-export class LibraryStore {
+export class PatternStore {
   private _world: World;
   private _layout: Layout;
 

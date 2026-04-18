@@ -10,7 +10,7 @@ import { PluginGroup } from "./plugins/PluginManager.ts";
 import { PluginManager } from "./plugins/PluginManager.ts";
 import { AppStore, appStoreContext } from "./stores/AppStore.ts";
 import { DrawerStore, drawerStoreContext } from "./stores/DrawerStore.ts";
-import { LibraryStore, libraryStoreContext } from "./stores/LibraryStore.ts";
+import { PatternStore, patternStoreContext } from "./stores/PatternStore.ts";
 
 import "./ui/x-app.ts";
 
@@ -27,7 +27,7 @@ const renderer = new Renderer(context, layout, world, "#0065fd");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
-const libraryStore = new LibraryStore(world, layout);
+const patternStore = new PatternStore(world, layout);
 const appStore = new AppStore(world, layout, playback);
 
 new ContextProvider(document.body, {
@@ -56,8 +56,8 @@ new ContextProvider(document.body, {
 });
 
 new ContextProvider(document.body, {
-  context: libraryStoreContext,
-  initialValue: libraryStore,
+  context: patternStoreContext,
+  initialValue: patternStore,
 });
 
 new ContextProvider(document.body, {

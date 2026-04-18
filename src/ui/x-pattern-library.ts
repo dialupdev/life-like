@@ -5,7 +5,7 @@ import { customElement } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
 import { type Playback, playbackContext } from "../core/Playback.ts";
-import { type LibraryStore, libraryStoreContext } from "../stores/LibraryStore.ts";
+import { type PatternStore, patternStoreContext } from "../stores/PatternStore.ts";
 
 import type { TemplateResult } from "lit";
 
@@ -31,25 +31,25 @@ class PatternLibrary extends MobxLitElement {
   @consume({ context: playbackContext })
   private accessor _playback!: Playback;
 
-  @consume({ context: libraryStoreContext })
-  private accessor _libraryStore!: LibraryStore;
+  @consume({ context: patternStoreContext })
+  private accessor _patternStore!: PatternStore;
 
   private _loadPattern(e: CustomEvent): void {
     const path = (e.target! as HTMLElement).getAttribute("data-path")!;
 
     this._playback.pause();
 
-    void this._libraryStore.loadPattern(path);
+    void this._patternStore.loadPattern(path);
   }
 
   connectedCallback(): void {
     super.connectedCallback();
 
-    void this._libraryStore.loadPatterns();
+    void this._patternStore.loadPatterns();
   }
 
   protected render(): TemplateResult {
-    const categories = this._libraryStore.categories;
+    const categories = this._patternStore.categories;
 
     return html`
       ${when(
