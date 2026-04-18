@@ -49,6 +49,7 @@ export enum Rule {
   vote = "B5678/S45678",
   voteFourFive = "B4678/S35678",
   walledCities = "B45678/S2345",
+  web = "B/S34567", // mine
 }
 
 export const stylizedRuleNames: Partial<Record<Rule, string>> = {
@@ -98,6 +99,7 @@ export const ruleGroups: RuleGroup[] = [
       Rule.stains,
       Rule.vote,
       Rule.voteFourFive,
+      Rule.web,
     ],
   },
   {
