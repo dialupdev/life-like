@@ -39,13 +39,13 @@ class PatternLibrary extends MobxLitElement {
 
     this._playback.pause();
 
-    void this._patternStore.loadPattern(path);
+    void this._patternStore.importFromLibrary(path);
   }
 
   connectedCallback(): void {
     super.connectedCallback();
 
-    void this._patternStore.loadPatterns();
+    void this._patternStore.downloadLibrary();
   }
 
   protected render(): TemplateResult {

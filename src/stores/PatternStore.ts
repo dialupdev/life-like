@@ -33,7 +33,7 @@ export class PatternStore {
     this._world = world;
     this._layout = layout;
 
-    this.loadPatterns = this.loadPatterns.bind(this);
+    this.downloadLibrary = this.downloadLibrary.bind(this);
 
     makeObservable(this);
   }
@@ -61,7 +61,7 @@ export class PatternStore {
     }
   }
 
-  public async loadPatterns(): Promise<void> {
+  public async downloadLibrary(): Promise<void> {
     if (this.categories.length > 0) {
       return;
     }
@@ -76,7 +76,7 @@ export class PatternStore {
   }
 
   // Only supports RLE format for now
-  public async loadPattern(path: string): Promise<void> {
+  public async importFromLibrary(path: string): Promise<void> {
     this._world.setRule(Rule.life);
 
     try {
