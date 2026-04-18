@@ -1,13 +1,19 @@
+import { Rule } from "../core/Rules.ts";
+
+type SetRuleCallback = (rule: string) => void;
 type AddCellCallback = (x: number, y: number) => void;
 
 // https://conwaylife.com/wiki/Run_Length_Encoded
-export function parseRlePattern(patternString: string, addCell: AddCellCallback): void {
+export function parseRlePattern(patternString: string, setRule: SetRuleCallback, addCell: AddCellCallback): void {
   // We compile these outside of the loop for better performance
   const commentRe = /^#/;
-  const headerRe = /^x = (\d+), y = (\d+)/;
+  const headerRe = /^x = (\d+), y = (\d+)(?:, rule = (B\d*\/S\d*))?/;
 
   let width = 0;
   let height = 0;
+  // Default to Conway's Life if no rule is specified
+  // https://conwaylife.com/wiki/Run_Length_Encoded#Other_features
+  let rule: string = Rule.life;
 
   let index = 0;
   let line: string;
@@ -32,9 +38,15 @@ export function parseRlePattern(patternString: string, addCell: AddCellCallback)
       width = parseInt(headerMatch[1], 10);
       height = parseInt(headerMatch[2], 10);
 
+      if (headerMatch[3]) {
+        rule = headerMatch[3];
+      }
+
       break;
     }
   }
+
+  setRule(rule);
 
   const originX = Math.floor(width / -2);
   let x = originX;

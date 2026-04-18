@@ -1,7 +1,6 @@
 import { createContext } from "@lit/context";
 import { makeObservable, observable, runInAction } from "mobx";
 
-import { Rule } from "../core/Rules.ts";
 import { parseRlePattern } from "../utils/PatternUtils.ts";
 
 import type { Layout } from "../core/Layout.ts";
@@ -77,8 +76,6 @@ export class PatternStore {
 
   // Only supports RLE format for now
   public async importFromLibrary(path: string): Promise<void> {
-    this._world.setRule(Rule.life);
-
     try {
       const isGzipped = path.endsWith(".gz");
       const response = await fetch(path);
@@ -88,7 +85,7 @@ export class PatternStore {
 
       this._world.clear();
 
-      parseRlePattern(patternString, this._world.addCell);
+      parseRlePattern(patternString, this._world.setRule, this._world.addCell);
 
       this._world.saveStartState();
 
