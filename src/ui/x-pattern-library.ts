@@ -4,7 +4,6 @@ import { html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 
-import { type Playback, playbackContext } from "../core/Playback.ts";
 import { type PatternStore, patternStoreContext } from "../stores/PatternStore.ts";
 
 import type { TemplateResult } from "lit";
@@ -28,16 +27,11 @@ class PatternLibrary extends MobxLitElement {
     }
   `;
 
-  @consume({ context: playbackContext })
-  private accessor _playback!: Playback;
-
   @consume({ context: patternStoreContext })
   private accessor _patternStore!: PatternStore;
 
   private _loadPattern(e: CustomEvent): void {
     const path = (e.target! as HTMLElement).getAttribute("data-path")!;
-
-    this._playback.pause();
 
     void this._patternStore.importFromLibrary(path);
   }

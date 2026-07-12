@@ -27,7 +27,7 @@ const renderer = new Renderer(context, layout, world, "#0065fd");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
-const patternStore = new PatternStore(world, layout);
+const patternStore = new PatternStore(world, layout, playback);
 const appStore = new AppStore(world, layout, playback);
 
 new ContextProvider(document.body, {

@@ -4,6 +4,7 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { parseRlePattern } from "../utils/PatternUtils.ts";
 
 import type { Layout } from "../core/Layout.ts";
+import type { Playback } from "../core/Playback.ts";
 import type { World } from "../core/World.ts";
 
 export interface Pattern {
@@ -25,12 +26,14 @@ export const patternStoreContext = createContext<PatternStore>("patternStore");
 export class PatternStore {
   private _world: World;
   private _layout: Layout;
+  private _playback: Playback;
 
   public categories = observable.array<Category>([]);
 
-  constructor(world: World, layout: Layout) {
+  constructor(world: World, layout: Layout, playback: Playback) {
     this._world = world;
     this._layout = layout;
+    this._playback = playback;
 
     this.downloadLibrary = this.downloadLibrary.bind(this);
 
@@ -74,6 +77,20 @@ export class PatternStore {
     }
   }
 
+  public async importFromString(patternString: string): Promise<void> {
+    patternString = patternString.replace(/\r/g, "");
+
+    this._playback.pause();
+
+    this._world.clear();
+
+    parseRlePattern(patternString, this._world.setRule, this._world.addCell);
+
+    this._world.saveStartState();
+
+    this._layout.zoomToFit();
+  }
+
   // Only supports RLE format for now
   public async importFromLibrary(path: string): Promise<void> {
     try {
@@ -81,15 +98,8 @@ export class PatternStore {
       const response = await fetch(path);
 
       let patternString = await this._getResponseText(response, { isGzipped });
-      patternString = patternString.replace(/\r/g, "");
 
-      this._world.clear();
-
-      parseRlePattern(patternString, this._world.setRule, this._world.addCell);
-
-      this._world.saveStartState();
-
-      this._layout.zoomToFit();
+      await this.importFromString(patternString);
     } catch (error) {
       // oxlint-disable-next-line eslint/no-console
       console.error(error);
