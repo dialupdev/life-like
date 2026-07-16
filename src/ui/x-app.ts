@@ -11,6 +11,7 @@ import "@spectrum-web-components/theme/spectrum-two/scale-medium.js";
 import "@spectrum-web-components/theme/spectrum-two/theme-light.js";
 import "./x-drawer.ts";
 import "./x-hud.ts";
+import "./x-overlay-host.ts";
 import "./x-sidebar.ts";
 
 @customElement("x-app")
@@ -37,6 +38,7 @@ class App extends MobxLitElement {
 
         <x-sidebar></x-sidebar>
         <x-drawer></x-drawer>
+        <x-overlay-host></x-overlay-host>
         <x-hud></x-hud>
       </sp-theme>
     `;

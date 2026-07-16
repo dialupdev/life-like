@@ -10,6 +10,7 @@ import { PluginGroup } from "./plugins/PluginManager.ts";
 import { PluginManager } from "./plugins/PluginManager.ts";
 import { AppStore, appStoreContext } from "./stores/AppStore.ts";
 import { DrawerStore, drawerStoreContext } from "./stores/DrawerStore.ts";
+import { OverlayStore, overlayStoreContext } from "./stores/OverlayStore.ts";
 import { PatternStore, patternStoreContext } from "./stores/PatternStore.ts";
 
 import "./ui/x-app.ts";
@@ -27,6 +28,7 @@ const renderer = new Renderer(context, layout, world, "#0065fd");
 const playback = new Playback(world, renderer);
 
 const drawerStore = new DrawerStore();
+const overlayStore = new OverlayStore();
 const patternStore = new PatternStore(world, layout, playback);
 const appStore = new AppStore(world, layout, playback);
 
@@ -56,6 +58,11 @@ new ContextProvider(document.body, {
 });
 
 new ContextProvider(document.body, {
+  context: overlayStoreContext,
+  initialValue: overlayStore,
+});
+
+new ContextProvider(document.body, {
   context: patternStoreContext,
   initialValue: patternStore,
 });
@@ -66,7 +73,7 @@ new ContextProvider(document.body, {
 });
 
 const pluginBuilder = new PluginBuilder(canvas);
-const pluginManager = new PluginManager(layout, renderer, playback, drawerStore, appStore, pluginBuilder);
+const pluginManager = new PluginManager(layout, renderer, playback, drawerStore, overlayStore, appStore, pluginBuilder);
 
 pluginManager.activateGroup(PluginGroup.default);
 pluginManager.activateGroup(PluginGroup.playback);

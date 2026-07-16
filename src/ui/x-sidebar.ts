@@ -13,7 +13,7 @@ import { Rule } from "../core/Rules.ts";
 import { type World, worldContext, RuleType } from "../core/World.ts";
 import { type AppStore, appStoreContext } from "../stores/AppStore.ts";
 import { type DrawerStore, DrawerMode, drawerStoreContext } from "../stores/DrawerStore.ts";
-import { openOverlay } from "../utils/OverlayUtils.ts";
+import { type OverlayStore, OverlayMode, overlayStoreContext } from "../stores/OverlayStore.ts";
 import { getRuleGroups, isValidRule, isNamedRule, getRuleNameByValue } from "../utils/RuleUtils.ts";
 
 import type { Menu } from "@spectrum-web-components/menu";
@@ -46,7 +46,6 @@ import "@spectrum-web-components/slider/sp-slider.js";
 import "@spectrum-web-components/textfield/sp-textfield.js";
 import "@spectrum-web-components/tooltip/sp-tooltip.js";
 import "./x-control-group.ts";
-import "./x-import.ts";
 
 @customElement("x-sidebar")
 class Sidebar extends MobxLitElement {
@@ -91,6 +90,9 @@ class Sidebar extends MobxLitElement {
 
   @consume({ context: drawerStoreContext })
   private accessor _drawerStore!: DrawerStore;
+
+  @consume({ context: overlayStoreContext })
+  private accessor _overlayStore!: OverlayStore;
 
   @consume({ context: appStoreContext })
   private accessor _appStore!: AppStore;
@@ -173,8 +175,8 @@ class Sidebar extends MobxLitElement {
     this._layout.zoomToFit();
   }
 
-  private async _openImportOverlay(): Promise<void> {
-    void openOverlay(html`<x-import></x-import>`, "Import", this);
+  private _openImportOverlay(): void {
+    this._overlayStore.openOverlay(OverlayMode.import);
   }
 
   connectedCallback(): void {

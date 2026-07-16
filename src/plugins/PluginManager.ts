@@ -15,6 +15,7 @@ import type { Playback } from "../core/Playback.ts";
 import type { Renderer } from "../core/Renderer.ts";
 import type { AppStore } from "../stores/AppStore.ts";
 import type { DrawerStore } from "../stores/DrawerStore.ts";
+import type { OverlayStore } from "../stores/OverlayStore.ts";
 import type { PluginBuilder, Plugin } from "./PluginBuilder.ts";
 
 export enum PluginGroup {
@@ -27,6 +28,7 @@ export class PluginManager {
   private _renderer: Renderer;
   private _playback: Playback;
   private _drawerStore: DrawerStore;
+  private _overlayStore: OverlayStore;
   private _appStore: AppStore;
   private _pluginBuilder: PluginBuilder;
 
@@ -37,6 +39,7 @@ export class PluginManager {
     renderer: Renderer,
     playback: Playback,
     drawerStore: DrawerStore,
+    overlayStore: OverlayStore,
     appStore: AppStore,
     pluginBuilder: PluginBuilder
   ) {
@@ -44,6 +47,7 @@ export class PluginManager {
     this._renderer = renderer;
     this._playback = playback;
     this._drawerStore = drawerStore;
+    this._overlayStore = overlayStore;
     this._appStore = appStore;
     this._pluginBuilder = pluginBuilder;
 
@@ -74,7 +78,10 @@ export class PluginManager {
       new KeyboardPlugin("d", () => this._renderer.toggleDebugMode()),
       new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
       new KeyboardPlugin("l", () => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)),
-      new KeyboardPlugin("Escape", this._drawerStore.closeDrawer),
+      new KeyboardPlugin("Escape", () => {
+        this._overlayStore.closeOverlay();
+        this._drawerStore.closeDrawer();
+      }),
     ]);
 
     this._pluginGroups.set(PluginGroup.playback, [
