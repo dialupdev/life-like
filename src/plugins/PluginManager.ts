@@ -1,6 +1,7 @@
 import { SIDEBAR_WIDTH } from "../Constants.ts";
 import { PanDirection, ZoomDirection } from "../core/Layout.ts";
 import { DrawerMode } from "../stores/DrawerStore.ts";
+import { OverlayMode } from "../stores/OverlayStore.ts";
 import {
   ResizePlugin,
   WheelPlugin,
@@ -78,6 +79,7 @@ export class PluginManager {
       new KeyboardPlugin("d", () => this._renderer.toggleDebugMode()),
       new KeyboardPlugin("s", () => this._drawerStore.toggleDrawer(DrawerMode.settings)),
       new KeyboardPlugin("l", () => this._drawerStore.toggleDrawer(DrawerMode.patternLibrary)),
+      new KeyboardPlugin("i", () => this._overlayStore.toggleOverlay(OverlayMode.import)),
       new KeyboardPlugin("Escape", () => {
         this._overlayStore.closeOverlay();
         this._drawerStore.closeDrawer();
